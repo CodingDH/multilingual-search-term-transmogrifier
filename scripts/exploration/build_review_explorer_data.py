@@ -31,7 +31,7 @@ import sys
 import pandas as pd
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
-from scripts.utils import get_data_directory_path, enforce_translation_rationale_pairing
+from scripts.utils import get_data_directory_path, enforce_translation_rationale_pairing, get_language_family
 from scripts.exploration.explore_confidence_within_variant import load_variant_df
 from scripts.exploration.translation_classifier import curate_translation
 
@@ -144,6 +144,7 @@ def build_review_data(
 
     # ── Merge everything ──────────────────────────────────────────────────────
     export = flags_df.copy()
+    export['language_family'] = export['language_code'].astype(str).map(get_language_family)
 
     if baseline_df is not None and not baseline_df.empty:
         export = export.merge(baseline_df, on='language_code', how='left')

@@ -13,16 +13,17 @@ Directionality conflicts are embedded in the output CSV as extra columns
 separate file. Open html_files/search_term_reviewer.html to resolve them
 interactively before running the search script.
 
-Term-selection logic (by disagreement category):
-  COMPLETE_CONSENSUS        → the single agreed-upon term
-  MEASUREMENT_ARTEFACT      → terms that appear > 2 times across services
-  PRODUCTIVE_DISAGREEMENT   → all distinct service translations
-  STRUCTURAL_ABSENCE        → all distinct service translations
-  TRANSMOGRIFICATION        → all distinct service translations
+Term-selection logic (by comparison status):
+  exact_convergence       → the single agreed-upon term
+  near_form_convergence   → terms that appear > 2 times across services,
+                            falling back to the most frequent form
+  substantive_variation  → all distinct service translations
+  insufficient_comparison → every available term
 
 Tier 3 exclusions applied (strictest — search safety):
   • Languages with constructed/undeciphered scripts (zbl, lab, elx, xmr) are dropped.
-  • Languages in manual_exclusions.csv with service='analysis_exclusion' are dropped.
+  • Translation terms marked service='analysis_exclusion' are dropped without
+    removing their language rows or unrelated terms.
   • Per-(language, service) pairs flagged by automated term-error review
     signals are removed from service_translations before term selection.
   • Manual exclusions (exclude_translation or any exclude_term_*) are applied.
@@ -145,8 +146,8 @@ def _build_tier3_drops(data_dir: str, term_slug: str) -> set[tuple[str, str]]:
             if pd.isna(row.get("service")):
                 continue
             svc = str(row["service"]).strip().lower()
-            if svc == "search_exclusion":
-                continue  # handled by _build_search_term_drops
+            if svc in {"search_exclusion", "analysis_exclusion", "term_correction"}:
+                continue  # handled by term-level loaders
             lang = str(row["language_code"]).strip()
             if any(row.get(col) is True or row.get(col) == True for col in exclude_cols):
                 drops.add((lang, svc))
@@ -295,21 +296,21 @@ def _is_search_unsafe(term: str) -> bool:
     return bool(_UNSAFE_RE.search(term))
 
 
-def _select_terms(category: str, service_translations: dict) -> list[str]:
+def _select_terms(comparison_status: str, service_translations: dict) -> list[str]:
     """Return the list of search terms to emit for this language row."""
     values = list(service_translations.values())
 
-    if category == "COMPLETE_CONSENSUS":
+    if comparison_status == "exact_convergence":
         return [values[0]] if values else []
 
-    if category == "MEASUREMENT_ARTEFACT":
+    if comparison_status == "near_form_convergence":
         counts = Counter(values)
         selected = [term for term, n in counts.items() if n > 2]
         if not selected:
             selected = [counts.most_common(1)[0][0]]
         return selected
 
-    # PRODUCTIVE_DISAGREEMENT, STRUCTURAL_ABSENCE, TRANSMOGRIFICATION
+    # substantive_variation and insufficient_comparison
     seen: set[str] = set()
     distinct: list[str] = []
     for v in values:
@@ -354,9 +355,9 @@ def build_search_terms(
 
     eval_dir = os.path.join(root, "translated_terms", term_slug, "evaluation")
     if load_manual_exclusions is not None:
-        analysis_langs, _, _ = load_manual_exclusions(eval_dir)
+        analysis_terms, _, _ = load_manual_exclusions(eval_dir)
     else:
-        analysis_langs = set()
+        analysis_terms = set()
 
     n_dropped_lang = 0
     n_dropped_analysis = 0
@@ -370,16 +371,11 @@ def build_search_terms(
     rows: list[dict] = []
     for _, row in disagr_df.iterrows():
         lang_code = row["language_code"]
-        category = row["category"]
+        comparison_status = row["comparison_status"]
 
         # Tier 3: skip constructed/undeciphered script languages entirely
         if lang_code in CONSTRUCTED_SCRIPT_LANGS:
             n_dropped_lang += 1
-            continue
-
-        # Tier 3: skip languages manually excluded from all analysis
-        if lang_code in analysis_langs:
-            n_dropped_analysis += 1
             continue
 
         try:
@@ -394,6 +390,9 @@ def build_search_terms(
             if (lang_code, svc_name.lower()) in tier3_drops:
                 n_dropped_service += 1
                 continue
+            if isinstance(translation, str) and (lang_code, translation.strip()) in analysis_terms:
+                n_dropped_analysis += 1
+                continue
             filtered_svc[svc_name] = translation
 
         # Apply term corrections: replace original translations with user-corrected values
@@ -403,7 +402,7 @@ def build_search_terms(
                 for svc_name, t in filtered_svc.items()
             }
 
-        selected = _select_terms(category, filtered_svc)
+        selected = _select_terms(comparison_status, filtered_svc)
         for term_value in selected:
             if not term_value or str(term_value).strip() in ("", "nan", "None"):
                 continue
@@ -449,7 +448,7 @@ def build_search_terms(
                     "natural_language": lang_code,
                     "search_term": term_value,
                     "search_term_source": term,
-                    "category": category,
+                    "comparison_status": comparison_status,
                     "keep_term": True,
                 }
             )
@@ -499,7 +498,7 @@ def build_search_terms(
             counts=("natural_language", "nunique"),
             directionality=("directionality", _majority_dir),
             search_term_source=("search_term_source", "first"),
-            category=("category", _join_categories),
+            comparison_status=("comparison_status", _join_categories),
             keep_term=("keep_term", "first"),
         )
         .reset_index()
@@ -543,7 +542,7 @@ def build_search_terms(
     print(f"  ({len(result)} rows before dedup; {len(result) - len(deduped)} redundant API calls avoided)")
     print(f"\nTier 3 exclusions applied:")
     print(f"  Constructed-script languages dropped : {n_dropped_lang}")
-    print(f"  Analysis-excluded languages dropped  : {n_dropped_analysis}")
+    print(f"  Analysis-excluded translation terms  : {n_dropped_analysis}")
     print(f"  (lang, service) pairs dropped (flags + manual): {n_dropped_service}")
     print(f"  Terms nulled by curate_translation   : {n_dropped_curate}")
     print(f"  Terms dropped for source leakage     : {n_dropped_leakage}")
@@ -552,9 +551,9 @@ def build_search_terms(
     print(f"  Terms dropped as unpaired singletons : {n_dropped_unpaired}")
     if n_conflicts:
         print(f"\n[!] {n_conflicts} term(s) have directionality conflicts — open html_files/search_term_reviewer.html to resolve them.")
-    cat_counts = result.groupby("category")["search_term"].count()
-    for cat, n in cat_counts.items():
-        print(f"  {cat}: {n} terms")
+    status_counts = result.groupby("comparison_status")["search_term"].count()
+    for status, n in status_counts.items():
+        print(f"  {status}: {n} terms")
 
     return deduped
 

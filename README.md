@@ -34,7 +34,7 @@ This pipeline translates key domain terms (e.g. "Digital Humanities") across 881
 - [datasets/metadata_files/README.md](datasets/metadata_files/README.md) — Column-level reference for `language_codes_comprehensive.csv` and every other file in the metadata layer (provenance, BCP 47, service support, family reconciliation, dated snapshots)
 - [scripts/experiment/README.md](scripts/experiment/README.md) — Per-script reference for the build, refresh, audit, and spot-check tools (`generate_language_codes`, `refresh_service_support`, `audit_language_identifiers`, `spotcheck_bcp47_codes`, etc.)
 - [docs/exclusion_strategy.md](docs/exclusion_strategy.md) — Automated review signals, manual exclusion taxonomy, and the three-tier exclusion policy (service exploration → translation analysis → search term generation)
-- [html_files/five_source_language_code_pipeline.svg](html_files/five_source_language_code_pipeline.svg) — How the 881-language target set is constructed from five registries
+- [figures/dhq_article/language_code_pipeline_history_and_final.svg](figures/dhq_article/language_code_pipeline_history_and_final.svg) — Historical expansion from the original 185-code list to 881 rows, followed by the final distinction between row-defining sources and metadata enrichment
 - [html_files/translation_pipeline_methods.svg](html_files/translation_pipeline_methods.svg) — Pipeline architecture diagram
 
 ## Repository Structure
@@ -46,10 +46,10 @@ translation_transmogrification_pipeline/
 │   ├── 02_translation_overview.ipynb   # Automated review signals, exclusions, correction patterns
 │   ├── 03_baseline_services.ipynb      # Direct service analysis
 │   ├── 04_prompt_services.ipynb        # LLM service and prompt variant analysis
-│   ├── 05_disagreement_analysis.ipynb  # Cross-service disagreement classification
-│   ├── 06_translation_projection.ipynb # Embedding projections and family clustering
-│   ├── 07_rationale_classification.ipynb # LLM rationale quality analysis
-│   ├── 08_definitional_patterns.ipynb  # What LLMs encode about "Digital Humanities" (rationale-based)
+│   ├── 05_translation_projection.ipynb # Embedding projections and family clustering
+│   ├── 06_rationale_classification.ipynb # LLM rationale style and prompt/service fingerprints
+│   ├── 07_definitional_patterns.ipynb  # What LLMs encode about "Digital Humanities"
+│   ├── 08_disagreement_patterns.ipynb  # Multidimensional disagreement synthesis
 │   └── 09_search_results.ipynb         # GitHub search coverage and language distribution
 ├── scripts/
 │   ├── utils.py                        # Shared utilities (load_manual_exclusions, etc.)
@@ -64,7 +64,8 @@ translation_transmogrification_pipeline/
 │       ├── build_review_explorer_data.py
 │       ├── build_historic_reference_convergence.py
 │       ├── explore_confidence_*.py     # Within/across prompt convergence
-│       └── explore_disagreements.py    # Disagreement classification
+│       ├── explore_disagreements.py    # Neutral string comparison and evidence
+│       └── build_disagreement_patterns.py # Multidimensional disagreement synthesis
 ├── datasets/
 │   ├── metadata_files/                 # Language codes, family assignments, scripts
 │   └── translated_terms/{term_slug}/
@@ -86,11 +87,13 @@ translation_transmogrification_pipeline/
    - **Service-support columns** (`google_nmt_code`, `google_nmt_supported`, `google_translation_llm_code`, `google_translation_llm_supported`) map each language to the exact code the named service accepts, drawing from `datasets/metadata_files/service_language_code_support.csv`. Of the 881 pipeline languages, ~184 are officially supported by Google NMT and ~87 by Google's Translation LLM endpoint; the gap is itself a finding documenting the long tail of unsupported scholarly language communities. Use `scripts/experiment/curation/audit_language_identifiers.py` to inspect the layer at any time. The support CSV is a dated snapshot — refresh it with `python -m scripts.experiment.curation.refresh_service_support`, which calls the Translation v3 `get_supported_languages` API and stamps `snapshot_date` / `snapshot_source` on every row (NMT on the `global` endpoint, Translation LLM on `us-central1`). Previous snapshots are backed up alongside the file so paper-time analyses stay reproducible against their original snapshot date.
 2. **Curate family classifications** — run notebook 01 §1.3 to cross-validate the ISO 639-5 based `family_name` column against Glottolog 5.3 ([CC-BY-4.0](https://glottolog.org/), cached at `datasets/metadata_files/glottolog-cache/`). The generated language list remains `language_codes_comprehensive.csv`; family review is applied as a later analytical metadata layer. First run `scripts/exploration/build_family_analysis_mapping.py` and review `family_analysis_mapping.csv` in `html_files/family_analysis_mapping_reviewer.html` to set the family-label policy. Then run `scripts/exploration/build_family_reconciliation_review.py`; it creates `family_reconciliation_review.csv`, a unified review queue combining ISO/Glottolog disagreement pairs with JSON fallback language rows and analysis-policy flags. Review it in `html_files/family_reconciliation_reviewer.html`, save the download as `datasets/metadata_files/family_reconciliation_reviewed.csv`, then run `scripts/exploration/apply_family_review_metadata.py`. This writes `language_codes_comprehensive_family_reviewed.csv`, preserving the raw `family_name` trace while adding `family_name_reconciled_reviewed` and `family_name_analysis`. The `get_language_family()` utility prefers this reviewed file when present.
 3. **Run translations** — `scripts/experiment/generate_translations.py` queries all services and variants per term × language pair.
-4. **Analyse** — run notebooks 02–08 in order to generate automated review signals, disagreement analysis, embeddings, rationale classifications, and definitional-pattern analysis. Before running notebook 02's historic reference-convergence section, refresh its precomputed tables with `python scripts/exploration/build_historic_reference_convergence.py --term "Digital Humanities"`; this reads `historic_materials/translated_dh_terms.csv` and writes `historic_*.csv` outputs to `datasets/translated_terms/digital_humanities/evaluation/`.
+4. **Analyse** — run notebooks 02–08 in order to generate automated review signals, disagreement analysis, embeddings, rationale classifications, and definitional-pattern analysis. Before running notebook 02's historic reference-convergence section, refresh its precomputed tables with `python scripts/exploration/build_historic_reference_convergence.py --term "Digital Humanities"`; this reads both historic materials (`translated_dh_terms.csv` from November 2022 and `initial_translated_terms.csv` from November 2024) and writes `historic_2022_*.csv` and `historic_2024_*.csv` outputs to `datasets/translated_terms/digital_humanities/evaluation/`.
 5. **Review** — open `html_files/review_explorer.html` to apply manual exclusions and term corrections; results saved to `evaluation/manual_exclusions.csv`.
-6. **Generate search terms** — `scripts/generate_search_terms.py` applies all exclusions and produces `grouped_translated_terms.csv`; review in `html_files/search_term_reviewer.html`.
-7. **Search** — feed `reviewed_grouped_translated_terms.csv` to the companion [searching_for_DH](https://github.com/CodingDH/searching_for_DH) pipeline.
-8. **Search results** — run notebook 09 to analyse GitHub coverage and language distribution.
+6. **Build disagreement evidence** — `scripts/exploration/explore_disagreements.py`, `build_disagreement_explorer_data.py`, and `build_disagreement_patterns.py` create the neutral comparison and synthesis tables used by notebooks 05–08.
+7. **Generate search terms** — `scripts/generate_search_terms.py` applies all exclusions and produces `grouped_translated_terms.csv`; review in `html_files/search_term_reviewer.html`.
+8. **Search** — feed `reviewed_grouped_translated_terms.csv` to the companion [searching_for_DH](https://github.com/CodingDH/searching_for_DH) pipeline.
+9. **Review search relevance** — run `scripts/exploration/build_search_relevance_review.py`, review the provisional term/retrieval assessments and representative results in `html_files/search_relevance_reviewer.html`, and save `search_result_relevance_reviewed.csv`. Provisional Codex suggestions remain distinct from rows you have marked as human-reviewed.
+10. **Search results** — run notebook 09 to analyse GitHub coverage, vocabulary-source ablation, term redundancy, strong retrieval clusters, and language distribution. Treat its raw counts as provisional until the relevance review has been applied. Its overlap section reads `search_result_term_overlap_edges.csv` and `search_result_overlap_summary.csv`, both generated with the relevance queue.
 
 ## Credentials
 

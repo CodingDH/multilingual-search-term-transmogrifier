@@ -1,0 +1,2 @@
+artifact,artifact_label,term_source,rows,languages,terms,nonblank_translation_rows,role_in_this_section
+historic_materials/initial_translated_terms.csv,November 2024 initial prompt-reference artifact,Digital Humanities,185,185,1,180,"November 2024 initial prompt-reference output; compares Wikipedia, Google Translate, EasyNMT, and OpenAI outputs"

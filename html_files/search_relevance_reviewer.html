@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Search Relevance Reviewer</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<style>
+:root { --bg:#f4f6f8; --surface:#fff; --line:#d8dee4; --text:#17212b; --muted:#607080; --blue:#1769aa; --green:#237a57; --amber:#a45b00; --red:#b42318; }
+* { box-sizing:border-box; }
+body { margin:0; color:var(--text); background:var(--bg); font:14px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+header { position:sticky; top:0; z-index:5; padding:14px 22px; background:var(--surface); border-bottom:1px solid var(--line); }
+.topline,.controls,.stats,.decision-grid,.counts { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+h1 { margin:0; font-size:20px; }
+.subtitle { color:var(--muted); margin-top:3px; }
+.controls { margin-top:12px; }
+button,.file-label,select,input,textarea { font:inherit; }
+button,.file-label { border:1px solid var(--line); background:var(--surface); padding:7px 11px; border-radius:5px; cursor:pointer; }
+button.primary,.file-label.primary { color:#fff; background:var(--blue); border-color:var(--blue); }
+input[type=file] { display:none; }
+input[type=search],select { border:1px solid var(--line); background:#fff; border-radius:5px; padding:7px 9px; }
+input[type=search] { width:230px; }
+.stats { margin-left:auto; color:var(--muted); }
+.stat { padding:3px 8px; border:1px solid var(--line); border-radius:4px; background:#f8fafb; }
+main { max-width:1380px; margin:0 auto; padding:18px 22px 60px; }
+#empty { text-align:center; color:var(--muted); padding:80px 20px; border:2px dashed var(--line); background:var(--surface); }
+.card { background:var(--surface); border:1px solid var(--line); border-left:4px solid #98a6b3; margin-bottom:12px; padding:14px 16px; }
+.card.retain { border-left-color:var(--green); }.card.retain_track { border-left-color:var(--amber); }.card.exclude { border-left-color:var(--red); }
+.card-head { display:grid; grid-template-columns:minmax(220px,1fr) auto; gap:16px; align-items:start; }
+.term { font-size:18px; font-weight:700; overflow-wrap:anywhere; }
+.meta { color:var(--muted); font-size:12px; margin-top:4px; }
+.counts { justify-content:flex-end; }
+.count { min-width:76px; padding:5px 8px; text-align:center; border:1px solid var(--line); background:#f8fafb; }
+.count b { display:block; font-size:16px; }.count span { color:var(--muted); font-size:11px; }
+.overlap-stats { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+.overlap-stat { padding:5px 8px; border:1px solid #c8d7e3; background:#f2f8fc; font-size:12px; }
+.overlap-stat b { font-size:14px; }
+.decision-grid { margin-top:13px; padding-top:12px; border-top:1px solid var(--line); align-items:flex-end; }
+.field { display:flex; flex-direction:column; gap:4px; min-width:210px; }.field label { color:var(--muted); font-size:11px; font-weight:700; text-transform:uppercase; }
+.notes { flex:1; min-width:280px; }.notes input { width:100%; border:1px solid var(--line); border-radius:5px; padding:7px 9px; }
+details { margin-top:12px; border-top:1px solid var(--line); padding-top:9px; }
+summary { cursor:pointer; color:var(--blue); font-weight:650; }
+.sample-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin-top:10px; }
+.sample-col h3 { margin:0 0 7px; font-size:13px; }
+.sample { border:1px solid var(--line); padding:9px; margin-bottom:7px; background:#fbfcfd; }
+.sample a { color:var(--blue); font-weight:650; text-decoration:none; overflow-wrap:anywhere; }.sample a:hover { text-decoration:underline; }
+.sample p { margin:5px 0 0; color:#43515e; font-size:12px; }
+.sample-meta { margin-top:5px; color:var(--muted); font-size:11px; }
+.overlap-layout { display:grid; grid-template-columns:460px minmax(260px,1fr); gap:16px; margin-top:10px; }
+.network { width:100%; min-height:330px; border:1px solid var(--line); background:#fbfcfd; }
+.overlap-list { border:1px solid var(--line); padding:10px; background:#fbfcfd; }
+.overlap-row { display:grid; grid-template-columns:minmax(130px,1fr) 70px 90px; gap:8px; padding:5px 0; border-bottom:1px solid #e8edf1; font-size:12px; }
+.overlap-row:last-child { border-bottom:none; }.overlap-row b { overflow-wrap:anywhere; }
+.none { color:var(--muted); font-style:italic; }
+.pager { display:flex; justify-content:center; gap:8px; align-items:center; margin-top:16px; }
+.help { margin-bottom:14px; padding:10px 12px; border:1px solid #bfd3e3; background:#edf6fc; color:#29465b; }
+.provisional { display:inline-block; margin-top:6px; padding:3px 6px; border:1px solid #d7a43b; background:#fff5d9; color:#6f4d08; font-size:11px; font-weight:700; }
+@media(max-width:900px){ .card-head{grid-template-columns:1fr}.counts{justify-content:flex-start}.sample-grid,.overlap-layout{grid-template-columns:1fr}.stats{margin-left:0} }
+</style>
+</head>
+<body>
+<header>
+  <div class="topline">
+    <div><h1>Search Relevance Reviewer</h1><div class="subtitle">Review productive terms and representative GitHub results.</div></div>
+    <div class="stats" id="stats"></div>
+  </div>
+  <div class="controls">
+    <label class="file-label primary">Load review CSV<input id="file" type="file" accept=".csv"></label>
+    <button id="download" class="primary" disabled>Download reviewed CSV</button>
+    <input id="search" type="search" placeholder="Filter term, code, or note" disabled>
+    <select id="decision-filter" disabled><option value="">All downstream statuses</option><option value="retain">Retain</option><option value="retain_track">Retain + track relevance</option><option value="exclude">Exclude</option></select>
+    <select id="result-filter" disabled><option value="">All retrieval assessments</option><option value="mostly_relevant">Mostly relevant</option><option value="mixed">Mixed</option><option value="mostly_irrelevant">Mostly irrelevant</option><option value="unreviewed">Unreviewed</option></select>
+    <select id="sort" disabled><option value="results">Most results</option><option value="provisional">Provisional first</option><option value="term">Term A–Z</option></select>
+  </div>
+</header>
+<main>
+  <div class="help"><b>Review two questions separately.</b> “Term assessment” concerns the proposed translation; “retrieval assessment” concerns what GitHub returned. Initial selections marked <b>Codex provisional</b> are conservative suggestions, not completed review. Changing either assessment marks that row as human reviewed. Downstream handling is derived automatically: credible + relevant terms are <b>Retained</b>, suspect + irrelevant terms are <b>Excluded</b>, and every mixed combination is <b>Retained + tracked for relevance</b>.</div>
+  <div id="empty">Run <code>python scripts/exploration/build_search_relevance_review.py</code>, then load <code>search_result_relevance_review.csv</code>.</div>
+  <div id="cards"></div><div id="pager" class="pager"></div>
+</main>
+<script>
+const PAGE_SIZE=20; let rows=[], filtered=[], page=1;
+const $=id=>document.getElementById(id);
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const options=(values,current)=>values.map(([v,l])=>`<option value="${v}" ${v===current?'selected':''}>${l}</option>`).join('');
+const deriveDecision=row=>row.term_assessment==='suspect_translation'&&row.retrieval_assessment==='mostly_irrelevant'?'exclude':row.term_assessment==='credible_dh_term'&&row.retrieval_assessment==='mostly_relevant'?'retain':'retain_track';
+const decisionLabel=value=>({retain:'Retain',retain_track:'Retain + track relevance',exclude:'Exclude'}[value]||'Retain + track relevance');
+function samples(raw){try{return JSON.parse(raw||'[]')}catch{return[]}}
+function safeUrl(url){try{const u=new URL(url);return ['http:','https:'].includes(u.protocol)?u.href:'#'}catch{return'#'}}
+function overlapView(row){const data=samples(row.top_overlapping_terms).slice(0,8);if(!data.length)return '<div class="none">No overlap with another productive term.</div>';const cx=230,cy=165,rx=170,ry=120;let edges='',nodes='';data.forEach((x,j)=>{const a=(Math.PI*2*j/data.length)-Math.PI/2,px=cx+rx*Math.cos(a),py=cy+ry*Math.sin(a),w=Math.max(1,Math.min(8,Math.log10(Number(x.shared_count)+1)*2.2)),r=Math.max(8,Math.min(18,7+Math.log10(Number(x.other_total_results)+1)*3));edges+=`<line x1="${cx}" y1="${cy}" x2="${px}" y2="${py}" stroke="#8ba9bd" stroke-width="${w}" opacity=".55"><title>${esc(x.shared_count)} shared results</title></line>`;nodes+=`<circle cx="${px}" cy="${py}" r="${r}" fill="#d8eaf5" stroke="#1769aa"><title>${esc(x.term)}: ${esc(x.shared_count)} shared</title></circle><text x="${px}" y="${py+r+13}" text-anchor="middle" font-size="10">${esc(String(x.term).slice(0,24))}</text>`});const list=data.map(x=>`<div class="overlap-row"><b>${esc(x.term)}</b><span>${esc(x.shared_count)} shared</span><span>${(Number(x.current_term_coverage)*100).toFixed(1)}% covered</span></div>`).join('');return `<div class="overlap-layout"><svg class="network" viewBox="0 0 460 330" role="img" aria-label="Strongest term overlap neighborhood">${edges}<circle cx="${cx}" cy="${cy}" r="28" fill="#1769aa"/><text x="${cx}" y="${cy+4}" text-anchor="middle" fill="white" font-size="11">current term</text>${nodes}</svg><div class="overlap-list"><b>Strongest alternative terms</b>${list}</div></div>`}
+function sampleColumn(title,raw){const data=samples(raw);return `<div class="sample-col"><h3>${title}</h3>${data.length?data.map(x=>`<div class="sample"><a href="${esc(safeUrl(x.url))}" target="_blank" rel="noopener">${esc(x.title||'(untitled)')}</a>${x.description?`<p>${esc(x.description)}</p>`:''}<div class="sample-meta">${x.channel?esc(x.channel):''}${x.stars?` · ${esc(x.stars)} stars`:''}${x.programming_language?` · ${esc(x.programming_language)}`:''}</div></div>`).join(''):'<div class="none">No samples</div>'}</div>`}
+function card(row){const i=rows.indexOf(row);const decision=row.review_decision||'unreviewed';const provisional=row.review_status==='codex_provisional'?'<div class="provisional">Codex provisional — verify this assessment</div>':'';return `<article class="card ${esc(decision)}">
+ <div class="card-head"><div><div class="term">${esc(row.search_term)}</div><div class="meta">Codes: ${esc(row.natural_language||'—')}</div><div class="meta">Direction: ${esc(row.directionality||'—')} · Comparison: ${esc(row.comparison_status||'—')} · ${esc(row.source_translation_count||0)} source cells</div>${provisional}</div>
+ <div class="counts"><div class="count"><b>${esc(row.repository_count)}</b><span>all repos</span></div><div class="count"><b>${esc(row.repository_phrase_count)}</b><span>phrase repos</span></div><div class="count"><b>${esc(row.repository_topic_count)}</b><span>topic repos</span></div><div class="count"><b>${esc(row.issue_count)}</b><span>issues</span></div><div class="count"><b>${esc(row.pull_request_count)}</b><span>pull requests</span></div><div class="count"><b>${esc(row.user_count)}</b><span>users</span></div><div class="count"><b>${esc(row.organization_count)}</b><span>organizations</span></div></div></div>
+ <div class="overlap-stats"><span class="overlap-stat"><b>${esc(row.exclusive_result_count)}</b> exclusive to this term</span><span class="overlap-stat"><b>${esc(row.shared_with_other_terms_count)}</b> also found by another term (${(Number(row.shared_with_other_terms_pct)*100).toFixed(1)}%)</span><span class="overlap-stat"><b>${esc(row.covered_by_english_count)}</b> covered by “digital humanities”</span><span class="overlap-stat"><b>${esc(row.new_beyond_english_count)}</b> beyond English</span></div>
+ <div class="decision-grid">
+  <div class="field"><label>Term assessment</label><select data-i="${i}" data-field="term_assessment">${options([['unreviewed','Unreviewed'],['credible_dh_term','Credible DH term'],['ambiguous_or_broad','Ambiguous or broad'],['suspect_translation','Suspect translation']],row.term_assessment)}</select></div>
+  <div class="field"><label>Retrieval assessment</label><select data-i="${i}" data-field="retrieval_assessment">${options([['unreviewed','Unreviewed'],['mostly_relevant','Mostly relevant'],['mixed','Mixed'],['mostly_irrelevant','Mostly irrelevant']],row.retrieval_assessment)}</select></div>
+  <div class="field"><label>Downstream handling</label><div class="meta"><b>${esc(decisionLabel(row.review_decision))}</b><br>Derived from the two assessments</div></div>
+  <div class="field notes"><label>Notes</label><input data-i="${i}" data-field="reviewer_notes" value="${esc(row.reviewer_notes||'')}" placeholder="Reason, ambiguity, or follow-up"></div>
+ </div>
+ <details><summary>Show overlap neighborhood</summary>${overlapView(row)}</details>
+ <details><summary>Show representative results by GitHub object and search route</summary><div class="sample-grid">${sampleColumn('Phrase-search repositories',row.repository_phrase_samples)}${sampleColumn('Topic-derived repositories',row.repository_topic_samples)}${sampleColumn('Issues',row.issue_samples)}${sampleColumn('Pull requests',row.pull_request_samples)}${sampleColumn('Individual users',row.user_samples)}${sampleColumn('Organizations',row.organization_samples)}</div></details>
+ </article>`}
+function apply(){const q=$('search').value.toLowerCase().trim(),d=$('decision-filter').value,r=$('result-filter').value;filtered=rows.filter(x=>(!q||[x.search_term,x.natural_language,x.reviewer_notes].join(' ').toLowerCase().includes(q))&&(!d||x.review_decision===d)&&(!r||x.retrieval_assessment===r));const sort=$('sort').value;if(sort==='term')filtered.sort((a,b)=>a.search_term.localeCompare(b.search_term));else if(sort==='provisional')filtered.sort((a,b)=>(a.review_status==='codex_provisional'?0:1)-(b.review_status==='codex_provisional'?0:1)||Number(b.total_unique_results)-Number(a.total_unique_results));else filtered.sort((a,b)=>Number(b.total_unique_results)-Number(a.total_unique_results));page=1;render()}
+function render(){const start=(page-1)*PAGE_SIZE;$('cards').innerHTML=filtered.slice(start,start+PAGE_SIZE).map(card).join('');const pages=Math.max(1,Math.ceil(filtered.length/PAGE_SIZE));$('pager').innerHTML=filtered.length?`<button ${page===1?'disabled':''} data-page="${page-1}">Previous</button><span>Page ${page} of ${pages} · ${filtered.length} terms</span><button ${page===pages?'disabled':''} data-page="${page+1}">Next</button>`:'';const human=rows.filter(x=>x.review_status==='human_reviewed').length,provisional=rows.filter(x=>x.review_status==='codex_provisional').length;$('stats').innerHTML=`<span class="stat">${rows.length} productive terms</span><span class="stat">${human} human reviewed</span><span class="stat">${provisional} provisional</span>`}
+$('file').addEventListener('change',e=>Papa.parse(e.target.files[0],{header:true,skipEmptyLines:true,complete:r=>{rows=r.data.map(x=>{const row={...x,term_assessment:x.term_assessment||'unreviewed',retrieval_assessment:x.retrieval_assessment||'unreviewed',reviewer_notes:x.reviewer_notes||'',review_status:x.review_status||'unreviewed'};row.review_decision=deriveDecision(row);return row});$('empty').style.display='none';['download','search','decision-filter','result-filter','sort'].forEach(id=>$(id).disabled=false);apply()}}));
+document.addEventListener('change',e=>{const i=e.target.dataset.i,f=e.target.dataset.field;if(i!==undefined&&f){const row=rows[Number(i)];row[f]=e.target.value;row.review_decision=deriveDecision(row);row.review_status='human_reviewed';apply()}});
+document.addEventListener('input',e=>{const i=e.target.dataset.i,f=e.target.dataset.field;if(i!==undefined&&f){rows[Number(i)][f]=e.target.value;rows[Number(i)].review_status='human_reviewed';if(f!=='reviewer_notes')apply()}});
+['search','decision-filter','result-filter','sort'].forEach(id=>$(id).addEventListener(id==='search'?'input':'change',apply));
+$('pager').addEventListener('click',e=>{if(e.target.dataset.page){page=Number(e.target.dataset.page);render();scrollTo({top:0,behavior:'smooth'})}});
+$('download').addEventListener('click',()=>{const blob=new Blob([Papa.unparse(rows)],{type:'text/csv;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='search_result_relevance_reviewed.csv';a.click();URL.revokeObjectURL(a.href)});
+</script>
+</body>
+</html>

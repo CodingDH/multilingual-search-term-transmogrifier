@@ -168,10 +168,10 @@ These categories emerged from review and have no automated detector:
 | `has_repetition_loop` | Exclude term | Not a translation |
 | `has_extreme_term_length` | Exclude term | Likely a disclaimer or loop, not a translation |
 | `has_unicode_escape` | Exclude term | Unrenderable; not usable |
-| `has_source_term` | Keep, but flag | Borrowing is a genuine translation strategy; treat as a distinct category in the typology (`STRUCTURAL_ABSENCE` / loan) |
+| `has_source_term` | Keep, but flag | Borrowing is a genuine translation strategy; retain it as independent source-retention evidence rather than a causal category |
 | `has_romanization` | Use curated form | Strip and use `{svc}_term_clean_{variant}` |
 | `has_any_mixing` | Retain as data | Sub-threshold mixing is a signal worth analysing (script contact, orthographic variation); use `script_mix_detail()` for mixing degree and minority-script identity |
-| `has_script_disagreement` | Keep, categorise | Core input to disagreement typology |
+| `has_script_disagreement` | Keep, flag | Independent evidence for interpreting string variation |
 | All manual `exclude_translation=true` | Apply | Human-reviewed hard drops |
 | All manual `exclude_term_{variant}=true` | Apply | Human-reviewed variant drops |
 | All manual `exclude_rationale_{variant}=true` | Apply for rationale analysis | Rationale excluded; corresponding term may still count if separately valid |
@@ -204,7 +204,7 @@ These categories emerged from review and have no automated detector:
 | Search-unsafe characters (manual) | Exclude | ASL gloss notation, Linear A codepoints, Blissymbol codes will break regex search |
 | Constructed scripts (`zbl`, `lab`, `elx`, `xmr`) | Exclude entirely | No real-world corpus to search |
 | **Uncorroborated singleton** | Exclude | Term produced only once, in an LLM cell with missing/placeholder rationale, and no other source agrees. Treats unexplained singletons as low-confidence and likely junk. |
-| Analysis-excluded languages (manual `analysis_exclusion`) | Exclude entirely | Language-level decision applies at Tier 2 and beyond |
+| Analysis-excluded translation clusters (manual `analysis_exclusion`) | Exclude matching `(language_code, term)` cells | The review decision applies to the selected term, not every translation for that language |
 
 **Implementing:** Build the search term list from `disagreement_analysis.csv`. Apply all manual exclusions (`analysis_exclusion`, `search_exclusion`, `term_correction` from `manual_exclusions.csv`). Apply the automated-review-signal based `(language, service)` exclusions (`has_repetition_loop`, `has_unicode_escape`, `has_source_term` non-English, `has_mixed_script`, `has_placeholder_term`, `has_extreme_term_length`). Apply `curate_translation()` to strip parenthetical romanizations. Drop terms with source-term leakage, control characters, or constructed-script languages. **Final pass: apply the corroboration check** — drop any term that lacks both rationale and cross-source agreement (see next subsection).
 
@@ -257,7 +257,7 @@ A term that fails *both* conditions is an **uncorroborated singleton**: produced
 | Manual `exclude_rationale_{variant}` | Do not apply | Apply to rationale use | Apply |
 | Search-unsafe / constructed scripts | Annotate | Apply to rationale use | Exclude entirely |
 | Uncorroborated singleton (no rationale + no other cell agrees) | Not applicable | Not applicable | Exclude (auto) |
-| Manual `analysis_exclusion` (language-level) | Do not apply | Apply (drop language) | Apply (drop language) |
+| Manual `analysis_exclusion` (term-level) | Do not apply | Mask matching term cells | Drop matching terms without removing the language |
 
 ---
 
@@ -275,13 +275,13 @@ notebooks/04_prompt_services.ipynb          [Tier 1 — loose]
     load automated review signals as annotations
     apply only exclude_translation=True from manual_exclusions
 
-notebooks/05_disagreement_analysis.ipynb    [Tier 2 — strict]
-notebooks/06_translation_projection.ipynb   [Tier 2 — strict]
-notebooks/07_rationale_classification.ipynb [Tier 2 — strict]
-notebooks/08_definitional_patterns.ipynb    [Tier 2 — strict]
+notebooks/05_translation_projection.ipynb   [Tier 2 — strict]
+notebooks/06_rationale_classification.ipynb [Tier 2 — strict]
+notebooks/07_definitional_patterns.ipynb    [Tier 2 — strict]
+notebooks/08_disagreement_patterns.ipynb    [Tier 2 — strict]
     apply full manual_exclusions
     exclude flagged term-error flags
-    keep source_term and script_disagreement as categories
+    keep source retention and script disagreement as independent evidence
 
 scripts/generate_search_terms.py            [Tier 3 — strictest]
     apply all exclusions (automated review signals + manual_exclusions.csv)

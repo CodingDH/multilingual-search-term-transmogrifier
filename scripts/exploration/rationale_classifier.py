@@ -16,11 +16,10 @@ Two tasks:
      DeepSeek, Llama, Gemma, Qwen, Mistral) produced a rationale. Top
      coefficients are the prose fingerprint of each model's reasoning style.
 
-NOT included as a primary task: a category classifier predicting
-STRUCTURAL_ABSENCE / TRANSMOGRIFICATION / etc. from rationale text. That task is
-circular when run on rule-based-classifier outputs that themselves used keyword
-features in the rationales — the classifier "discovers" exactly the keywords
-that produced its labels, plus language-name leakage. The infrastructure here
+NOT included as a primary task: a classifier that predicts causal disagreement
+types from rationale text. That task is circular when its labels depend on
+keyword features in the same rationales: the classifier "discovers" exactly
+the keywords that produced its labels, plus language-name leakage. The infrastructure here
 will technically support it (any column can be the label) but the framing of
 the script is variant + service genre analysis only. See the related notebook
 for a discussion of why the category-classification approach was attempted and

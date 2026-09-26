@@ -1,0 +1,882 @@
+language_code,language_name,language_family,has_wikipedia,n_services,mean_pairwise_distance,max_pairwise_distance
+aa,Afar,Afro-Asiatic languages,False,8,0.5617128612251406,0.8654186637500734
+ab,Abkhaz,Abkhaz-Adyge,False,7,0.4024981294728309,0.763376759002076
+abq,Abaza,Abkhaz-Adyge,False,7,0.369827285724617,0.6929569630699579
+abr,Abron,Atlantic-Congo,False,8,0.5426374100926319,0.8461416192821655
+ace,Acehnese,Austronesian languages,False,8,0.24599984843539938,0.6022944194164779
+ach,Acoli,Nilotic,False,8,0.5395051798050983,0.8495441681623933
+ada,Adangme,Atlantic-Congo,False,8,0.5529956433787633,0.8762448950425021
+ady,Adyghe,Abkhaz-Adyge,False,8,0.4323119659158202,0.755842758953021
+ae,Avestan,Indo-European languages,False,7,0.4280107679692046,0.6385860968184466
+aeb,Tunisian Arabic,Afro-Asiatic languages,False,8,0.17424630236633215,0.5708819444597066
+af,Afrikaans,Indo-European languages,False,8,0.053583896858587714,0.12075909069304847
+afh,Afrihili,Artificial languages,False,8,0.5232303304967368,0.8223967994818997
+agq,Aghem,Atlantic-Congo,False,8,0.4833927532179971,0.8515881602693938
+aii,Assyrian Neo-Aramaic,Afro-Asiatic languages,False,7,0.025775195319516046,0.08302578495767887
+ain,Ainu,Language isolate,False,8,0.5244391083551302,0.8028242610025491
+ak,Akan,Atlantic-Congo,False,8,0.4273833317547782,0.7802450171785686
+akk,Akkadian,Afro-Asiatic languages,False,8,0.3687991884306482,0.5339779680293161
+akz,Alabama,Muskogean,False,7,0.5467193503012765,0.9390593181604271
+ale,Aleut,Eskimo-Aleut languages,False,8,0.4504100945663385,0.8344044939836652
+aln,Gheg Albanian,Albanian languages,False,8,0.3732371869878938,0.6040397587536427
+als,Alemannic,Indo-European languages,False,8,0.191593401101721,0.370537471612983
+alt,Southern Altai,Turkic,False,8,0.4707023089735903,0.8137589726338433
+am,Amharic,Afro-Asiatic languages,False,8,0.3631540362203031,0.6969851542325933
+amo,Amo,Atlantic-Congo,False,8,0.4537194277560942,0.7836101834807594
+an,Aragonese,Indo-European languages,False,8,0.3341006914353736,0.623926529739703
+ang,Anglo-Saxon / Old English,Indo-European languages,False,8,0.3595802383956653,0.644874429912556
+ann,Obolo,Atlantic-Congo,False,8,0.535626532378972,0.7937942408012384
+anp,Angika,Indo-European languages,False,8,0.2527917463257984,0.6714253801670456
+aoz,Uab Meto,Austronesian languages,False,8,0.42728064060487625,0.741987737277751
+apc,Levantine Arabic,Afro-Asiatic languages,False,8,0.2221198844770655,0.5637784728939796
+apd,apd,Afro-Asiatic languages,False,8,0.14058554832631395,0.5173497146545014
+ar,Arabic,Afro-Asiatic languages,True,8,0.15279900559907292,0.5042247365176533
+arc,Aramaic,Afro-Asiatic languages,False,7,0.1724393078245464,0.5449596017645006
+arn,Mapuche,Araucanian,False,8,0.5139878378625121,0.7326993991254218
+aro,Araona,Pano-Tacanan,False,6,0.5698595951918849,0.7997138676847846
+arp,Arapaho,Algic,False,8,0.29805415323098927,0.523206589859905
+arq,Algerian Arabic,Afro-Asiatic languages,False,8,0.10298748554819762,0.30190740161239227
+ars,Najdi Arabic,Afro-Asiatic languages,False,8,0.14771995269124458,0.5042247365176533
+arw,Arawak,Arawakan,False,7,0.4757568602402182,0.887155185182804
+ary,Moroccan Arabic,Afro-Asiatic languages,False,8,0.24579224024958543,0.628946595947928
+arz,Egyptian Arabic,Afro-Asiatic languages,False,8,0.13204648779351846,0.5042247365176533
+as,Assamese,Indo-European languages,False,8,0.34523056669712066,0.6415932866145054
+asa,Asu,Atlantic-Congo,False,8,0.531507509681883,0.805455594829165
+ase,American Sign Language,Sign languages,False,6,0.12242695768560938,0.27591844593048875
+ast,Asturian,Indo-European languages,False,8,0.2869406418790808,0.6721228053008229
+atj,Atikamekw,Algic,False,8,0.471713304892086,0.7110236961484465
+av,Avaric,Nakh-Daghestanian,False,8,0.44870838304656147,0.7830385974029433
+avk,Kotava,Artificial languages,False,8,0.505579815408361,0.8865449561865734
+awa,Awadhi,Indo-European languages,False,8,0.15054924151966853,0.411419074515023
+ay,Aymara,South American Indian languages,False,8,0.5021673122046634,0.811476189918488
+az,Azerbaijani,Altaic languages,True,8,0.294007497119877,0.6703881685114986
+ba,Bashkir,Turkic,False,7,0.35367834251712565,0.7447620039288241
+bal,Baluchi,Indo-European languages,False,7,0.23950541325549443,0.48206523343496954
+ban,Balinese,Austronesian languages,False,8,0.19495288666598815,0.3548341252992945
+bap,Bantawa,Sino-Tibetan languages,False,7,0.2912509055404587,0.6575098734942898
+bar,Bavarian,Indo-European languages,False,8,0.11779902027723256,0.21134903230886493
+bas,Basaa,Atlantic-Congo,False,8,0.5339321658636405,0.8254137117263984
+bat-smg,Samogitian,Indo-European languages,False,8,0.4152928161500014,0.7216928384986632
+bax,Bamun,Atlantic-Congo,False,8,0.47822045784388006,0.8564880884609194
+bbc,Batak Toba,Austronesian languages,False,8,0.20631848609102457,0.5422163832726865
+bbj,Ghomala,Atlantic-Congo,False,8,0.46550795816708485,0.8377750857124762
+bci,Baoulé,Atlantic-Congo,False,8,0.549690307199247,0.8069588573010222
+bcl,Bikol,Austronesian languages,False,8,0.19796970552942497,0.43315487174067835
+be,Belarusian,Indo-European languages,False,8,0.1449105385344723,0.29745097788832253
+be-x-old,Belarusian (Taraškievica),Indo-European languages,False,8,0.1475110713842704,0.29745097788832253
+bej,Beja,Afro-Asiatic languages,False,8,0.518100965211948,0.7740117711690071
+bem,Bemba,Atlantic-Congo,False,8,0.49078643107474784,0.8161563176139675
+bew,Betawi,Austronesian languages,False,8,0.22145755852523105,0.4632930812445114
+bez,Bena,Atlantic-Congo,False,8,0.5859700931247689,0.8420364677851868
+bfd,Bafut,Atlantic-Congo,False,7,0.5474535954853783,0.8327415676162213
+bfq,Badaga,Dravidian languages,False,7,0.36036360176416615,0.7037020446626272
+bft,Balti,Sino-Tibetan languages,False,8,0.45642724654206895,0.7799078296665115
+bfy,Bagheli,Indo-European languages,False,8,0.41102238698209154,0.7320083704248199
+bg,Bulgarian,Indo-European languages,False,8,0.1310138435286689,0.3287842717798243
+bgc,Haryanvi,Indo-European languages,False,8,0.06613112040755374,0.17912016045620915
+bgn,Western Balochi,Indo-European languages,False,8,0.398221810990609,0.6641707868320451
+bgx,Balkan Gagauz Turkish,Turkic,False,8,0.38268924673840093,0.7263066112819702
+bh,Bihari,Indo-European languages,False,6,0.005583761209800049,0.01675128362940015
+bhb,Bhili,Indo-European languages,False,8,0.359032237347442,0.72220828535221
+bhi,Bhilali,Indo-European languages,False,8,0.33015528520773246,0.6740393302648452
+bho,Bhojpuri,Indo-European languages,False,8,0.14760525417479262,0.5211545299213793
+bi,Bislama,Creoles and pidgins,False,8,0.49173333988689,0.7583071864728872
+bik,Bikol,Austronesian languages,False,8,0.30431657339173274,0.7002615403588031
+bin,Bini,Atlantic-Congo,False,8,0.5344793322879203,0.8305973431517232
+bjj,Kanauji,Indo-European languages,False,8,0.2159736739650089,0.7346986995442685
+bjn,Banjar,Austronesian languages,False,8,0.11711500842962251,0.21205602232416432
+bjt,bjt,Atlantic-Congo,False,8,0.6099883250844825,0.9061588265917945
+bkm,Kom,Atlantic-Congo,False,8,0.5155161253739721,0.8491867309518263
+bku,Buhid,Austronesian languages,False,8,0.5297579879436116,0.8230586715592914
+bla,Siksiká,Algic,False,8,0.4056659814527199,0.6921848945729535
+blo,Anii,Atlantic-Congo,False,8,0.5362940577217301,0.9236482707431893
+blt,Tai Dam,Tai-Kadai languages,False,8,0.4825983188072636,0.7764346834699427
+bm,Bambara,Mande,False,8,0.549321010626495,0.7917331277724534
+bmq,Bomu,Atlantic-Congo,False,8,0.5219306887112001,0.853212861129273
+bn,Bengali,Indo-European languages,False,8,0.23435801282897667,0.4461583829060517
+bo,Tibetan,Sino-Tibetan languages,False,7,0.04481283358287597,0.11271212156100441
+bpy,Bishnupriya Manipuri,Indo-European languages,False,8,0.2691874016946409,0.5791086250791095
+bqi,Bakhtiari,Indo-European languages,False,8,0.1879219638598016,0.5657913596629296
+bqv,Koro Wachi,Atlantic-Congo,False,8,0.5779858329464868,0.9084339754943066
+br,Breton,Indo-European languages,False,8,0.5081603472483812,0.7800788014037701
+bra,Braj,Indo-European languages,False,7,0.2242064258550402,0.5697062090790477
+brh,Brahui,Dravidian languages,False,6,0.3284748390019287,0.7262601818886785
+brx,Boro,Sino-Tibetan languages,False,6,0.4372670689915414,0.777519280030805
+bs,Bosnian,Indo-European languages,False,8,0.11585230644137869,0.2570335747608974
+bsc,bsc,Atlantic-Congo,False,8,0.5810338289321074,0.8240850037269192
+bsq,bsq,Kru,False,8,0.4932370076115195,0.8976407246636926
+bss,Akoose,Atlantic-Congo,False,8,0.5327104920233549,0.8472567105945816
+bto,Rinconada Bikol,Austronesian languages,False,8,0.3203288142245943,0.6048751387650193
+btv,Bateri,Indo-European languages,False,8,0.39787390262932887,0.8000824575837922
+bua,Buriat,Mongolic-Khitan,False,8,0.5043736745242119,0.7240812422253604
+buc,Bushi,Austronesian languages,False,8,0.5652854659572507,0.8266988247051883
+bug,Buginese,Austronesian languages,False,8,0.2692697614077634,0.7367360356240739
+bum,Bulu,Atlantic-Congo,False,8,0.6062484747824558,0.868061286137864
+bvb,Bube,Atlantic-Congo,False,8,0.4959084655412806,0.8268009367247062
+bxr,Buriat (Russia),Mongolic-Khitan,False,8,0.6209822131913489,0.8392248468082057
+byn,Blin,Afro-Asiatic languages,False,8,0.3615120009572542,0.8845544245775228
+byv,Medumba,Atlantic-Congo,False,8,0.528471387595714,0.8537560969096445
+bze,Jenaama Bozo,Mande,False,8,0.5353742597169727,0.8757057650249108
+bzx,Kɛlɛngaxo Bozo,Mande,False,8,0.6011571900497914,0.888249939388505
+ca,Catalan; Valencian,Indo-European languages,True,8,0.0,0.0
+cad,Caddo,Caddoan,False,7,0.553082916810534,0.8406681084830994
+car,Carib,Cariban,False,8,0.5898551144917902,0.8320196988341342
+cay,Cayuga,Iroquoian,False,8,0.5322423412045564,0.8861395441731751
+cch,Atsam,Atlantic-Congo,False,8,0.5414366957315665,0.8544255315001669
+ccp,Chakma,Indo-European languages,False,8,0.30173091551811587,0.5965878296179715
+ccr,ccr,Misumalpan,False,8,0.45595204108257903,0.7671465736927086
+cdo,Min Dong Chinese,Sino-Tibetan languages,False,8,0.22512263096326238,0.6217217783706246
+ce,Chechen,Nakh-Daghestanian,False,8,0.3264489881961005,0.6692092571097764
+ceb,Cebuano,Austronesian languages,False,7,0.24174725631510144,0.6325017493556464
+cgg,Chiga,Atlantic-Congo,False,8,0.48469034296912283,0.8285550454979103
+ch,Chamorro,Austronesian languages,False,8,0.4072720787703517,0.7272910488798272
+chb,Chibcha,Chibchan,False,6,0.6089767635722164,0.9398323096491173
+chg,Chagatai,Turkic,False,7,0.4355784958953292,0.7361800531848508
+chk,Chuukese,Austronesian languages,False,8,0.5810319148363581,0.8442822888715288
+chm,Mari,Uralic languages,False,8,0.48721323659898996,0.8452549192926034
+chn,Chinook Jargon,Creoles and pidgins,False,8,0.5883597175819697,0.8745066859727039
+cho,Choctaw,Muskogean,False,8,0.30775828493623614,0.41650405004612423
+chp,Chipewyan,Athabaskan-Eyak-Tlingit,False,8,0.41537319419535607,0.8002532972482299
+chr,Cherokee,Iroquoian,False,7,0.02384831389307316,0.0642173535088083
+chy,Cheyenne,Algic,False,7,0.3254688753195185,0.7001746980122572
+cic,Chickasaw,Muskogean,False,8,0.3825382410780168,0.5039817041135615
+cja,Western Cham,Austronesian languages,False,8,0.5887766070518711,0.9572303317142443
+cjm,Eastern Cham,Austronesian languages,False,8,0.5756064045727044,0.8343213074527223
+cjs,Shor,Turkic,False,7,0.46690052938401616,0.7759980409118492
+ckb,Kurdish (Sorani),Indo-European languages,False,8,0.4728110303523592,0.7925980737124019
+ckt,Chukot,Chukotko-Kamchatkan languages,False,8,0.5399081095086279,0.8540828730228545
+clc,Chilcotin,Athabaskan-Eyak-Tlingit,False,7,0.5498479895635879,0.7977675439161166
+cnr,Montenegrin,Indo-European languages,False,8,0.223213218553416,0.62601645203034
+co,Corsican,Indo-European languages,False,8,0.020556710644559936,0.0798605490978147
+cop,Coptic,Afro-Asiatic languages,False,8,0.03900854682843553,0.10665560711740074
+cps,Capiznon,Austronesian languages,False,8,0.27475925020009273,0.5699599843035139
+cr,Cree,North American Indian languages,False,8,0.2842000057779084,0.5236035518768363
+crg,Michif,Algic,False,8,0.5510075564019348,0.8730299090583589
+crh,Crimean Tatar,Turkic,False,8,0.5336058954965102,0.881427073952506
+crj,Southern East Cree,Algic,False,8,0.31113826595215743,0.4296630238254613
+crk,Plains Cree,Algic,False,8,0.32392444440660667,0.5740972506074651
+crl,Northern East Cree,Algic,False,8,0.2679434064173608,0.4775813919598132
+crm,Moose Cree,Algic,False,8,0.31542026312529753,0.5923787521744972
+crn,Montenegrin,Indo-European languages,False,8,0.2340622551477162,0.7019531258774114
+crs,Seselwa Creole French,Creoles and pidgins,False,8,0.5937474335917751,0.7733997674442021
+cs,Czech,Indo-European languages,True,8,0.05050445727771957,0.2020178291108783
+csb,Kashubian,Indo-European languages,False,8,0.3848247002216261,0.8497720213145824
+csw,Swampy Cree,Algic,False,8,0.3484694447382787,0.5238217411017814
+ctd,Tedim Chin,Sino-Tibetan languages,False,8,0.5034917551759536,0.8348348746633455
+cu,Old Church Slavonic,Indo-European languages,False,8,0.31651671677065557,0.6739864050711362
+cv,Chuvash,Turkic,False,5,0.35707542928594665,0.6948168278316864
+cwd,Woods Cree,Algic,False,8,0.23330551064142016,0.3981024240055616
+cy,Welsh,Indo-European languages,True,8,0.34213598437746967,0.6481673816911878
+da,Danish,Indo-European languages,False,8,0.0638247516646641,0.15085109367026717
+dak,Dakota,Siouan,False,8,0.3063231970022603,0.5288741394435693
+dar,Dargwa,Nakh-Daghestanian,False,8,0.5245878723491791,0.8794446561200083
+dav,Taita,Atlantic-Congo,False,8,0.5434952398656524,0.8130047410280514
+dcc,Deccan,Indo-European languages,False,7,0.4093334457031797,0.761452026692772
+de,German,Indo-European languages,True,8,0.07838010736952282,0.22692438218471045
+del,Delaware,Algic,False,8,0.5411983562774708,0.8178646928801321
+den,Slave,Athabaskan-Eyak-Tlingit,False,7,0.5897983817340398,0.8155413147604847
+dgr,Dogrib,Athabaskan-Eyak-Tlingit,False,8,0.511635587508687,0.8542670980402454
+din,Dinka,Nilotic,False,8,0.5450408289401142,0.8479499780643092
+diq,Dimli,Indo-European languages,False,8,0.29828783008850784,0.7120612674653426
+dje,Zarma,Songhay,False,8,0.5142658922983336,0.8230393796073238
+dng,Dungan,Sino-Tibetan languages,False,8,0.41862031272899564,0.8010818833980463
+dnj,Dan,Mande,False,8,0.2449833948000794,0.4388232105869584
+doi,Dogri,Indo-European languages,False,8,0.05435972962279423,0.19532748524435017
+dsb,Lower Sorbian,Indo-European languages,False,8,0.2366107318573404,0.5868385107727296
+dtm,Tomo Kan Dogon,Dogon,False,8,0.4807836319760482,0.8305011234928312
+dtp,Central Dusun,Austronesian languages,False,8,0.3112343517651547,0.5430427982049212
+dty,Dotyali,Indo-European languages,False,8,0.389014786415465,0.728568853971023
+dua,Duala,Atlantic-Congo,False,8,0.5651285740151217,0.9409858911214297
+dum,Middle Dutch,Indo-European languages,False,8,0.35414208860458196,0.9489392600462591
+dv,Divehi; Maldivian;,Indo-European languages,False,8,0.24874401117215283,0.6465139466212879
+dyo,Jola-Fonyi,Atlantic-Congo,False,7,0.5041263200628885,0.8217883571223894
+dyu,Dyula,Mande,False,8,0.5370090585691157,0.8575882983013936
+dz,Dzongkha,Sino-Tibetan languages,False,8,0.27921264421912717,0.743647120671545
+dzg,Dazaga,Saharan,False,8,0.5036036280735404,0.818321538107046
+ebu,Embu,Atlantic-Congo,False,8,0.4364105434413026,0.8107419248183574
+ecy,Eteocypriot,Indo-European languages,False,6,0.5885173845853947,0.7653760942813564
+ee,Ewe,Atlantic-Congo,False,8,0.4225748465715818,0.8554580182602857
+efi,Efik,Atlantic-Congo,False,8,0.4435082671868118,0.6671389292565748
+egl,Emilian,Indo-European languages,False,8,0.27059124941934803,0.6036214985939163
+egy,Ancient Egyptian,Afro-Asiatic languages,False,5,0.3745080485420451,0.525751466036415
+eka,Ekajuk,Atlantic-Congo,False,8,0.4853598981580288,0.8736219918454168
+eky,Eastern Kayah,Sino-Tibetan languages,False,8,0.5504723857695856,0.8743354761766746
+el,"Greek, Modern",Indo-European languages,True,8,0.3296020050763991,0.7974805458084124
+elx,Elamite,Language isolate,False,7,0.5900961618131559,0.9528356071041291
+en,English,Indo-European languages,True,8,0.06223831301737626,0.2489532697587058
+enm,Middle English,Indo-European languages,False,8,0.4951850812195621,0.8774845348666662
+eo,Esperanto,Artificial languages,False,8,0.4752416267840131,0.7891749462817448
+es,Spanish; Castilian,Indo-European languages,True,8,2.220446049250313e-16,2.220446049250313e-16
+esu,Central Yupik,Eskimo-Aleut languages,False,8,0.5300125505495219,0.8551803869532385
+et,Estonian,Uralic languages,True,8,0.22776664273846772,0.5343771574637006
+ett,Etruscan,Language isolate,False,5,0.3442084321871724,0.6570270899682011
+eu,Basque,Basque languages,True,8,0.40859503848366996,0.6865971695424522
+evn,Evenki,Tungusic,False,8,0.4503633739270514,0.7910918962326897
+ewo,Ewondo,Atlantic-Congo,False,8,0.4669707758940386,0.6983436948800923
+ext,Extremaduran,Indo-European languages,False,8,0.23745706209026998,0.638468626162455
+fa,Persian,Indo-European languages,True,8,0.10762367090552945,0.2658346919225032
+fan,Fang,Atlantic-Congo,False,8,0.5579509005888145,0.8182181878232588
+fat,Fanti,Atlantic-Congo,False,8,0.5175217433143224,0.8086582320581959
+ff,Fula,Niger-Kordofanian languages,False,8,0.5096934515894846,0.7706730174038036
+ffm,Maasina Fulfulde,Atlantic-Congo,False,8,0.48644522993710954,0.8083051616894485
+fi,Finnish,Uralic languages,True,8,0.15048895606783183,0.30647164450312914
+fia,Nobiin,Nubian,False,8,0.5096470375501257,0.8113022526467221
+fil,Filipino,Austronesian languages,False,8,0.4523742872753419,0.7019611138964309
+fit,Tornedalen Finnish,Uralic languages,False,8,0.38477715039687055,0.8666821392567711
+fiu-vro,Võro,Uralic languages,False,8,0.1855888961473932,0.4166025607208129
+fj,Fijian,Austronesian languages,False,8,0.5301450386552174,0.9139073684473227
+fo,Faroese,Indo-European languages,False,8,0.4200402143213185,0.808135970856602
+fon,Fon,Atlantic-Congo,False,8,0.1690460674659346,0.32632624194658455
+fr,French,Indo-European languages,True,8,0.056854565474869036,0.22741826189947612
+frc,Cajun French,Indo-European languages,False,8,0.16650530385237264,0.41274530301075696
+frm,Middle French,Indo-European languages,False,8,0.17302966326166924,0.546333428485498
+fro,Old French,Indo-European languages,False,8,0.1952534624644666,0.546333428485498
+frp,Arpitan / Franco-Provençal,Indo-European languages,False,8,0.42539625734956765,0.6766164829211598
+frr,Northern Frisian,Indo-European languages,False,8,0.4924860772396495,0.8785472435413266
+frs,Eastern Frisian,Indo-European languages,False,8,0.450271183350345,0.8632478409721956
+fud,East Futuna,Austronesian languages,False,7,0.5918242319811915,0.8706471742587321
+fuq,Central-Eastern Niger Fulfulde,Atlantic-Congo,False,8,0.46122073122779306,0.749651073872529
+fur,Friulian,Indo-European languages,False,8,0.3406823127318536,0.6715066888631942
+fuv,Nigerian Fulfulde,Atlantic-Congo,False,8,0.4256603107045104,0.7969605579187892
+fvr,Fur,Furan,False,8,0.4569394723709676,0.8078883562376477
+fy,Western Frisian,Indo-European languages,False,8,0.3736743113374593,0.827907995022013
+ga,Irish,Indo-European languages,False,8,0.4797760682973635,0.7803092467020423
+gaa,Ga,Atlantic-Congo,False,8,0.5741549343793865,0.9024331277924913
+gag,Gagauz,Turkic,False,7,0.23733130541798725,0.6229611564987447
+gan,Gan Chinese,Sino-Tibetan languages,False,8,0.23667172792936245,0.5963084663550924
+gay,Gayo,Austronesian languages,False,8,0.4174612699855695,0.8427812289732091
+gba,Gbaya,Atlantic-Congo,False,8,0.4686899152665594,0.859368883453385
+gbm,Garhwali,Indo-European languages,False,7,0.04981496201921105,0.14751834495590677
+gbz,Zoroastrian Dari,Indo-European languages,False,8,0.4118586584163567,0.8094930967255491
+gcr,Guianese Creole French,Creoles and pidgins,False,8,0.43716963605457543,0.7092641761513174
+gd,Scottish Gaelic,Indo-European languages,False,8,0.40200411375646034,0.8206000288579276
+gez,Geez,Afro-Asiatic languages,False,8,0.4011007474224548,0.7693773634094754
+gil,Gilbertese,Austronesian languages,False,8,0.5881439915040243,0.8502846715986683
+gjk,Kachi Koli,Indo-European languages,False,8,0.5110709812474032,0.7982332039067008
+gju,Gujari,Indo-European languages,False,8,0.2841449826942864,0.6274720662518924
+gl,Galician,Indo-European languages,False,8,0.10813760321416944,0.19954478348677152
+gld,Nanai,Tungusic,False,7,0.45374744074046935,0.7484596373069405
+glk,Gilaki,Indo-European languages,False,8,0.28362907775167484,0.7686917214085448
+gmh,Middle High German,Indo-European languages,False,7,0.49913289440243713,0.9322410563673955
+gmy,Mycenaean Greek,Indo-European languages,False,8,0.3471489148052198,0.6071831442684479
+gn,Guaraní,South American Indian languages,False,8,0.43406063948878904,0.8085045893757232
+goh,Old High German,Indo-European languages,False,8,0.582212912807001,0.8595533637662869
+gom,Goan Konkani,Indo-European languages,False,8,0.3649267783760415,0.7872955989559957
+gon,Gondi,Dravidian languages,False,8,0.45815520905557044,0.8280787920242442
+gor,Gorontalo,Austronesian languages,False,8,0.3190764380461859,0.896418763609915
+gos,Gronings,Indo-European languages,False,8,0.2376246865326002,0.3253513801872492
+got,Gothic,Indo-European languages,False,8,0.3369026419657307,0.5535829792722382
+grb,Grebo,Kru,False,8,0.5853932151569914,0.8798771820021308
+grc,Ancient Greek,Indo-European languages,False,8,0.2414688661303656,0.42192719423031144
+grr,grr,Afro-Asiatic languages,False,8,0.5765502398681418,0.7880866908477335
+grt,Garo,Sino-Tibetan languages,False,7,0.35961349023694295,0.8951953210593643
+gsw,Swiss German,Indo-European languages,False,8,0.16086792849047465,0.27086669251351625
+gu,Gujarati,Indo-European languages,False,8,0.20945323366617458,0.7026615047401343
+gub,Guajajára,Tupian,False,8,0.52521288920327,0.8188113732160032
+guc,Wayuu,Arawakan,False,8,0.5085300440753369,0.8501333576429085
+gur,Frafra,Atlantic-Congo,False,8,0.5140701595306405,0.8597298979507776
+guz,Gusii,Atlantic-Congo,False,8,0.5100978536121981,0.772832730365945
+gv,Manx,Indo-European languages,False,8,0.4011832156972289,0.5559391468925194
+gvr,Gurung,Sino-Tibetan languages,False,7,0.3007997150112697,0.7843419595454415
+gwi,Gwichʼin,Athabaskan-Eyak-Tlingit,False,8,0.49062725072301117,0.8277492212037839
+ha,Hausa,Afro-Asiatic languages,False,8,0.4444783975194357,0.8011594505269407
+hai,Haida,Language isolate,False,7,0.5037097352622905,0.7878188396149157
+hak,Hakka Chinese,Sino-Tibetan languages,False,7,0.22941677513435366,0.7106892294107207
+haw,Hawaiian,Austronesian languages,False,8,0.2511919192423389,0.7138409749588271
+hax,Southern Haida,Language isolate,False,8,0.4668356492397865,0.8699120565036071
+haz,Hazaragi,Indo-European languages,False,7,0.3391943419632047,0.6630159428376419
+hdn,Northern Haida,Language isolate,False,7,0.44509198918644116,0.8117093792474642
+he,Hebrew (modern),Afro-Asiatic languages,True,7,0.1579071358893315,0.34751077341031056
+hi,Hindi,Indo-European languages,True,8,0.15153379042556234,0.5873488396765528
+hif,Fiji Hindi,Indo-European languages,False,8,0.41416887855788936,0.8061672862670293
+hil,Hiligaynon,Austronesian languages,False,7,0.31922512507334744,0.5943213179892841
+hit,Hittite,Indo-European languages,False,6,0.5338155436804105,0.7961945209312407
+hmd,Large Flowery Miao,Hmong-Mien languages,False,6,0.5098115492084975,0.8346528089776812
+hmn,Hmong,Hmong-Mien languages,False,8,0.46901678214978837,0.8248782594933202
+hnd,Southern Hindko,Indo-European languages,False,7,0.32757187735721277,0.7124418896200968
+hne,Chhattisgarhi,Indo-European languages,False,8,0.05435972962279423,0.19532748524435017
+hnj,Hmong Njua,Hmong-Mien languages,False,7,0.4035530756199276,0.7841472133343135
+hnn,Hanunoo,Austronesian languages,False,8,0.4395103251063096,0.8125921161441735
+hno,Northern Hindko,Indo-European languages,False,7,0.2988651331885706,0.7124418896200968
+ho,Hiri Motu,Creoles and pidgins,False,8,0.5529339625366267,0.821276882410328
+hoc,Ho,Austro-Asiatic languages,False,8,0.46400312332201155,0.880376368320569
+hoj,Hadothi,Indo-European languages,False,8,0.40170974502749507,0.7882614380442203
+hop,Hopi,Uto-Aztecan,False,8,0.5684870104501007,0.9070685971777506
+hr,Croatian,Indo-European languages,False,8,0.1317416612952525,0.5664408198322142
+hsb,Upper Sorbian,Indo-European languages,False,8,0.13097511897310787,0.3265776224948067
+hsn,Xiang Chinese,Sino-Tibetan languages,False,7,0.290658897325887,0.6862575253525378
+ht,Haitian,Indo-European languages,False,8,0.5167494524454287,0.7820627879783106
+hu,Hungarian,Uralic languages,True,8,0.32002002169357574,0.7496390058205664
+hup,Hupa,Athabaskan-Eyak-Tlingit,False,8,0.5022954990763351,0.7871284428702716
+hur,Halkomelem,Salishan,False,8,0.48840712448803675,0.8112865190952261
+hy,Armenian,Armenian languages,True,8,0.18809815518033401,0.3452302321998172
+hz,Herero,Atlantic-Congo,False,8,0.5670180447053201,0.8599370548302905
+ia,Interlingua,Artificial languages,False,8,0.02375391450141386,0.08429123792155113
+iba,Iban,Austronesian languages,False,8,0.2483380481197575,0.48191064323465826
+ibb,Ibibio,Atlantic-Congo,False,8,0.32866036803373777,0.5870570609164997
+id,Indonesian,Austronesian languages,True,8,0.05262324449250244,0.21049297797000976
+ie,Interlingue,Artificial languages,False,8,0.13311435255695842,0.28417811311146524
+ife,Ifè,Atlantic-Congo,False,8,0.35932046381596333,0.8027078084416477
+ig,Igbo,Atlantic-Congo,False,8,0.4214840909788939,0.708476209142336
+ii,Nuosu,Sino-Tibetan languages,False,8,0.3427035454081582,0.6260540422421881
+ik,Inupiaq,North American Indian languages,False,8,0.435012852263402,0.8342817583382157
+ike,Eastern Canadian Inuktitut,Eskimo-Aleut languages,False,8,0.32815285978444825,0.5412943466743718
+ikt,Western Canadian Inuktitut,Eskimo-Aleut languages,False,8,0.2544870483299351,0.455316374450524
+ilo,Ilokano,Austronesian languages,False,8,0.22037639982294419,0.39453091262074247
+inh,Ingush,Nakh-Daghestanian,False,8,0.2683318549457888,0.6757166570533668
+io,Ido,Artificial languages,False,8,0.42691066533935074,0.8478211703306249
+is,Icelandic,Indo-European languages,False,8,0.3140018120957095,0.5856935543382568
+it,Italian,Indo-European languages,True,8,0.1683042846346601,0.30583960316645264
+iu,Inuktitut,Eskimo-Aleut languages,False,8,0.3859083565772039,0.6486953530695274
+izh,Ingrian,Uralic languages,False,8,0.25236035819227803,0.4947472583931657
+ja,Japanese,Japonic languages,True,7,0.1253689682259166,0.2360392398438249
+jam,Jamaican Creole English,Creoles and pidgins,False,8,0.3827700142178325,0.6982975276424681
+jbo,Lojban,Artificial languages,False,8,0.514735326514823,0.8762964205343597
+jgo,Ngomba,Atlantic-Congo,False,8,0.5038548938085022,0.7994389296450507
+jmc,Machame,Atlantic-Congo,False,8,0.5356536899463944,0.8070705821658265
+jml,Jumli,Indo-European languages,False,6,0.3473815910661068,0.7840471509665243
+jpr,Judeo-Persian,Indo-European languages,False,7,0.33578908285811493,0.7900036200109056
+jrb,Judeo-Arabic,Afro-Asiatic languages,False,8,0.5383132768404997,0.8945637847411616
+jut,Jutish,Indo-European languages,False,8,0.35533600385292113,0.7245483290410726
+jv,Javanese,Austronesian languages,False,8,0.3275856200712464,0.7393995107832714
+ka,Georgian,Kartvelian,False,8,0.32738046846750957,0.6710582222603432
+kaa,Kara-Kalpak,Turkic,False,8,0.4710791917295219,0.857695758622628
+kab,Kabyle,Afro-Asiatic languages,False,8,0.43215661289095614,0.6224048188419085
+kac,Kachin,Sino-Tibetan languages,False,7,0.4795045791056466,0.8337392781904704
+kaj,Jju,Atlantic-Congo,False,8,0.5510417571978532,0.8354243299989976
+kam,Kamba,Atlantic-Congo,False,8,0.5374162673160756,0.8744825968302269
+kao,Xaasongaxango,Mande,False,8,0.5487204707571199,0.8564102640146238
+kaw,Kawi,Austronesian languages,False,8,0.5454079900749574,0.7441758664020299
+kbd,Kabardian,Abkhaz-Adyge,False,7,0.4009500567842335,0.7687989348194856
+kbl,Kanembu,Saharan,False,8,0.522437969276008,0.8207550769311122
+kca,Khanty,Uralic languages,False,8,0.4878524172219116,0.8404380555029134
+kcg,Tyap,Atlantic-Congo,False,8,0.5389493958434085,0.8791416545339744
+kck,Kalanga,Atlantic-Congo,False,8,0.5525158901738175,0.8819140422035153
+kde,Makonde,Atlantic-Congo,False,8,0.5147786348636783,0.8557821244647285
+kdt,Kuy,Austro-Asiatic languages,False,8,0.48271093377006674,0.8434646709990388
+kea,Kabuverdianu,Creoles and pidgins,False,8,0.07113274388370136,0.18180574120479476
+ken,Kenyang,Atlantic-Congo,False,8,0.5288147434769622,0.839633729745039
+kfo,Koro,Mande,False,8,0.5934636524260656,0.8965951088686978
+kfr,Kachhi,Indo-European languages,False,8,0.4218415652708799,0.752875311615493
+kfy,Kumaoni,Indo-European languages,False,7,0.06877820503092694,0.18207165133276293
+kg,Kongo,Niger-Kordofanian languages,False,8,0.4776989705630092,0.7619007063332788
+kge,Komering,Austronesian languages,False,8,0.17269982449727742,0.40355186981190505
+kgp,Kaingang,Nuclear-Macro-Je,False,8,0.5311789173739891,0.83072060195577
+kha,Khasi,Austro-Asiatic languages,False,7,0.571359338837927,0.8850838825749981
+khb,Lü,Tai-Kadai languages,False,7,0.4035913950347858,0.7202696320012354
+khn,Khandesi,Indo-European languages,False,8,0.40861444147714765,0.6814833534583
+kho,Khotanese,Indo-European languages,False,6,0.5307443920140104,0.8068191056667683
+khq,Koyra Chiini,Songhay,False,8,0.5399341546831993,0.8460273093225893
+kht,Khamti,Tai-Kadai languages,False,8,0.5137653054634506,0.8323604451306043
+khw,Khowar,Indo-European languages,False,8,0.2063602335556499,0.37467449148084464
+ki,"Kikuyu, Gikuyu",Atlantic-Congo,False,8,0.385835597831422,0.6624080472124871
+kiu,Kirmanjki,Indo-European languages,False,8,0.5285415966752094,0.7888634900733574
+kj,"Kwanyama, Kuanyama",Atlantic-Congo,False,8,0.48739727410271366,0.8769503675220693
+kjg,Khmu,Austro-Asiatic languages,False,8,0.4058761522036901,0.7261946654568456
+kjh,Khakas,Turkic,False,8,0.46191811119518633,0.8313643510551627
+kk,Kazakh,Turkic,False,7,0.20164438520918748,0.4977863596952622
+kkj,Kako,Atlantic-Congo,False,8,0.509691641733362,0.8339756407544188
+kl,Kalaallisut,Eskimo-Aleut languages,False,8,0.5049497277317859,0.692419142135586
+kln,Kalenjin,Nilotic,False,8,0.5773846879467275,0.8487194589140228
+km,Khmer,Austro-Asiatic languages,False,8,0.48096896833006975,0.8225979070519407
+kmb,Kimbundu,Atlantic-Congo,False,8,0.3832797337402823,0.7417043432595656
+kn,Kannada,Dravidian languages,False,7,0.05960654347957807,0.12435403444859228
+knf,knf,Atlantic-Congo,False,7,0.46000737336548764,0.822482395192512
+knn,knn,Indo-European languages,False,7,0.3851782697698549,0.781480358222637
+ko,Korean,Language isolate,True,8,4.720033887549237e-14,1.1013412404281553e-13
+koi,Komi-Permyak,Uralic languages,False,8,0.19987871140797445,0.5083309963577192
+kok,Konkani,Indo-European languages,False,7,0.4389496087433035,0.7489020936757665
+kos,Kosraean,Austronesian languages,False,8,0.5234075016391603,0.7966622182824856
+kpe,Kpelle,Mande,False,8,0.5347181546304463,0.8771918127430303
+kpy,Koryak,Chukotko-Kamchatkan languages,False,8,0.5646518309555909,0.9977532843779853
+kr,Kanuri,Nilo-Saharan languages,False,8,0.5050628900468703,0.791618835115756
+krc,Karachay-Balkar,Turkic,False,8,0.5236374556812304,0.8361235845530441
+kri,Krio,Creoles and pidgins,False,8,0.5427173999980414,0.9003422411052682
+krj,Kinaray-a,Austronesian languages,False,7,0.27074090628832576,0.5604286778881243
+krl,Karelian,Uralic languages,False,8,0.2081123013622302,0.3971538312404791
+kro,kro,Niger-Kordofanian languages,False,6,0.5057641160649808,0.8763558048207468
+kru,Kurukh,Dravidian languages,False,7,0.2268479943287899,0.46381208542888286
+ks,Kashmiri,Indo-European languages,False,6,0.09003448306165009,0.16659155829657468
+ksb,Shambala,Atlantic-Congo,False,8,0.4443597164992266,0.7199650729306328
+ksf,Bafia,Atlantic-Congo,False,8,0.5027629824792766,0.8788478044569977
+ksh,Ripuarian,Indo-European languages,False,8,0.32483916745748737,0.7189737664117879
+ku,Kurdish,Indo-European languages,False,8,0.5347401764072349,0.8688569907276781
+kum,Kumyk,Turkic,False,8,0.47361887570873357,0.7316037422364372
+kut,Kutenai,Language isolate,False,7,0.48260431293198647,0.7827978892998314
+kv,Komi,Uralic languages,False,7,0.31171388062493155,0.7772821618491919
+kvr,Kerinci,Austronesian languages,False,8,0.11470122676787975,0.25192054733861025
+kvx,Parkari Koli,Indo-European languages,False,8,0.40737268505867064,0.7979722990046609
+kw,Cornish,Indo-European languages,False,8,0.513500138327948,0.6951858714532553
+kwk,Kwakʼwala,Wakashan,False,8,0.5098438165102881,0.7918981630662871
+kxm,Northern Khmer,Austro-Asiatic languages,False,7,0.3247325306120312,0.5672143621550493
+kxp,Wadiyara Koli,Indo-European languages,False,8,0.418023516511973,0.7623457321090766
+kxv,Kuvi,Dravidian languages,False,8,0.4662928234042987,0.8071052276365486
+ky,"Kirghiz, Kyrgyz",Turkic,False,8,0.44448488635971933,0.7726374083066053
+kyu,Western Kayah,Sino-Tibetan languages,False,8,0.4968518526807512,0.8112334299317261
+la,Latin,Indo-European languages,True,8,0.0025138562931754926,0.01005542517270197
+lab,Linear A,Exclude from family aggregation,False,8,0.33496368353664036,0.6341303546587822
+lad,Ladino / Judeo-Spanish,Indo-European languages,False,8,0.21708369112349327,0.6712817364782022
+lag,Langi,Atlantic-Congo,False,8,0.5502185271891926,0.8518588845102906
+lah,Western Panjabi,Indo-European languages,False,7,0.250592844588292,0.7162064852286973
+laj,Lango (Uganda),Nilotic,False,8,0.5897324868483186,0.8539360837483121
+lam,Lamba,Atlantic-Congo,False,8,0.571417200014856,0.9251226798516394
+lan,Lango,Atlantic-Congo,False,8,0.6279525144805327,0.8203687169606917
+lb,Luxembourgish,Indo-European languages,False,8,0.120991764708635,0.21615208018286725
+lbe,Lak,Nakh-Daghestanian,False,8,0.42750233835394325,0.8747595971311479
+lbw,Tolaki,Austronesian languages,False,8,0.42733911722199336,0.7600585730665864
+lcp,Western Lawa,Austro-Asiatic languages,False,8,0.5497978967695799,0.8595761976626348
+len,len,Central American Indian languages,False,7,0.6232323280252547,0.8469826141257643
+lep,Lepcha,Sino-Tibetan languages,False,8,0.4956787610006739,0.811837759251561
+lez,Lezghian,Nakh-Daghestanian,False,7,0.456698027970425,0.7759836429526614
+lfn,Lingua Franca Nova,Artificial languages,False,8,0.10934639752254204,0.19468947092868993
+lg,Luganda,Atlantic-Congo,False,8,0.43027992485405664,0.6459301793024593
+li,Limburgish,Indo-European languages,False,8,0.11438949843408922,0.2079702659686291
+lif,Limbu,Sino-Tibetan languages,False,8,0.255419615171682,0.6772140233482322
+lij,Ligurian,Indo-European languages,False,8,0.10999889998695385,0.27963372552107035
+lil,Lillooet,Salishan,False,8,0.5091558831281247,0.8372326938605977
+lis,Lisu,Sino-Tibetan languages,False,7,0.39174521754553804,0.7196549819377349
+liv,Livonian,Uralic languages,False,8,0.4904396568530535,0.747069287517211
+ljp,Lampung Api,Austronesian languages,False,8,0.14503037031292967,0.3286281788065436
+lki,Laki,Indo-European languages,False,8,0.5407722547935755,0.8975463075987967
+lkt,Lakota,Siouan,False,8,0.20643519036030217,0.5181144337576045
+lld,lld,Indo-European languages,False,8,0.2558170484967978,0.6515867261406967
+lmn,Lambadi,Indo-European languages,False,8,0.22151782850958157,0.4341407433022014
+lmo,Lombard,Indo-European languages,True,8,0.21925675732433333,0.5607524470463865
+ln,Lingala,Atlantic-Congo,False,8,0.5285044750421368,0.7778085909911738
+lo,Lao,Tai-Kadai languages,False,8,0.3232021825216164,0.7177318126568535
+lol,Mongo,Atlantic-Congo,False,8,0.5823676530435298,0.8569055465120445
+lou,Louisiana Creole,Creoles and pidgins,False,8,0.4680348810367628,0.711415555791141
+loz,Lozi,Atlantic-Congo,False,8,0.5549379369455325,0.8831266272020089
+lrc,Northern Luri,Indo-European languages,False,8,0.3298168563996428,0.6517969426534342
+lsm,Saamia,Atlantic-Congo,False,8,0.4848136777455288,0.7368226313946918
+lt,Lithuanian,Indo-European languages,False,8,0.2685632452329905,0.6452959136897873
+ltg,Latgalian,Indo-European languages,False,8,0.5403810319911585,0.8525929639967516
+lu,Luba-Katanga,Atlantic-Congo,False,8,0.5146541782686729,0.8047524874444422
+lua,Luba-Lulua,Atlantic-Congo,False,8,0.4468680619417126,0.7595891457985936
+lui,Luiseno,Uto-Aztecan,False,8,0.5829992790082651,0.8699782681094426
+lun,Lunda,Atlantic-Congo,False,8,0.4312796911745163,0.8835253620485118
+luo,Luo,Nilotic,False,8,0.5062893064580524,0.7970417292667052
+lus,Mizo,Sino-Tibetan languages,False,8,0.41304020647310563,0.7715542065387643
+lut,Lushootseed,Salishan,False,7,0.21425085576734262,0.5070111282374334
+luy,Luyia,Atlantic-Congo,False,8,0.5491627698833638,0.7901287645193228
+luz,Southern Luri,Indo-European languages,False,8,0.3222604184285423,0.6923666592295749
+lv,Latvian,Indo-European languages,False,8,0.18396784055424317,0.5620559868777508
+lwl,Eastern Lawa,Austro-Asiatic languages,False,8,0.5043382916538117,0.8480715833534704
+lzh,Literary Chinese,Sino-Tibetan languages,False,8,0.3825645353853186,0.8147834993613569
+lzz,Laz,Kartvelian,False,8,0.34919819931583584,0.8490592719135045
+mad,Madurese,Austronesian languages,False,8,0.18883007314089853,0.33660179036322935
+maf,Mafa,Afro-Asiatic languages,False,8,0.5529324506537375,0.8304719419266279
+mag,Magahi,Indo-European languages,False,8,0.1588025197517282,0.41316768708245377
+mai,Maithili,Indo-European languages,False,7,0.0547736564235093,0.18207165133276293
+mak,Makasar,Austronesian languages,False,8,0.16413089183187288,0.3156651750055375
+man,Mandarin,Sino-Tibetan languages,False,8,0.5471384732558133,0.8610193367325596
+map-bms,Banyumasan,Austronesian languages,False,8,0.16431314272361514,0.3626169102584489
+mas,Masai,Nilotic,False,8,0.5409203138651442,0.8025023853237447
+maz,Central Mazahua,Otomanguean,False,8,0.45486635935465813,0.721857988873294
+mde,Maba,Maban,False,7,0.4488220268477429,0.8009549469611867
+mdf,Moksha,Uralic languages,False,8,0.45650457928450544,0.7615506879756118
+mdh,Maguindanaon,Austronesian languages,False,8,0.4004868725942302,0.7577870977433652
+mdr,Mandar,Austronesian languages,False,7,0.31623727840190147,0.6563757847385996
+mdt,Mbere,Atlantic-Congo,False,8,0.5278953762349821,0.8167701935498171
+men,Mende,Mande,False,8,0.6112836878919491,0.8623434929553694
+mer,Meru,Atlantic-Congo,False,8,0.5463032512098485,0.8725939841187547
+mey,mey,Afro-Asiatic languages,False,8,0.3790905218461278,0.7520487192771204
+mfa,Pattani Malay,Austronesian languages,False,8,0.09956845364716646,0.19102615572736015
+mfe,Morisyen,Creoles and pidgins,False,8,0.5489624762989004,0.8667188418193946
+mfv,mfv,Atlantic-Congo,False,8,0.49785993162238545,0.826407674628644
+mg,Malagasy,Austronesian languages,False,8,0.5824269801842521,0.8459915846061428
+mga,"Irish, Middle (900-1200)",Indo-European languages,False,8,0.5101920661080713,0.7928399887537991
+mgh,Makhuwa-Meetto,Atlantic-Congo,False,8,0.35888059483267004,0.747920417755896
+mgo,Metaʼ,Atlantic-Congo,False,8,0.5043926226496303,0.8140168810207896
+mgp,Eastern Magar,Sino-Tibetan languages,False,7,0.036377041791604926,0.12855006859782048
+mgy,Mbunga,Atlantic-Congo,False,8,0.5271096016950206,0.8406660040727619
+mh,Marshallese,Austronesian languages,False,8,0.5989771373914038,0.8297489442482688
+mhn,mhn,Indo-European languages,False,8,0.31011313619829345,0.6054901369780322
+mi,Māori,Austronesian languages,False,8,0.3028592640365292,0.5175953937570914
+mic,Mi'kmaw,Algic,False,8,0.39786824119957137,0.6403099078468413
+min,Minangkabau,Austronesian languages,False,8,0.11158265279086989,0.26790738784888113
+mk,Macedonian,Indo-European languages,False,8,0.12123719216740035,0.3312751269312564
+ml,Malayalam,Dravidian languages,False,7,0.13190882328631778,0.25780751255610146
+mls,Masalit,Maban,False,8,0.5365116245894492,0.8291063108758916
+mn,Mongolian,Altaic languages,False,7,0.1909597116516077,0.31311349753683637
+mnc,Manchu,Tungusic,False,8,0.396466515713835,0.7621160415981001
+mni,Manipuri,Sino-Tibetan languages,False,8,0.4108470729169837,0.7369865920733638
+mns,Mansi,Uralic languages,False,8,0.5092725028593585,0.8278433427086412
+mnw,Mon,Austro-Asiatic languages,False,8,0.4488294268253618,0.8036183954789475
+mo,Moldovan,Indo-European languages,False,8,0.12618833561474255,0.2290879754919669
+moe,Innu-aimun,Algic,False,8,0.4195386846195564,0.8413427950918297
+moh,Mohawk,Iroquoian,False,8,0.33512873156565554,0.4905936988010259
+mos,Mossi,Atlantic-Congo,False,8,0.5282436441251152,0.8633354921367676
+mr,Marathi (Marāṭhī),Indo-European languages,False,8,0.14469837409377098,0.4942740852043773
+mrd,Western Magar,Sino-Tibetan languages,False,8,0.4750924698351316,0.8259206941941507
+mrh,Mara,Sino-Tibetan languages,False,8,0.5553424340989849,0.8649058235552763
+mrj,Western Mari,Uralic languages,False,8,0.48584041386784416,0.7547849644106636
+mro,Mru,Sino-Tibetan languages,False,8,0.4103793930210206,0.7002615383020299
+ms,Malay,Austronesian languages,False,8,0.04655293266701686,0.17325045092778468
+mt,Maltese,Afro-Asiatic languages,False,8,0.40638642447137696,0.7563296524384567
+mtr,Mewari,Indo-European languages,False,8,0.1305611243145011,0.4430761055189093
+mua,Mundang,Atlantic-Congo,False,8,0.5525085751595331,0.8437570526677449
+mus,Creek / Muskogee,Muskogean,False,8,0.48942204634805897,0.8095498161136149
+mvy,Indus Kohistani,Indo-European languages,False,7,0.3580112439317598,0.7578556553428559
+mwk,Kita Maninkakan,Mande,False,8,0.5707646705151795,0.8367552797678546
+mwl,Mirandese,Indo-European languages,False,8,0.27690314849180203,0.7700031603002628
+mwr,Marwari,Indo-European languages,False,8,0.05589850329057035,0.1750812592139902
+mwv,Mentawai,Austronesian languages,False,8,0.5216330693010592,0.883850297037026
+mww,mww,Hmong-Mien languages,False,8,0.4305384411245639,0.7852371376666867
+mxc,Manyika,Atlantic-Congo,False,8,0.5803308206581859,0.8803445831144443
+my,Burmese,Sino-Tibetan languages,False,8,0.4321306511683566,0.8013866687969672
+mye,Myene,Atlantic-Congo,False,8,0.5987290096801331,0.8488587120631103
+myv,Erzya,Uralic languages,False,8,0.4573961074312118,0.8457165912394788
+myx,Masaaba,Atlantic-Congo,False,8,0.5539067956471669,0.8224382765611616
+myz,Classical Mandaic,Afro-Asiatic languages,False,7,0.1215021864546866,0.3423175701191279
+mzb,mzb,Afro-Asiatic languages,False,8,0.48509632559737137,0.8582772116322193
+mzn,Mazanderani,Indo-European languages,False,7,0.35642036830238083,0.7745545410308426
+na,Nauru,Austronesian languages,False,8,0.5549713354257324,0.7473222376724451
+nah,Nahuatl,North American Indian languages,False,8,0.3681016833345856,0.7559910991142749
+nan,Min Nan Chinese,Sino-Tibetan languages,False,7,0.03712450675613207,0.08088520256774179
+nap,Neapolitan,Indo-European languages,False,8,0.17595913810228558,0.6169404095764142
+naq,Nama,Khoe-Kwadi,False,8,0.5630377787470378,0.831508820131007
+nb,Norwegian Bokmål,Indo-European languages,False,8,0.0731765631412562,0.16786675536049112
+nch,Central Huasteca Nahuatl,Uto-Aztecan,False,8,0.3744433470025588,0.709772411471076
+nd,North Ndebele,Atlantic-Congo,False,8,0.6017757872219797,0.7970787037507763
+ndc,Ndau,Atlantic-Congo,False,8,0.5215411837956392,0.7910300896679914
+nds,Low German / Low Saxon,Indo-European languages,False,8,0.1527556099891272,0.30968503594739893
+nds-nl,Dutch Low Saxon,Indo-European languages,False,8,0.08290798275802112,0.16541397698437954
+ne,Nepali,Indo-European languages,False,8,0.12220124927650454,0.5086054321228963
+new,Newar,Sino-Tibetan languages,False,8,0.15073733149214563,0.5820686557288877
+ng,Ndonga,Atlantic-Congo,False,8,0.42860503728601396,0.6757463995472399
+ngl,Lomwe,Atlantic-Congo,False,8,0.38512802858618295,0.7128051700954537
+nhe,Eastern Huasteca Nahuatl,Uto-Aztecan,False,8,0.2208601723019766,0.343524176961031
+nhw,Western Huasteca Nahuatl,Uto-Aztecan,False,8,0.2389640247956589,0.36185435568535096
+nia,Nias,Austronesian languages,False,8,0.34836743051163505,0.6672880649101922
+nij,Ngaju,Austronesian languages,False,8,0.3862850497467303,0.7595594148964911
+niu,Niuean,Austronesian languages,False,8,0.4167051375417165,0.6635134325623725
+njo,Ao Naga,Sino-Tibetan languages,False,8,0.5362203259710386,0.8374486296680662
+nl,Dutch,Indo-European languages,True,8,0.07169290206623014,0.12872142362316463
+nmg,Kwasio,Atlantic-Congo,False,8,0.5253124102833503,0.8748861277082154
+nn,Norwegian Nynorsk,Indo-European languages,False,8,0.1774882545815896,0.5078760520494625
+nnh,Ngiemboon,Atlantic-Congo,False,8,0.48248133093843754,0.8599089441349193
+no,Norwegian,Indo-European languages,False,8,0.0731765631412562,0.16786675536049112
+nod,Northern Thai,Tai-Kadai languages,False,8,0.10034368953549556,0.34652692041402067
+noe,Nimadi,Indo-European languages,False,7,0.26136847307012057,0.7578510574830765
+nog,Nogai,Turkic,False,8,0.39998742567944934,0.6793167829739306
+non,Old Norse,Indo-European languages,False,8,0.29021514393044173,0.4138358229520941
+nov,Novial,Artificial languages,False,8,0.32089371741332445,0.6053662004018774
+nqo,N’Ko,Mande,False,6,0.3031141483094145,0.5942664734018692
+nr,South Ndebele,Atlantic-Congo,False,8,0.6077482509193759,0.9035986682074585
+nrm,Norman,Indo-European languages,False,8,0.45433676460047406,0.7756265204253918
+nsk,Naskapi,Algic,False,8,0.4664762980203882,0.8376248335433168
+nso,Northern Sotho,Atlantic-Congo,False,8,0.4953441868622082,0.8694287878711375
+nus,Nuer,Nilotic,False,8,0.546465499068833,0.7986039260529091
+nv,"Navajo, Navaho",Athabaskan-Eyak-Tlingit,False,8,0.330725999975978,0.5832769454273656
+nwc,Classical Newari,Sino-Tibetan languages,False,8,0.43492221883034615,0.7800945156045966
+nxq,Naxi,Sino-Tibetan languages,False,8,0.3009478357606907,0.6990921759289905
+ny,Chichewa; Chewa; Nyanja,Atlantic-Congo,False,8,0.41412889877780107,0.739812794609213
+nym,Nyamwezi,Atlantic-Congo,False,8,0.4873872174504577,0.7872835244827516
+nyn,Nyankole,Atlantic-Congo,False,8,0.4338563330217665,0.7973301286604996
+nyo,Nyoro,Atlantic-Congo,False,8,0.4877724057686694,0.7150160744266816
+nzi,Nzima,Atlantic-Congo,False,8,0.5150136633115147,0.8328857528778078
+oc,Occitan,Indo-European languages,False,8,0.43177192741918413,0.7281573589860055
+oj,"Ojibwe, Ojibwa",North American Indian languages,False,8,0.3295410849163222,0.435081153272575
+ojb,Northwestern Ojibwa,Algic,False,8,0.4804870491411312,0.7161365217034107
+ojc,Central Ojibwa,Algic,False,8,0.4132815906511631,0.7690675201235202
+ojg,Eastern Ojibwa,Algic,False,8,0.4628514625046609,0.7181229245892646
+ojs,Oji-Cree,Algic,False,8,0.4000514620129723,0.6409639009836017
+ojw,Western Ojibwa,Algic,False,8,0.3553484850540451,0.6692313967335592
+oka,Okanagan,Salishan,False,8,0.3920158007399028,0.830809406657685
+om,Oromo,Afro-Asiatic languages,False,8,0.363102171416407,0.5791275367796673
+or,Oriya,Indo-European languages,False,8,0.1806016843093315,0.3840258842448131
+os,"Ossetian, Ossetic",Indo-European languages,False,8,0.3162564403199025,0.7078394619644615
+osa,Osage,Siouan,False,7,0.44981475945155047,0.6532131276913259
+osc,Oscan,Indo-European languages,False,7,0.4442038226347882,0.8581789164627214
+ota,"Turkish, Ottoman (1500-1928)",Turkic,False,7,0.47174162110053336,0.6982029633044082
+otk,Old Turkish,Turkic,False,8,0.517006253285744,0.7993997173383609
+pa,"Panjabi, Punjabi",Indo-European languages,False,8,0.23088654025966177,0.7080395113515108
+pag,Pangasinan,Austronesian languages,False,7,0.23485226049461244,0.43914495845485146
+pal,Pahlavi,Indo-European languages,False,8,0.4643852368865917,0.7754369184796831
+pam,Kapampangan,Austronesian languages,False,8,0.3008927236593301,0.5726709488285922
+pap,Papiamentu,Creoles and pidgins,False,8,0.07021979971050149,0.14176841888921765
+pau,Palauan,Austronesian languages,False,8,0.6219266156324302,0.8547093386442373
+pcd,Picard,Indo-European languages,False,8,0.4264538711125345,0.634538544610294
+pcm,Nigerian Pidgin,Creoles and pidgins,False,6,0.3298565193582398,0.6845540324793726
+pdc,Pennsylvania German,Indo-European languages,False,8,0.3543609502715177,0.7963878872603543
+pdt,Plautdietsch,Indo-European languages,False,8,0.4035320657294689,0.7948079905126361
+peo,Old Persian,Indo-European languages,False,8,0.4950668450793986,0.8363538944960358
+pfl,Palatine German,Indo-European languages,False,8,0.28375879738323584,0.7836435247289729
+phn,Phoenician,Afro-Asiatic languages,False,8,0.21490492155044327,0.5139432919795933
+pi,Pāli,Indo-European languages,False,7,0.4428273730052781,0.7466336190173652
+pih,Norfolk,Creoles and pidgins,False,8,0.6563213313833288,0.9972194955422545
+pis,Pijin,Creoles and pidgins,False,8,0.5513308960510994,0.7909522819868515
+pko,Pökoot,Nilotic,False,8,0.5430790032236257,0.7978250358082963
+pl,Polish,Indo-European languages,True,8,0.08019123027209808,0.26335754104514275
+pms,Piedmontese,Indo-European languages,False,8,0.29137009501430383,0.6712657502861836
+pnb,Punjabi (Western),Indo-European languages,False,6,0.3723705315074007,0.6765773214117276
+pnt,Pontic,Indo-European languages,False,8,0.4663954544627863,0.7858886886919975
+pon,Pohnpeian,Austronesian languages,False,8,0.5684690337505868,0.7998099043107393
+ppl,ppl,Uto-Aztecan,False,8,0.5368577298066757,0.8350633697949451
+pqm,Maliseet-Passamaquoddy,Algic,False,8,0.62218636064186,0.9539733909303653
+prd,Parsi-Dari,Indo-European languages,False,7,0.25358167384766667,0.6428714242787983
+prg,Prussian,Indo-European languages,False,8,0.4379681185887141,0.8687060284959075
+pro,Old Provençal,Indo-European languages,False,8,0.40332383290076174,0.6542003916993501
+ps,"Pashto, Pushto",Indo-European languages,False,8,0.2931287857598829,0.8542037911517939
+pt,Portuguese,Indo-European languages,True,8,0.0,0.0
+puu,Punu,Atlantic-Congo,False,8,0.5655963850743676,0.9159496448480218
+qu,Quechua,South American Indian languages,False,8,0.43008210562908417,0.7671200521335907
+quc,Kʼicheʼ,Mayan,False,8,0.5102606951417926,0.8638548289475482
+qug,Chimborazo Highland Quichua,Quechuan,False,8,0.4248114946877524,0.8131537026749732
+raj,Rajasthani,Indo-European languages,False,8,0.06065240760723683,0.17028050507323644
+rap,Rapanui,Austronesian languages,False,8,0.4212071307240917,0.8557807697191646
+rar,Rarotongan,Austronesian languages,False,8,0.47799041989273,0.780541249272996
+rcf,Réunion Creole French,Creoles and pidgins,False,8,0.5537416013444364,0.7903964133397476
+rej,Rejang,Austronesian languages,False,8,0.22518257082631238,0.4441597876540305
+rgn,Romagnol,Indo-European languages,False,8,0.2080645941266926,0.6436688919070926
+rhg,Rohingya,Indo-European languages,False,7,0.3858409443008114,0.7450331351805926
+ria,Riang (India),Sino-Tibetan languages,False,7,0.5181287781220113,0.8511713806489616
+rif,Riffian,Afro-Asiatic languages,False,8,0.4323723847365181,0.9558494697525183
+rjs,Rajbanshi,Indo-European languages,False,8,0.16085777706702056,0.37710362955022514
+rkt,Rangpuri,Indo-European languages,False,8,0.23187353889580947,0.4659747439082026
+rm,Romansh,Indo-European languages,False,8,0.07772093646897431,0.1745092807174996
+rmf,Kalo Finnish Romani,Indo-European languages,False,8,0.3826820890659732,0.6796322687000647
+rmo,Sinte Romani,Indo-European languages,False,8,0.4298488450439072,0.7823428098424887
+rmt,Domari,Indo-European languages,False,8,0.4625830363565612,0.6798862912951587
+rmu,Tavringer Romani,Indo-European languages,False,8,0.262283894038516,0.752940899225305
+rmy,Romani,Indo-European languages,False,8,0.43229998628864086,0.8586150850454857
+rn,Kirundi,Atlantic-Congo,False,8,0.5118093358737442,0.8940421375157415
+rng,Ronga,Atlantic-Congo,False,8,0.455986188987619,0.8446133137395362
+ro,"Romanian, Moldavan",Indo-European languages,False,8,0.055506046351343145,0.13220321709458682
+roa-rup,Aromanian,Indo-European languages,False,8,0.10236279574605937,0.17500477866070296
+rob,Tae',Austronesian languages,False,6,0.38664093094728397,0.9432248768093626
+rof,Rombo,Atlantic-Congo,False,8,0.5616731467067859,0.8238540013615453
+rom,Romany,Indo-European languages,False,8,0.4117946068207828,0.7147278535273407
+rtm,Rotuman,Austronesian languages,False,8,0.5926632664904865,0.9027134018471268
+ru,Russian,Indo-European languages,True,7,0.14761204740729209,0.5166421659255224
+rue,Rusyn,Indo-European languages,False,8,0.3393017969683926,0.7339382131763057
+rug,Roviana,Austronesian languages,False,8,0.45507688215146086,0.7612352884780401
+rup,Aromanian,Indo-European languages,False,8,0.20193049033266605,0.5424502807121605
+rw,Kinyarwanda,Atlantic-Congo,False,8,0.41644796555308655,0.8207869485460113
+rwk,Rwa,Atlantic-Congo,False,8,0.5492615887124421,0.84923609360678
+ryu,Central Okinawan,Japonic languages,False,8,0.32791301483092317,0.8118080734844837
+sa,Sanskrit (Saṁskṛta),Indo-European languages,False,8,0.3504773617297965,0.6497112990843361
+sad,Sandawe,Language isolate,False,8,0.43148845209063186,0.7812955890090372
+saf,Safaliba,Atlantic-Congo,False,8,0.5209171624080592,0.8740478719753689
+sah,Yakut,Turkic,False,8,0.4653651477570585,0.7828755899389035
+sam,Samaritan Aramaic,Afro-Asiatic languages,False,7,0.34070260494245685,0.6740713149209129
+saq,Samburu,Nilotic,False,8,0.4810886490759854,0.8134507729373432
+sas,Sasak,Austronesian languages,False,8,0.3123802999419326,0.8425364415939259
+sat,Santali,Austro-Asiatic languages,False,7,0.3817438361858323,0.7849917441041172
+saz,Saurashtra,Indo-European languages,False,8,0.3468766046121619,0.6954874084559077
+sba,Ngambay,Central Sudanic,False,8,0.5742412419346677,0.9174943476854068
+sbp,Sangu,Atlantic-Congo,False,8,0.537746917166145,0.7601062684579635
+sc,Sardinian,Indo-European languages,False,8,0.0626768257127009,0.1650806150103895
+sck,Sadri,Indo-European languages,False,8,0.4580216916715024,0.8273476089896673
+scn,Sicilian,Indo-European languages,False,8,0.10140793361989062,0.3164466130472874
+sco,Scots,Indo-European languages,False,8,0.35494261458840665,0.6766683379115271
+scs,North Slavey,Athabaskan-Eyak-Tlingit,False,8,0.43353134756053585,0.8023517455688266
+sd,Sindhi,Indo-European languages,False,7,0.3337358704468927,0.60929158920732
+sdc,Sassarese Sardinian,Indo-European languages,False,8,0.4774702969729056,0.9192366707362678
+sdh,Southern Kurdish,Indo-European languages,False,8,0.5258821619323117,0.8592559891018586
+se,Northern Sami,Uralic languages,False,8,0.4446341363274657,0.9004678166487923
+see,Seneca,Iroquoian,False,8,0.5136087210286252,0.8118535393698794
+sef,Cebaara Senoufo,Atlantic-Congo,False,8,0.5403410543121525,0.8856060353247701
+seh,Sena,Atlantic-Congo,False,8,0.5238159694808636,0.8656302557798707
+sei,Seri,Language isolate,False,8,0.5718326675311218,0.8954688196787094
+sel,Selkup,Uralic languages,False,8,0.5006724974340161,0.8459837348058404
+ses,Koyraboro Senni,Songhay,False,8,0.5072913133591718,0.7667086633579454
+sg,Sango,Atlantic-Congo,False,8,0.51342159380336,0.8237223463151707
+sga,Old Irish,Indo-European languages,False,8,0.40157906581009045,0.6074801949181485
+sgs,Samogitian,Indo-European languages,False,8,0.3726485433405933,0.6298622499341577
+sh,Serbo-Croatian,Indo-European languages,True,8,0.22457596026193163,0.5796478803821367
+shi,Tachelhit,Afro-Asiatic languages,False,7,0.3767703136213862,0.7537330807964064
+shn,Shan,Tai-Kadai languages,False,8,0.49677175218936453,0.9411649186989184
+shu,Chadian Arabic,Afro-Asiatic languages,False,8,0.16602642462196854,0.58295334996688
+si,"Sinhala, Sinhalese",Indo-European languages,False,6,0.1840078192906764,0.49880395851618864
+sid,Sidamo,Afro-Asiatic languages,False,8,0.47104721793401655,0.6979548390717046
+sk,Slovak,Indo-European languages,False,8,0.11553425562116214,0.30818932092503437
+skr,Saraiki,Indo-European languages,False,7,0.32224369422454757,0.7124418896200968
+sl,Slovene,Indo-European languages,True,8,0.09924471667926148,0.4730179962293912
+slh,Southern Lushootseed,Salishan,False,8,0.3022847648488061,0.8072435561650003
+sli,Lower Silesian,Indo-European languages,False,8,0.24077984076747505,0.6032310076049285
+sly,Selayar,Austronesian languages,False,8,0.21076950701254482,0.4797182051188066
+sm,Samoan,Austronesian languages,False,8,0.5738145563039783,0.8565451342563594
+sma,Southern Sami,Uralic languages,False,8,0.38208070234385155,0.7333845650741064
+smj,Lule Sami,Uralic languages,False,8,0.3342564791817733,0.6040436145682188
+smn,Inari Sami,Uralic languages,False,8,0.34505873343379745,0.5631201154042941
+smp,Samaritan,Afro-Asiatic languages,False,8,0.3918635082753304,0.7422451305032642
+sms,Skolt Sami,Uralic languages,False,8,0.4427534436502671,0.6833041174463762
+sn,Shona,Atlantic-Congo,False,8,0.46725040340387075,0.8060564573897893
+snf,snf,Atlantic-Congo,False,8,0.40041449057842043,0.9184432035935379
+snk,Soninke,Mande,False,8,0.5516747401782568,0.8416071843608188
+so,Somali,Afro-Asiatic languages,False,8,0.4536000146276418,0.7522564956748784
+sog,Sogdian,Indo-European languages,False,8,0.4269408905099162,0.7028278788101461
+sou,Southern Thai,Tai-Kadai languages,False,8,0.23869257679850042,0.6423419167051333
+sq,Albanian,Albanian languages,False,8,0.35653085355019215,0.6153261882701002
+sr,Serbian,Indo-European languages,True,8,0.23830878469000716,0.5877238035862928
+srb,Sora,Austro-Asiatic languages,False,8,0.316523718163242,0.5855537602444927
+srn,Sranan Tongo,Creoles and pidgins,False,8,0.3185710208302724,0.6122578366165418
+srr,Serer,Atlantic-Congo,False,8,0.49946650058821035,0.8106848558565859
+srx,Sirmauri,Indo-European languages,False,7,0.3482806303428674,0.7761473893849362
+ss,Swati,Atlantic-Congo,False,8,0.4776847710762438,0.8173777216219786
+ssy,Saho,Afro-Asiatic languages,False,8,0.4522078320101826,0.7282346492188566
+st,Southern Sotho,Atlantic-Congo,False,7,0.4023739202025956,0.7287494572682178
+stq,Saterland Frisian,Indo-European languages,False,8,0.35066150878177105,0.5059769822684016
+str,Straits Salish,Salishan,False,8,0.532717921994845,0.9162612646227206
+stu,stu,Austro-Asiatic languages,False,8,0.5596469784838555,0.8338150245879062
+su,Sundanese,Austronesian languages,False,8,0.20975528237716334,0.5474378620440368
+suk,Sukuma,Atlantic-Congo,False,8,0.452716551218132,0.6766965036768249
+sus,Susu,Mande,False,8,0.5364259918261053,0.8855824775224591
+sux,Sumerian,Language isolate,False,8,0.3596511121065721,0.5557832811040093
+suz,suz,Sino-Tibetan languages,False,8,0.3299252674695034,0.8415372918920663
+sv,Swedish,Indo-European languages,True,8,0.013995066591002327,0.028144601774497513
+sw,Swahili,Niger-Kordofanian languages,False,8,0.5057006874070374,0.8379337869529802
+swb,Comorian,Atlantic-Congo,False,8,0.47330334752283776,0.8773660059620331
+swg,Swabian,Indo-European languages,False,8,0.23700994320769686,0.6541595971384075
+swv,Shekhawati,Indo-European languages,False,8,0.22970168809675615,0.722962980316946
+sxn,Sangir,Austronesian languages,False,8,0.38817102966904626,0.7418688759971781
+syc,Classical Syriac,Afro-Asiatic languages,False,7,0.10085111925281884,0.3374301427174524
+syi,Seki,Atlantic-Congo,False,8,0.5415475859280435,0.9407320493583669
+syl,Sylheti,Indo-European languages,False,8,0.3213737874786324,0.6549808335856013
+syr,Syriac,Afro-Asiatic languages,False,7,0.017589503587423342,0.05179935562688587
+szl,Silesian,Indo-European languages,False,8,0.14865377623982598,0.4632751968432294
+ta,Tamil,Dravidian languages,True,8,0.1946056503558766,0.3899722101842227
+tab,Tabassaran,Nakh-Daghestanian,False,8,0.3844380343443378,0.8505170770824807
+taj,Eastern Tamang,Sino-Tibetan languages,False,7,0.17683964488306358,0.45379453911020995
+tbw,Tagbanwa,Austronesian languages,False,8,0.5012112650596917,0.9252855392554932
+tce,Southern Tutchone,Athabaskan-Eyak-Tlingit,False,6,0.2446668462214675,0.4836285402212682
+tcy,Tulu,Dravidian languages,False,7,0.15230905469129397,0.42743464087690397
+tdd,Tai Nüa,Tai-Kadai languages,False,6,0.4953588636992423,0.7741500673487741
+tdg,Western Tamang,Sino-Tibetan languages,False,8,0.3038736304875238,0.6734015781022389
+tdh,Thulung,Sino-Tibetan languages,False,7,0.445860464186188,0.781547480542353
+te,Telugu,Dravidian languages,False,8,0.17729248386176397,0.47560818725268994
+tem,Timne,Atlantic-Congo,False,8,0.2896117187939115,0.7358570163633303
+teo,Teso,Nilotic,False,8,0.44581958951086315,0.7073374652954091
+ter,Tereno,Arawakan,False,7,0.31147136058589914,0.6914992748142843
+tet,Tetum,Austronesian languages,False,8,0.20672555594731756,0.43565346331346
+tg,Tajik,Indo-European languages,False,8,0.28710168478323667,0.5392209617706814
+tgx,Tagish,Athabaskan-Eyak-Tlingit,False,7,0.5604864459243186,0.812935248776535
+th,Thai,Tai-Kadai languages,True,7,0.0725563892629791,0.16696551810846905
+thl,Dangaura Tharu,Indo-European languages,False,7,0.25021906768753044,0.7777987646777835
+thq,Kochila Tharu,Indo-European languages,False,7,0.343552498651316,0.7897540424466638
+thr,Rana Tharu,Indo-European languages,False,7,0.3176944173076902,0.8313902882711109
+tht,Tahltan,Athabaskan-Eyak-Tlingit,False,8,0.5322831861660793,0.8326306392218052
+ti,Tigrinya,Afro-Asiatic languages,False,7,0.3543021239560447,0.8324183774872741
+tig,Tigre,Afro-Asiatic languages,False,8,0.4212966833600125,0.9146552870379869
+tiv,Tiv,Atlantic-Congo,False,8,0.6087606564349486,0.9555508336131399
+tk,Turkmen,Turkic,False,8,0.4540475070014187,0.7641726600133264
+tkl,Tokelau,Austronesian languages,False,8,0.5259913879865344,0.8078653691432631
+tkr,Tsakhur,Nakh-Daghestanian,False,8,0.441368128328448,0.6774847964671851
+tkt,Kathoriya Tharu,Indo-European languages,False,8,0.13594339730640678,0.46886025020855193
+tl,Tagalog,Austronesian languages,False,8,0.32196653244961265,0.7344811801676542
+tlh,Klingon,Artificial languages,False,8,0.3191203587664137,0.5612929842970753
+tli,Tlingit,Athabaskan-Eyak-Tlingit,False,7,0.39028251815016396,0.815427703827691
+tly,Talysh,Indo-European languages,False,7,0.34394579606812004,0.6167008735406854
+tmh,Tamashek,Afro-Asiatic languages,False,8,0.4521428230760861,0.8189625078868233
+tn,Tswana,Atlantic-Congo,False,8,0.5456713271597377,0.8149357433836885
+tnr,tnr,Atlantic-Congo,False,8,0.4326224217114298,0.8286384422822775
+to,Tonga,Austronesian languages,False,8,0.4077498744039349,0.7443179130549399
+tog,Nyasa Tonga,Atlantic-Congo,False,8,0.536331059775015,0.830188896597007
+tok,Toki Pona,Artificial languages,False,8,0.4064019627489442,0.6403391678548777
+tokipona,tokipona,Artificial languages,False,8,0.3712324782466944,0.6699625501484954
+tpi,Tok Pisin,Creoles and pidgins,False,8,0.5198645018547866,0.8165077855364107
+tr,Turkish,Turkic,True,8,0.21188410482529277,0.6386073185932128
+tru,Turoyo,Afro-Asiatic languages,False,8,0.09075211150438754,0.3026402585936061
+trv,Taroko,Austronesian languages,False,8,0.49361474727754356,0.821136193541909
+trw,Torwali,Indo-European languages,False,7,0.3370125233899588,0.6985570135280982
+ts,Tsonga,Atlantic-Congo,False,8,0.43612167199844915,0.7790983719153912
+tsd,Tsakonian,Indo-European languages,False,8,0.4299870245809932,0.7314504231207015
+tsg,Tausug,Austronesian languages,False,8,0.41766771860567825,0.6532216258503047
+tsi,Tsimshian,Tsimshian,False,8,0.5982642867568766,0.8698604472079043
+tsj,Tshangla,Sino-Tibetan languages,False,8,0.514756200007342,0.8533281430616528
+tt,Tatar,Turkic,False,8,0.4084156793683974,0.7096142191701511
+ttj,Tooro,Atlantic-Congo,False,8,0.4960513207125761,0.8075176559709053
+ttm,Northern Tutchone,Athabaskan-Eyak-Tlingit,False,7,0.41722092166229063,0.7939844125284649
+tts,Northeastern Thai,Tai-Kadai languages,False,8,0.1592434068976145,0.4493152456248225
+ttt,Muslim Tat,Indo-European languages,False,8,0.5508262823395565,0.881826349443957
+tum,Tumbuka,Atlantic-Congo,False,8,0.45969145456791155,0.6801981411201201
+tvl,Tuvalu,Austronesian languages,False,8,0.5098614606096412,0.9179528366817672
+tw,Twi,Niger-Kordofanian languages,False,8,0.46378814477696506,0.874277205316635
+twq,Tasawaq,Songhay,False,8,0.6105890042653925,0.8280822472345721
+ty,Tahitian,Austronesian languages,False,8,0.40005198677543147,0.5880740684510581
+tyv,Tuvinian,Turkic,False,8,0.46724355154586344,0.7438153492955735
+tzm,Central Atlas Tamazight,Afro-Asiatic languages,False,8,0.23382923968175065,0.47683200484052934
+ude,Udihe,Tungusic,False,7,0.3628992767486593,0.925606012791636
+udm,Udmurt,Uralic languages,False,8,0.2975475165369958,0.666678402912569
+ug,"Uighur, Uyghur",Turkic,False,6,0.4668460459419743,0.7699413962539972
+uga,Ugaritic,Afro-Asiatic languages,False,6,0.29728643277488814,0.6034207018672785
+uk,Ukrainian,Indo-European languages,True,8,0.165131687229806,0.4835969894619627
+uli,Ulithian,Austronesian languages,False,8,0.533568064788117,0.8989701798119707
+umb,Umbundu,Atlantic-Congo,False,8,0.5468171050318112,0.775889112707961
+unr,Mundari,Austro-Asiatic languages,False,8,0.41690405209346276,0.8785773481231894
+unx,Munda,Austro-Asiatic languages,False,8,0.5152871000145888,0.8113384328128873
+ur,Urdu,Indo-European languages,False,7,0.10976983954702015,0.19037416163480114
+uz,Uzbek,Altaic languages,False,8,0.4954866253976563,0.874525232351229
+uz_AF,Uzbeki Afghanistan,Altaic languages,False,8,0.5939169628069652,0.8547026391507084
+vai,Vai,Mande,False,7,0.34165110498036266,0.8286191902315341
+ve,Venda,Atlantic-Congo,False,8,0.46733362674499496,0.7607299008088471
+vec,Venetian,Indo-European languages,False,8,0.3634774753812248,0.8165710283179142
+vep,Veps,Uralic languages,False,8,0.44258293501976403,0.8219164914233963
+vi,Vietnamese,Austro-Asiatic languages,True,8,0.3498954923870432,0.7321821732966566
+vic,Virgin Islands Creole English,Creoles and pidgins,False,8,0.35561991211674526,0.8479883077951689
+vls,West Flemish,Indo-European languages,False,8,0.09640600883388577,0.22727526645692453
+vmf,Main-Franconian,Indo-European languages,False,8,0.39027145501709487,0.7783620020425956
+vmw,Makhuwa,Atlantic-Congo,False,8,0.43840890265989435,0.8392047622296338
+vo,Volapük,Artificial languages,False,8,0.43611859865453484,0.8014388528394513
+vot,Votic,Uralic languages,False,8,0.4148901714299096,0.9119172335250951
+vro,Võro,Uralic languages,False,8,0.21777444113181724,0.4240547869846365
+vun,Vunjo,Atlantic-Congo,False,8,0.5708483571157524,0.8468162476495337
+wa,Walloon,Indo-European languages,False,8,0.32672430285234005,0.6833922582526248
+wae,Walser,Indo-European languages,False,8,0.26014556825168933,0.6566254604031871
+wal,Wolaytta,Afro-Asiatic languages,False,8,0.4793026910973949,0.8545144396162604
+war,Waray / Samar-Leyte Visayan,Austronesian languages,False,8,0.27515639625094035,0.4418734911525737
+was,Washo,Language isolate,False,6,0.6155669277449526,0.8554465030606766
+wbp,Warlpiri,Pama-Nyungan,False,8,0.48320088320934207,0.8711240544191403
+wbq,Waddar,Dravidian languages,False,8,0.3856728057039388,0.7726356743363376
+wbr,Wagdi,Indo-European languages,False,8,0.36358019176898726,0.7906328232332822
+wls,Wallisian,Austronesian languages,False,8,0.5579935598579031,0.8360820919692722
+wni,Ndzwani Comorian,Atlantic-Congo,False,8,0.4448240838700396,0.7195167705843344
+wo,Wolof,Atlantic-Congo,False,8,0.528069889422446,0.7685371973670921
+wtm,Mewati,Indo-European languages,False,8,0.3118724153005443,0.8995382509480705
+wuu,Wu Chinese,Sino-Tibetan languages,False,8,0.3679735265160815,0.7452063174803634
+xal,Kalmyk,Mongolic-Khitan,False,8,0.2826187580472548,0.5972497210354906
+xav,Xavánte,Nuclear-Macro-Je,False,7,0.4541155094103929,0.6644144849124035
+xcr,Carian,Indo-European languages,False,8,0.48438029618912964,0.8506310644460706
+xh,Xhosa,Atlantic-Congo,False,8,0.573313864728693,0.8240395391648245
+xlc,Lycian,Indo-European languages,False,7,0.5662131767717954,0.8664643378073165
+xld,Lydian,Indo-European languages,False,8,0.35719551738746463,0.8017259544252797
+xmf,Megrelian,Kartvelian,False,8,0.4652684265460719,0.7187660391770776
+xmn,Manichaean Middle Persian,Indo-European languages,False,8,0.4568239419041613,0.8052290335294469
+xmr,Meroitic,Language isolate,False,7,0.2858931092344708,0.7210330229514997
+xna,Ancient North Arabian,Afro-Asiatic languages,False,8,0.5829626857120909,0.9220773042410423
+xnr,Kangri,Indo-European languages,False,8,0.42181008645808366,0.8145131822718452
+xog,Soga,Atlantic-Congo,False,8,0.44883111624624866,0.7572283601341516
+xpr,Parthian,Indo-European languages,False,7,0.28962165050293054,0.7123163703932197
+xsa,Sabaean,Afro-Asiatic languages,False,6,0.5637042421639078,0.8680145235321903
+xsr,Sherpa,Sino-Tibetan languages,False,8,0.48187804180355,0.8266600672160118
+xum,Umbrian,Indo-European languages,False,7,0.3689006896580458,0.7163520451767426
+yao,Yao,Atlantic-Congo,False,8,0.45676868581974434,0.7240748602850995
+yap,Yapese,Austronesian languages,False,8,0.4972874963685247,0.8637552448112636
+yav,Yangben,Atlantic-Congo,False,7,0.514208636487417,0.8568174097681237
+ybb,Yemba,Atlantic-Congo,False,8,0.49660093365014907,0.8030659562867755
+yi,Yiddish,Indo-European languages,False,6,0.4234330657982941,0.7923239272426893
+yo,Yoruba,Atlantic-Congo,False,8,0.39636128708957935,0.6205436273467317
+yrk,Nenets,Uralic languages,False,8,0.3823749632605223,0.8288232830183124
+yrl,Nheengatu,Tupian,False,8,0.46096381421694954,0.729265616706758
+yua,Yucateco,Mayan,False,8,0.4128023981613461,0.8431929379990908
+yue,Cantonese,Sino-Tibetan languages,True,6,0.18958440174880134,0.3148977876378162
+za,"Zhuang, Chuang",Tai-Kadai languages,False,8,0.5498518482851239,0.8141451634059517
+zag,Zaghawa,Saharan,False,8,0.5663293788713344,0.8429501808805886
+zap,Zapotec,Otomanguean,False,8,0.5413851266605407,0.8194439447150194
+zbl,Blissymbols,Artificial languages,False,7,0.5037904063101298,0.7461387871794996
+zdj,Ngazidja Comorian,Atlantic-Congo,False,8,0.5151834271960789,0.7289439828225684
+zea,Zeelandic,Indo-European languages,False,8,0.12817306265454934,0.2791650806696063
+zen,Zenaga,Afro-Asiatic languages,False,8,0.48153543308796837,0.778404918529307
+zg,Moroccan Amazigh,Afro-Asiatic languages,False,8,0.23999974150911899,0.3781124575421285
+zgh,Standard Moroccan Tamazight,Afro-Asiatic languages,False,8,0.29096283432739956,0.6951999442902611
+zh,Chinese,Sino-Tibetan languages,True,8,0.22595819670105885,0.7777133044236033
+zh-classical,Classical Chinese,Sino-Tibetan languages,False,7,0.23715604299414053,0.46032187449574924
+zh-min-nan,Minnan,Sino-Tibetan languages,False,8,0.2776430206985824,0.7902867390383013
+zh-tw,Traditional Chinese,Sino-Tibetan languages,False,7,0.3790795002415986,0.9196007201442864
+zh-yue,Cantonese,Sino-Tibetan languages,False,7,0.1917453953939229,0.3148977876378162
+zmi,Negeri Sembilan Malay,Austronesian languages,False,8,0.09971432417530503,0.20479561547535208
+zu,Zulu,Atlantic-Congo,True,8,0.39719376745247653,0.8028100189247089
+zun,Zuni,Language isolate,False,7,0.5572218751973737,0.790908679485952
+zza,Zaza,Indo-European languages,False,8,0.48939341013751214,0.8170085874132549

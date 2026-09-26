@@ -1,0 +1,5 @@
+source,translation_column,rows_with_translation,total_rows,coverage_rate
+Wikipedia,wikipedia_translated_term,34,185,0.1837837837837838
+Google Translate,gt_translated_term,123,185,0.6648648648648648
+EasyNMT,enmt_translated_term,58,185,0.31351351351351353
+OpenAI,openai_translated_term,169,185,0.9135135135135135

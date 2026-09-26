@@ -1,0 +1,7 @@
+comparison,source_a,source_b,term_source,overlap,exact_normalized_agreements,agreement_rate
+Wikipedia vs Google Translate,Wikipedia,Google Translate,Digital Humanities,34,20,0.5882352941176471
+Wikipedia vs EasyNMT,Wikipedia,EasyNMT,Digital Humanities,22,8,0.36363636363636365
+Wikipedia vs OpenAI,Wikipedia,OpenAI,Digital Humanities,34,30,0.8823529411764706
+Google Translate vs EasyNMT,Google Translate,EasyNMT,Digital Humanities,58,12,0.20689655172413793
+Google Translate vs OpenAI,Google Translate,OpenAI,Digital Humanities,112,50,0.44642857142857145
+EasyNMT vs OpenAI,EasyNMT,OpenAI,Digital Humanities,52,14,0.2692307692307692

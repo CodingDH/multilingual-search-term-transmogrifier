@@ -10,5 +10,7 @@ notebooks/older_notebooks/
 temp/
 datasets/metadata_files/cldr-cache/
 docs/
+# Local article prose draft; intentionally not committed.
+docs/error_patterns_working_draft.md
 .vscode/
 .claude/

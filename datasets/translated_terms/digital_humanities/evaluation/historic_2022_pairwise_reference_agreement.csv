@@ -1,0 +1,2 @@
+comparison,source_a,source_b,term_source,overlap,exact_normalized_agreements,agreement_rate
+Wikipedia/pre-existing term vs Historic Google Translate output,Wikipedia/pre-existing term,Historic Google Translate output,Digital Humanities,19,13,0.6842105263157895

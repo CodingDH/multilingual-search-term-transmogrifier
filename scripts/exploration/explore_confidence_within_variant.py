@@ -44,7 +44,7 @@ from rich.console import Console
 from rich.table import Table
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
-from scripts.utils import get_data_directory_path, read_csv_file, analyze_differences
+from scripts.utils import get_data_directory_path, read_csv_file, analyze_differences, get_language_family
 
 console = Console()
 
@@ -395,6 +395,7 @@ def run_confidence_evaluation(
 
     scored_df = pd.concat(all_scored, ignore_index=True)
     summary_df = pd.DataFrame(summaries)
+    scored_df['family_name'] = scored_df['language_code'].astype(str).map(get_language_family)
 
     # Save outputs
     _dir = output_dir or os.path.join(

@@ -31,16 +31,63 @@ exploration/
                → across_variant_detail.csv (prompt robustness per service)
                          ↓
   Step 3       explore_disagreements.py  [--exclusions manual_exclusions.csv]
-               → disagreement_analysis.csv (typology classification)
+               → disagreement_analysis.csv (string comparison + evidence)
+                         ↓
+  Step 4       build_disagreement_explorer_data.py
+               → disagreement_explorer_data.csv (prompt/rationale matrix)
+                         ↓
+  Step 5       build_disagreement_patterns.py
+               → disagreement_patterns.csv (multidimensional synthesis)
 ```
 
-The **review stage** sits between raw translation (notebook 02) and the analytical pipeline (Steps 1–3). It surfaces automated review signals — missing rationales, mixed-script output, placeholder/refusal terms, script disagreements between services, source-term leakage, repetition loops, and search-safety issues — before any downstream analysis runs. Human review decisions (service exclusions) are persisted as `manual_exclusions.csv` and passed to `explore_disagreements.py`.
+The **review stage** sits between raw translation (notebook 02) and the analytical pipeline. It surfaces automated review signals — missing rationales, mixed-script output, placeholder/refusal terms, script disagreements between services, source-term leakage, repetition loops, and search-safety issues — before any downstream analysis runs. Human review decisions (service exclusions) are persisted as `manual_exclusions.csv` and passed to `explore_disagreements.py`.
 
-The **historic check** is separate from the active translation-evaluation pipeline. It supports notebook 02's discussion of the original 185-language Digital Humanities translation artifact and should be run only when refreshing the historic-reference convergence tables.
+The **historic check** is separate from the active translation-evaluation pipeline. It supports notebook 02's discussion of the initial Digital Humanities prompt-reference artifact and should be run only when refreshing the historic-reference convergence tables.
+
+The **search relevance review** occurs after the companion GitHub search finishes. Run `build_search_relevance_review.py`, inspect the generated queue in `html_files/search_relevance_reviewer.html`, and save the reviewed CSV before treating search-result counts as evidence of multilingual discovery.
 
 ---
 
 ## Files
+
+### `build_search_relevance_review.py` — Post-search term relevance queue
+
+Builds a review table for every retained search term that returned at least one GitHub item. It reads repository, issue, and user-search CSVs from `CodingDH/new_datasets`, deduplicates items within each term, and separates phrase-search repositories, topic-derived repositories, issues, pull requests, individual users, and organizations. GitHub returns pull requests through the issue-search endpoint and organizations through the user-search endpoint, so the builder makes those hidden endpoint groupings explicit.
+
+The output includes up to five representative samples of each result type and two editable judgments: term credibility and retrieval relevance. For the Digital Humanities run, the builder seeds conservative Codex proposals. Downstream handling is derived rather than separately reviewed: credible terms with mostly relevant retrieval are `retain`, suspect terms with mostly irrelevant retrieval are `exclude`, and every mixed combination is `retain_track`. This preserves expansive discovery while allowing later analyses to report relevance stability. Every seeded row is marked `codex_provisional`; changing a field in the HTML reviewer marks it `human_reviewed`. A saved reviewed CSV always overrides these proposals when the queue is rebuilt. Notebook 09 removes only exclusions with `review_status == human_reviewed`; provisional exclusions remain available until confirmed.
+
+The builder also calculates exclusive versus shared results, coverage already supplied by the English query, marginal results beyond English, and each term's strongest overlap neighbors. A separate `search_result_term_overlap_edges.csv` contains the complete weighted term-to-term network, while `search_result_overlap_summary.csv` records global unique-result and multiplicity totals for Notebook 09.
+
+```bash
+python scripts/exploration/build_search_relevance_review.py
+```
+
+- **Input:** `reviewed_grouped_translated_terms.csv` plus completed GitHub search result files
+- **Output:** `search_terms/search_result_relevance_review.csv`
+- **Analytical outputs:** `search_terms/search_result_term_overlap_edges.csv` and `search_terms/search_result_overlap_summary.csv`
+- **Reviewer:** `html_files/search_relevance_reviewer.html`
+- **Reviewed artifact:** `search_terms/search_result_relevance_reviewed.csv`
+
+If the reviewed artifact already exists, rebuilding carries its decisions forward by normalized search term.
+
+---
+
+### `build_language_code_pipeline_figure.py` — Article figure: language-list history and final architecture
+
+Builds the methods figure that combines two views of the language-code pipeline: the historical expansion from the original 185-code ISO 639-1 list to the 881-row target set, and the final separation between sources that define language rows and sources that enrich existing rows.
+
+- **Historical sequence**: ISO 639-1 baseline → Wikimedia → LOC ISO 639-2 → CLDR 48.2 plus the retained CLDR 45 supplement
+- **Current row-defining sources**: CLDR 48.2, LOC ISO 639-2, Wikimedia, and the CLDR 45 supplement
+- **Metadata enrichment**: SIL ISO 639-3 names, ISO 639-5/CLDR and Glottolog family evidence, reviewed family decisions, and IANA/BCP 47 normalization through `langcodes`
+- **Outputs**: `figures/dhq_article/language_code_pipeline_history_and_final.{png,pdf,svg}`
+
+```bash
+python scripts/exploration/build_language_code_pipeline_figure.py
+```
+
+The historical counts reproduce the source build-up documented in notebook 01: 185 → 272 → 465 → 881. The enrichment layers do not add language rows.
+
+---
 
 ### `translation_classifier.py` — Mixed-script and placeholder translation classifier
 
@@ -94,12 +141,12 @@ python scripts/exploration/build_review_explorer_data.py --output-dir path/to/di
 
 ### `build_historic_reference_convergence.py` — Notebook support: historic DH reference agreement
 
-Builds the precomputed tables used by notebook 02's historic reference-convergence section. This script intentionally uses only `historic_materials/translated_dh_terms.csv` and hard-filters to `term_source == "Digital Humanities"` by default.
+Builds the precomputed tables used by notebook 02's historic reference-convergence section. This script intentionally uses only the two CSVs in `historic_materials/` and hard-filters both to `term_source == "Digital Humanities"` by default.
 
-In that historic CSV, `term` is the pre-existing/Wikipedia-derived Digital Humanities term when one was available, while `translated_term` is the historic Google Translate output. The script therefore measures exact normalized agreement between those two historic fields; it does **not** use the legacy `old_digital_humanities` folder, and it does not claim to reconstruct OpenAI or EasyNMT convergence because those service-specific columns are not present in the historic file.
+The November 2022 file, `translated_dh_terms.csv`, supports the first historic check: exact normalized agreement between `term` (pre-existing/Wikipedia-derived Digital Humanities term where available) and `translated_term` (historic Google Translate output). The November 2024 file, `initial_translated_terms.csv`, supports the second historic check: exact normalized agreement among `wikipedia_translated_term`, `gt_translated_term`, `enmt_translated_term`, and `openai_translated_term`. The script does **not** use the legacy `old_digital_humanities` folder.
 
-- **Input**: `historic_materials/translated_dh_terms.csv`
-- **Output**: `translated_terms/digital_humanities/evaluation/historic_*.csv`
+- **Inputs**: `historic_materials/translated_dh_terms.csv`, `historic_materials/initial_translated_terms.csv`
+- **Output**: `translated_terms/digital_humanities/evaluation/historic_2022_*.csv` and `historic_2024_*.csv`
 - **Default term filter**: `Digital Humanities`
 
 ```bash
@@ -110,12 +157,12 @@ Generated files:
 
 | File | Purpose |
 | --- | --- |
-| `historic_reference_artifacts.csv` | Records the historic artifact used and its row/translation counts |
-| `historic_reference_service_presence.csv` | Counts availability of the Wikipedia-derived term and historic GT output |
-| `historic_pairwise_reference_agreement.csv` | Pairwise exact-normalized agreement between the two historic fields |
-| `historic_reference_count_summary.csv` | Source availability and agreement by number of historic fields present |
-| `historic_all_source_convergence_summary.csv` | Overall convergence categories: no outputs, one output only, agree, diverge |
-| `historic_reference_convergence_detail.csv` | Per-language detail table used for examples in notebook 02 |
+| `historic_2022_reference_artifacts.csv` / `historic_2024_reference_artifacts.csv` | Records the historic artifact used and its row/translation counts |
+| `historic_2022_reference_service_presence.csv` / `historic_2024_reference_service_presence.csv` | Counts availability of the compared fields in each artifact |
+| `historic_2022_pairwise_reference_agreement.csv` / `historic_2024_pairwise_reference_agreement.csv` | Pairwise exact-normalized agreement for the relevant comparison fields |
+| `historic_2022_reference_count_summary.csv` / `historic_2024_reference_count_summary.csv` | Source availability and agreement by number of historic outputs present |
+| `historic_2022_all_source_convergence_summary.csv` / `historic_2024_all_source_convergence_summary.csv` | Overall convergence categories: no outputs, one output only, agree, diverge |
+| `historic_2022_reference_convergence_detail.csv` / `historic_2024_reference_convergence_detail.csv` | Per-language detail tables used for examples in notebook 02 |
 
 ---
 
@@ -217,6 +264,8 @@ For each prompt variant separately, measures how much the eight LLM services (Op
 
 Confidence = fraction of services agreeing on the most common translation. The four non-LLM sources — MT baselines (GT, EasyNMT, Lingvanex) and the Wikipedia community reference — are tracked separately as a prompt-invariant block.
 
+The `family_name` column is refreshed through `get_language_family()` before export. When `language_codes_comprehensive_family_reviewed.csv` exists, this means `confidence_scores.csv` uses the reviewed `family_name_analysis` labels rather than the raw pre-review family names.
+
 **Data quality — translation/rationale pairing.** The central function exposed by this file, `load_variant_df`, is used by every downstream notebook and script to load per-variant data. Before returning, it calls `enforce_translation_rationale_pairing` (`scripts/utils.py`), which nulls out mismatched LLM columns:
 
 | Failure mode | Example | Action |
@@ -243,6 +292,8 @@ For each (language × service), compares translations across the four prompt var
 
 Agreement rate = fraction of variants that produced the same translation for a given (language × service). Low agreement means the service is prompt-sensitive for that language; it is a convergence signal, not direct proof that no grounded answer exists.
 
+The exported `language_family` column is resolved with `get_language_family()`, so downstream notebooks inherit the reviewed analysis-family labels when the reviewed metadata layer is present.
+
 ```bash
 python scripts/exploration/explore_confidence_across_variants.py --term "Digital Humanities"
 python scripts/exploration/explore_confidence_across_variants.py --variants minimal fluent_speaker github_searcher
@@ -250,24 +301,27 @@ python scripts/exploration/explore_confidence_across_variants.py --variants mini
 
 ---
 
-### `explore_disagreements.py` — Step 3: Disagreement typology
+### `explore_disagreements.py` — Step 3: Translation comparison
 
-Classifies each language into one of five rule-based buckets using string matching on translations, rationale text, and lightweight metadata:
+Assigns each language a descriptive string-comparison status after exclusions and corrections:
 
-| Category | Description |
+| Comparison status | Description |
 | --- | --- |
-| `COMPLETE_CONSENSUS` | All available services agree — no disagreement to classify |
-| `MEASUREMENT_ARTEFACT` | Apparent disagreement dissolves after normalization or script-variant handling |
-| `PRODUCTIVE_DISAGREEMENT` | Multiple in-language alternatives with a Wikipedia/community anchor |
-| `STRUCTURAL_ABSENCE` | Source-term fallback or explicit absence signaling |
-| `TRANSMOGRIFICATION` | No established equivalent; services construct elaborate novel terms |
+| `exact_convergence` | At least two usable outputs remain and all match after trimming and case-folding |
+| `near_form_convergence` | Outputs collapse under normalization or remain within the edit-distance tolerance |
+| `substantive_variation` | Normalized outputs remain farther apart than the tolerance |
+| `insufficient_comparison` | Fewer than two usable outputs remain |
+
+Wikipedia presence, source retention, script disagreement, and rationale signals are exported as independent evidence. They do not determine the comparison status.
 
 - **Input**: `translated_terms/{term}/evaluation/across_variant_detail.csv` + variant DataFrames (for rationale columns)
 - **Output**: `translated_terms/{term}/evaluation/disagreement_analysis.csv`
 
-**Data quality — additional pairing enforcement.** Translations are sourced from `across_variant_detail.csv` (which aggregates across all variants), while rationales are loaded from a single specified variant file. A language can therefore appear in the detail CSV with a service translation even if that service has no rationale in the chosen variant. After loading both dicts, any LLM service that has a translation but no valid rationale in the loaded variant is dropped from the analysis — its output does not affect the classifier or rationale-similarity score. This is a second pass on top of the pairing already applied by `load_variant_df`.
+The script recomputes `language_family` from `get_language_family()` during classification rather than copying a family label from `across_variant_detail.csv`. This keeps the disagreement outputs aligned with the reviewed family metadata even if an intermediate CSV was generated earlier.
 
-**Manual exclusions.** Pass `--exclusions path/to/manual_exclusions.csv` (downloaded from `html_files/review_explorer.html` during the review stage) to suppress specific (language × service) translations or per-variant rationales from the analysis before classification runs.
+**Data quality — additional pairing enforcement.** Translations are sourced from `across_variant_detail.csv` (which aggregates across all variants), while rationales are loaded from a single specified variant file. A language can therefore appear in the detail CSV with a service translation even if that service has no rationale in the chosen variant. After loading both dictionaries, any LLM service that has a translation but no valid rationale in the loaded variant is dropped from the comparison and rationale-similarity score. This is a second pass on top of the pairing already applied by `load_variant_df`.
+
+**Manual exclusions.** Pass `--exclusions path/to/manual_exclusions.csv` (downloaded from `html_files/review_explorer.html` during the review stage) to suppress specific (language × service) translations or per-variant rationales before comparison.
 
 ```bash
 python scripts/exploration/explore_disagreements.py --term "Digital Humanities"
@@ -279,15 +333,17 @@ python scripts/exploration/explore_disagreements.py --exclusions datasets/transl
 
 ### `build_disagreement_explorer_data.py` — Notebook support: disagreement analysis matrix
 
-Builds `translated_terms/{term}/evaluation/disagreement_explorer_data.csv` after `explore_disagreements.py` has written `disagreement_analysis.csv`. Despite the historical script name, this file is no longer tied to a standalone HTML disagreement explorer. It is a notebook-support table consumed by notebook 07 for rationale classification and related inspection.
+Builds `translated_terms/{term}/evaluation/disagreement_explorer_data.csv` after `explore_disagreements.py` has written `disagreement_analysis.csv`. Despite the historical script name, this file is no longer tied to a standalone HTML disagreement explorer. It is a notebook-support table consumed by notebook 06 for rationale classification and by the disagreement-pattern build.
 
 The script merges:
 
-- `disagreement_analysis.csv` categories and rule evidence
+- `disagreement_analysis.csv` comparison statuses and independent evidence
 - per-language confidence aggregates from `confidence_scores.csv`
 - service translations parsed into separate columns
 - term and rationale columns for each LLM service × prompt variant, with translation/rationale pairing enforced before export
 - prompt-invariant baseline terms where available
+
+Before saving, the merged `language_family` column is refreshed from `get_language_family()` so the explorer-support table uses the reviewed analysis labels.
 
 ```bash
 python scripts/exploration/build_disagreement_explorer_data.py --term "Digital Humanities"
@@ -296,11 +352,30 @@ python scripts/exploration/build_disagreement_explorer_data.py --term "Digital H
 
 ---
 
+### `build_disagreement_patterns.py` — Step 5: multidimensional synthesis
+
+Builds `disagreement_patterns.csv` for notebook 08. It combines the neutral comparison table with prompt-level LLM terms and English-rationale signals. The output keeps each analytical dimension separate:
+
+- exact-form cluster shape and dominant-form share;
+- API, local-LLM, MT, and cross-group alignment;
+- singleton service outliers and MT/LLM dominant-form splits;
+- prompt stability, GitHub source echo, and judge-prompt effects;
+- Wikipedia relationship, source retention, and script evidence;
+- overlapping definitional registers and rationale stances.
+
+These fields describe patterns and select cases for review; they do not infer correctness or a single cause.
+
+```bash
+python scripts/exploration/build_disagreement_patterns.py --term "Digital Humanities"
+```
+
+---
+
 ### `rationale_classifier.py` — Notebook support: rationale genre classification
 
-Importable helper functions for notebook 07. The classifier asks whether rationale prose reveals prompt variant or service identity after masking obvious leakage such as service names, prompt names, source-term tokens, language names, and translated terms.
+Importable helper functions for notebook 06. The classifier asks whether rationale prose reveals prompt variant or service identity after masking obvious leakage such as service names, prompt names, source-term tokens, language names, and translated terms.
 
-This is not a standalone CLI step. Notebook 07 imports the masking and classification helpers to run the main rationale-genre analysis and masking ablations.
+This is not a standalone CLI step. Notebook 06 imports the masking and classification helpers to run the main rationale-genre analysis and masking ablations.
 
 ---
 
@@ -323,9 +398,9 @@ evaluation/
   confidence_summary.csv          # Step 1: aggregate stats per term/variant
   across_variant_detail.csv       # Step 2: per (language × service) agreement rate
   across_variant_service_summary.csv  # Step 2: aggregate stats per service
-  disagreement_analysis.csv       # Step 3: typology classification per language
-  disagreement_analysis_no_keywords.csv  # Optional ablation output from explore_disagreements.py --no-keyword-rules
-  disagreement_explorer_data.csv  # Notebook support: merged disagreement/confidence/rationale matrix for notebook 07
+  disagreement_analysis.csv       # Step 3: comparison status and evidence per language
+  disagreement_explorer_data.csv  # Notebook support: merged comparison/confidence/rationale matrix for notebooks 06 and 08
+  disagreement_patterns.csv       # Multidimensional synthesis table for notebook 08
 ```
 
 ---

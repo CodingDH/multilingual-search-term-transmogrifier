@@ -29,6 +29,36 @@ import apikey
 console = Console()
 
 
+def save_chart(chart: "alt.Chart", filename: str, scale_factor: float = 2.0) -> None:
+	"""
+	Save an Altair chart using vl-convert.
+
+	Parameters
+	----------
+	chart : alt.Chart
+		Altair chart to save.
+	filename : str
+		Path to save the chart to. Supported extensions are .svg and .png.
+	scale_factor : int or float
+		Scale factor for PNG output. A value of 2 writes an image at twice the
+		default resolution.
+	"""
+	import altair as alt
+	import vl_convert as vlc
+
+	extension = os.path.splitext(str(filename))[-1].lower().lstrip(".")
+	os.makedirs(os.path.dirname(str(filename)), exist_ok=True)
+	with alt.data_transformers.enable("default"), alt.data_transformers.disable_max_rows():
+		if extension == "svg":
+			with open(filename, "w", encoding="utf-8") as f:
+				f.write(vlc.vegalite_to_svg(chart.to_dict()))
+		elif extension == "png":
+			with open(filename, "wb") as f:
+				f.write(vlc.vegalite_to_png(chart.to_dict(), scale=scale_factor))
+		else:
+			raise ValueError("Only svg and png formats are supported")
+
+
 def read_csv_file(file_path: str, error_bad_lines: bool = True) -> pd.DataFrame:
 	"""
 	Read a CSV file with UTF-8 encoding, falling back to latin-1 on failure.
@@ -710,8 +740,10 @@ def load_manual_exclusions(
 
     Returns
     -------
-    analysis_langs : set[str]
-        Language codes excluded from all analysis (drop rows entirely).
+    analysis_terms : set[tuple[str, str]]
+        ``(language_code, term)`` pairs excluded from analysis. The review
+        interface records these decisions at translation-cluster level; they
+        must not be promoted to whole-language exclusions.
     search_terms : set[tuple[str, str]]
         (language_code, term) pairs that must not be used as search strings.
     corrections : dict[tuple[str, str], str]
@@ -721,14 +753,16 @@ def load_manual_exclusions(
     if not os.path.exists(path):
         return set(), set(), {}
 
-    df = pd.read_csv(path, dtype=str).fillna('')
+    # keep_default_na=False preserves the valid ISO 639-3 code ``nan``.
+    df = pd.read_csv(path, dtype=str, keep_default_na=False)
 
-    analysis_langs: set[str] = set(
-        df.loc[
-            (df['service'] == 'analysis_exclusion') &
-            (df['language_code'].str.strip() != ''),
-            'language_code',
-        ]
+    analysis_rows = df[
+        (df['service'] == 'analysis_exclusion') &
+        (df['language_code'].str.strip() != '') &
+        (df['original_term'].str.strip() != '')
+    ]
+    analysis_terms: set[tuple[str, str]] = set(
+        zip(analysis_rows['language_code'], analysis_rows['original_term'])
     )
     search_terms: set[tuple[str, str]] = set(
         zip(
@@ -745,7 +779,46 @@ def load_manual_exclusions(
         for _, row in corr_rows.iterrows()
     }
 
-    return analysis_langs, search_terms, corrections
+    return analysis_terms, search_terms, corrections
+
+
+def apply_manual_analysis_exclusions(
+    df: pd.DataFrame,
+    analysis_terms: set[tuple[str, str]],
+    term_columns: list[str] | tuple[str, ...] | None = None,
+) -> pd.DataFrame:
+    """Mask manually excluded translation terms without dropping languages.
+
+    ``analysis_exclusion`` rows exported by the review interface identify a
+    translation cluster through ``(language_code, original_term)``. Every
+    matching translation cell is set to ``None`` while the language row and
+    unrelated translations remain available for analysis.
+    """
+    if not analysis_terms or 'language_code' not in df.columns:
+        return df.copy()
+
+    result = df.copy()
+    columns = list(term_columns) if term_columns is not None else [
+        col for col in result.columns if col.endswith('_translated_term')
+    ]
+    exclusions_by_language: dict[str, set[str]] = {}
+    for language_code, term in analysis_terms:
+        exclusions_by_language.setdefault(str(language_code).strip(), set()).add(str(term).strip())
+
+    for col in columns:
+        if col not in result.columns:
+            continue
+        excluded = result.apply(
+            lambda row: (
+                str(row['language_code']).strip() in exclusions_by_language
+                and isinstance(row[col], str)
+                and row[col].strip() in exclusions_by_language[str(row['language_code']).strip()]
+            ),
+            axis=1,
+        )
+        result.loc[excluded, col] = None
+
+    return result
 
 
 if __name__ == "__main__":

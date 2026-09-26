@@ -8,7 +8,7 @@ and parsed service translations into one notebook-support CSV.
 Before writing, ``enforce_translation_rationale_pairing`` (scripts/utils.py) is
 applied to each per-variant slice of confidence_scores.csv. This nulls out any
 LLM cell where the translation has no real rationale (absent or placeholder such
-as "No rationale provided") or vice versa, so notebook 07 never receives
+as "No rationale provided") or vice versa, so notebook 06 never receives
 unpaired cells regardless of whether the upstream CSVs were generated before or
 after this enforcement was introduced.
 
@@ -59,14 +59,13 @@ TERM_SERVICE_COLS = {
 }
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
-from scripts.utils import get_data_directory_path, enforce_translation_rationale_pairing
+from scripts.utils import get_data_directory_path, enforce_translation_rationale_pairing, get_language_family
 
-CAT_ORDER = {
-    'TRANSMOGRIFICATION': 0,
-    'STRUCTURAL_ABSENCE': 1,
-    'PRODUCTIVE_DISAGREEMENT': 2,
-    'MEASUREMENT_ARTEFACT': 3,
-    'COMPLETE_CONSENSUS': 4,
+STATUS_ORDER = {
+    'substantive_variation': 0,
+    'near_form_convergence': 1,
+    'exact_convergence': 2,
+    'insufficient_comparison': 3,
 }
 
 SERVICE_MAP = {
@@ -193,13 +192,14 @@ def build_explorer_data(
         .merge(rat_df, on='language_code', how='left')
         .merge(wiki_df, on='language_code', how='left')
     )
+    export['language_family'] = export['language_code'].astype(str).map(get_language_family)
 
-    # ── Sort by most disagreement first ─────────────────────────────────────
-    export['_cat_order'] = export['category'].map(CAT_ORDER).fillna(9)
+    # ── Sort by most variation first ────────────────────────────────────────
+    export['_status_order'] = export['comparison_status'].map(STATUS_ORDER).fillna(9)
     export = (
         export
-        .sort_values(['_cat_order', 'n_unique_raw'], ascending=[True, False])
-        .drop(columns=['_cat_order'])
+        .sort_values(['_status_order', 'n_unique_raw'], ascending=[True, False])
+        .drop(columns=['_status_order'])
         .reset_index(drop=True)
     )
 
@@ -210,9 +210,9 @@ def build_explorer_data(
     export.to_csv(out_path, index=False)
     print(f"Saved {len(export)} rows × {len(export.columns)} cols → {out_path}")
 
-    cat_counts = export['category'].value_counts()
-    for cat, n in cat_counts.items():
-        print(f"  {cat}: {n}")
+    status_counts = export['comparison_status'].value_counts()
+    for status, n in status_counts.items():
+        print(f"  {status}: {n}")
 
     return export
 
