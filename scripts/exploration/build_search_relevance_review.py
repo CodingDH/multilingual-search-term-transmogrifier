@@ -24,7 +24,7 @@ from pathlib import Path
 import pandas as pd
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
-from scripts.utils import get_data_directory_path
+from scripts.utils import get_data_directory_path, get_search_data_directory_path
 
 
 REVIEW_COLUMNS = {
@@ -429,7 +429,7 @@ def main() -> None:
     parser.add_argument('--search-dir', default=None)
     parser.add_argument('--sample-size', type=int, default=5)
     args = parser.parse_args()
-    search_dir = args.search_dir or str(Path(args.data_dir).parent.parent / 'new_datasets')
+    search_dir = args.search_dir or get_search_data_directory_path()
     build_review(args.data_dir, search_dir, args.term, args.sample_size)
 
 

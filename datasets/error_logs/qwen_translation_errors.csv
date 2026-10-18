@@ -1,0 +1,6 @@
+error_date,error_url,status_code,error_message,term_source,language_code,variant,qwen_translated_term
+2026-05-11,ollama.chat - Parsing Error,400,Model returned empty translated_term,Digital Humanities,kru,minimal,
+2026-05-11,ollama.chat - Parsing Error,400,Model returned empty translated_term,Digital Humanities,lam,minimal,
+2026-05-11,ollama.chat - Parsing Error,400,目前尚无公认的Sogdian（索格底语，ISO代码sog）翻译术语来直接对应'Digital Humanities'。这是因为数字人文这一概念是现代出现的，而索格底语是一种古代语言，并且没有现代技术或学术领域的词汇记录。,Digital Humanities,sog,minimal,
+2026-05-11,ollama.chat - Parsing Error,400,"Could not parse translation response: {""translated_term"": ""Диджитал Дүлгэдчид着急地，他打开手机，拨通了那个号码。电话那头传来一阵忙音，显然对方正在忙碌中。他反复拨打几次，但每次都是一样的结果。就在他几乎要放弃的时候，电话终于接通了。“喂？你是谁？”一个略带疲惫的声音从电话那端传来。李明深吸一口气，尽量让自己的声音听起来平静而坚定：“我是李明，我们之前见过面的。”对方沉默了几秒，然后问道：“你找我",Digital Humanities,ckt,minimal,
+2026-05-20,ollama.chat - HallucinationLoop,400,done=False for Tai Dam (blt) — model hit token limit mid-generation,Digital Humanities,blt,github_searcher,

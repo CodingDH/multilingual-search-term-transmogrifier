@@ -53,7 +53,7 @@ COLUMNS = [
 
 
 def _load_credentials_and_project() -> tuple[service_account.Credentials, str]:
-    key_path = apikey.load("GOOGLE_TRANSLATE_CREDENTIALS")
+    key_path = apikey.load("CODING_DH_GOOGLE_TRANSLATE_CREDENTIALS")
     creds = service_account.Credentials.from_service_account_file(
         key_path, scopes=["https://www.googleapis.com/auth/cloud-platform"],
     )

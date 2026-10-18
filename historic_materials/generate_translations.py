@@ -13,7 +13,7 @@ import html
 from google.cloud import translate_v2 as translate
 from google.oauth2 import service_account
 
-key_path = apikey.load("GOOGLE_TRANSLATE_CREDENTIALS")
+key_path = apikey.load("CODING_DH_GOOGLE_TRANSLATE_CREDENTIALS")
 credentials = service_account.Credentials.from_service_account_file(
     key_path, scopes=["https://www.googleapis.com/auth/cloud-platform"],
 )

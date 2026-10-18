@@ -396,8 +396,12 @@ def top_coefficients(
     """
     feat = vectorizer.get_feature_names_out()
     results: Dict[str, List[Tuple[str, float]]] = {}
-    for i, name in enumerate(class_names):
-        coef = clf.coef_[i]
+    fitted_class_to_index = {name: i for i, name in enumerate(clf.classes_)}
+    missing = [name for name in class_names if name not in fitted_class_to_index]
+    if missing:
+        raise ValueError(f"Requested classes are absent from fitted classifier: {missing}")
+    for name in class_names:
+        coef = clf.coef_[fitted_class_to_index[name]]
         idx = np.argsort(coef)[::-1][:top_n]
         results[name] = [(feat[j], float(coef[j])) for j in idx]
     return results

@@ -50,9 +50,38 @@ The **search relevance review** occurs after the companion GitHub search finishe
 
 ## Files
 
+### `build_language_population_metadata.py` — CLDR/Wikidata population evidence
+
+Builds a population metadata layer without changing the 881-row language-code
+inventory. Glottolog's cached ISO 639-3/Glottocode records resolve identities;
+CLDR and Wikidata remain separate population observations so their coverage and
+disagreement can be inspected in notebook 01.
+
+```bash
+python scripts/exploration/build_language_population_metadata.py
+python scripts/exploration/build_language_population_metadata.py --cache-only
+```
+
+- **Inputs:** `language_codes_comprehensive_family_reviewed.csv`,
+  `glottolog-cache/languoid.csv`, CLDR-derived `language_data` population data,
+  and Wikidata `P1098` statements
+- **Cache:** `wikidata_population_cache.json`
+- **Evidence output:** `language_population_evidence.csv`, with one row per
+  source observation and retained measure/date/scope/citation metadata
+- **Resolved output:** `language_population_resolved.csv`, with CLDR preferred
+  where present, Wikidata used as a fallback, and CLDR/Wikidata ratios retained
+  for comparable observations
+
+The resolver uses CLDR's base-language total when available and sums territory
+rows only as a fallback. This avoids double-counting the base total together
+with its regional components. Known Wikimedia/ISO code collisions are resolved
+explicitly before Wikidata matching.
+
+---
+
 ### `build_search_relevance_review.py` — Post-search term relevance queue
 
-Builds a review table for every retained search term that returned at least one GitHub item. It reads repository, issue, and user-search CSVs from `CodingDH/new_datasets`, deduplicates items within each term, and separates phrase-search repositories, topic-derived repositories, issues, pull requests, individual users, and organizations. GitHub returns pull requests through the issue-search endpoint and organizations through the user-search endpoint, so the builder makes those hidden endpoint groupings explicit.
+Builds a review table for every retained search term that returned at least one GitHub item. It reads repository, issue, and user-search CSVs from the directory stored under `SEARCHING_FOR_DH_DATA_DIRECTORY` (or supplied through `--search-dir`), deduplicates items within each term, and separates phrase-search repositories, topic-derived repositories, issues, pull requests, individual users, and organizations. GitHub returns pull requests through the issue-search endpoint and organizations through the user-search endpoint, so the builder makes those hidden endpoint groupings explicit.
 
 The output includes up to five representative samples of each result type and two editable judgments: term credibility and retrieval relevance. For the Digital Humanities run, the builder seeds conservative Codex proposals. Downstream handling is derived rather than separately reviewed: credible terms with mostly relevant retrieval are `retain`, suspect terms with mostly irrelevant retrieval are `exclude`, and every mixed combination is `retain_track`. This preserves expansive discovery while allowing later analyses to report relevance stability. Every seeded row is marked `codex_provisional`; changing a field in the HTML reviewer marks it `human_reviewed`. A saved reviewed CSV always overrides these proposals when the queue is rebuilt. Notebook 09 removes only exclusions with `review_status == human_reviewed`; provisional exclusions remain available until confirmed.
 
@@ -143,7 +172,7 @@ python scripts/exploration/build_review_explorer_data.py --output-dir path/to/di
 
 Builds the precomputed tables used by notebook 02's historic reference-convergence section. This script intentionally uses only the two CSVs in `historic_materials/` and hard-filters both to `term_source == "Digital Humanities"` by default.
 
-The November 2022 file, `translated_dh_terms.csv`, supports the first historic check: exact normalized agreement between `term` (pre-existing/Wikipedia-derived Digital Humanities term where available) and `translated_term` (historic Google Translate output). The November 2024 file, `initial_translated_terms.csv`, supports the second historic check: exact normalized agreement among `wikipedia_translated_term`, `gt_translated_term`, `enmt_translated_term`, and `openai_translated_term`. The script does **not** use the legacy `old_digital_humanities` folder.
+The November 2022 file, `translated_dh_terms.csv`, supports the first historic check: exact normalized agreement between `term` (pre-existing/Wikipedia-derived Digital Humanities term where available) and `translated_term` (historic Google Translate output). The November 2024 file, `initial_translated_terms.csv`, supports the second historic check: exact normalized agreement among `wikipedia_translated_term`, `gt_translated_term`, `enmt_translated_term`, and `openai_translated_term`.
 
 - **Inputs**: `historic_materials/translated_dh_terms.csv`, `historic_materials/initial_translated_terms.csv`
 - **Output**: `translated_terms/digital_humanities/evaluation/historic_2022_*.csv` and `historic_2024_*.csv`

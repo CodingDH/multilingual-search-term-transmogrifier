@@ -1,46 +1,65 @@
-# Core dependencies for translation pipeline
+# Direct dependencies for the translation pipeline and analysis notebooks.
+# The repository was last tested with Python 3.13.3. A frozen environment file
+# should be generated for the publication release after cleanup is complete.
 
 # Data processing
 pandas
 numpy
+scipy
+joblib
 
+# Notebook execution
+jupyter
+nbconvert
+ipykernel
+
+# Visualization and table export
+altair
+vl-convert-python
+matplotlib
+matplotlib-venn
+networkx
+great-tables
+
+# Statistical, embedding, and topic analysis
+scikit-learn
+sentence-transformers
+umap-learn
+hdbscan
+transformers
 
 # CLI and output formatting
 rich
 tqdm
 
-
 # LLM APIs
 openai
 anthropic
 google-generativeai
+ollama
 
 # Translation services
 translators
 easynmt
 
-# Google Cloud / Auth
+# Google Cloud and authentication
 google-cloud-translate
 google-auth
 
-
-# NLP and text processing
+# Language and text processing
 beautifulsoup4
-transformers
 requests
+regex
 arabic-reshaper
 python-bidi
-
-# Language identifier handling (BCP 47 canonicalization, IANA Language Subtag Registry)
+Wikipedia-API
 langcodes
 language_data
 
-# Utilities
-Wikipedia-API
-ollama
+# Validation, configuration, and credentials
 pydantic
 python-dotenv
 apikey>=0.2.4
 
-# Optional: for development/testing
+# Development and smoke tests
 pytest

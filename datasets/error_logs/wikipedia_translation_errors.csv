@@ -1,0 +1,3 @@
+error_date,error_url,status_code,term_source,language_code,wikipedia_translated_term
+2025-06-03,wikipediaapi.Wikipedia.page(humanities data science),404,humanities data science,en,
+2026-03-16,wikipediaapi.Wikipedia.page(computational humanities),404,computational humanities,en,

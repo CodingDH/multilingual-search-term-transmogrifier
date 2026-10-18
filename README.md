@@ -1,132 +1,157 @@
-# Translation Transmogrification Pipeline
+# Multilingual Search Term Transmogrifier
 
-A multilingual translation pipeline for scholarly terminology, built for the Coding DH project. Companion code for the DHQ article *"From Translation to Transmogrification: Exploring Multilingual Metadata and the Limits of AI-Augmented Translation in Digital Humanities"*.
+The Multilingual Search Term Transmogrifier is part of [*Coding DH*](https://github.com/CodingDH), a research project developing data-driven social histories of scholarly coding communities at scale. *Coding DH* uses platform data to study where these communities form, how their practices and relationships change over time, and how scholarly coding becomes visible or remains difficult to identify across disciplinary and linguistic contexts.
 
-## Overview
+This repository provides the project's multilingual term-discovery pipeline, which generates, compares, reviews, and prepares candidate search terms for scholarly concepts so that *Coding DH* can identify relevant activity beyond English-language terminology. The resulting datasets preserve language metadata, source provenance, competing forms, model rationales, review decisions, and retrieval evidence rather than allowing multilingual discovery to depend on a single translation service or language standard.
 
-This pipeline translates key domain terms (e.g. "Digital Humanities") across 881 project language-code rows, built from ISO, CLDR, Wikimedia, SIL, Glottolog, and BCP 47/IANA-adjacent metadata layers, then surfaces and classifies disagreements for human verification.
+The pipeline grew from an effort to identify communities associated with *Digital Humanities* across languages on GitHub. That term remains the first completed case study and the source of the historic materials in this repository, but more terms will be added in the future.
 
-**Machine translation baselines** (prompt-invariant, queried once per language):
+## Why "Transmogrifier"?
 
-- Google Cloud Translate
-- EasyNMT (Helsinki-NLP opus-mt)
-- Lingvanex
+The generated terms are not treated as authoritative translations. Depending on the language, source, model, and prompt, an output may be a translation, transliteration, borrowing, paraphrase, disciplinary reinterpretation, repetition of the source phrase, or fabricated form. *Transmogrification* names this broader process without treating model fluency or agreement among services as linguistic validation.
 
-**Community-curated references** (human editorial consensus, not machine translation):
+The pipeline therefore preserves alternatives and their provenance rather than collapsing them into a single ground-truth vocabulary. Its outputs are research artifacts and possible search terms that require critical review.
 
-- Wikipedia interlanguage links — what scholars/editors in each language community have decided this concept is called
-- *(Extensible — future additions could include IATE, LCSH, DH journal subject headings, Wikidata, etc.)*
+## Pipeline
 
-**LLM services** (8 models × 4 prompt variants = up to 32 outputs per language):
+For each source term, the pipeline:
 
-- Cloud: OpenAI GPT-4o, Anthropic Claude Sonnet 4.5, Google Gemini 2.5 Flash, DeepSeek V3
-- Local (via Ollama): Llama 3.1, Gemma 3 (12B), Qwen 2.5 (7B), Mistral 7B
+1. Builds on a shared multilingual metadata layer while retaining disagreements among registries and community sources.
+2. Collects prompt-invariant terminology from Wikipedia and dedicated translation services.
+3. Generates candidate terms and rationales with local and API-hosted language models.
+4. Compares independent prompting conditions with a later judge condition that receives prior candidates as evidence.
+5. Surfaces suspicious outputs through automated signals and browser-based review interfaces.
+6. Analyzes coverage, failures, exact agreement, scripts, rationales, embeddings, and disagreement structure.
+7. Produces reviewed search-term datasets and evaluate what those terms retrieve from platforms such as GitHub.
 
-**Prompt variants:**
+The current implementation uses Wikipedia, Google Translate, EasyNMT, Lingvanex, eight LLM services, and four prompt conditions. These are documented as components of a dated experiment rather than assumed to be a permanent or exhaustive service set.
 
-- `minimal` — bare instruction, no system prompt (baseline)
-- `fluent_speaker` — asks for rationale written in the target language
-- `github_searcher` — frames translation as building a multilingual GitHub search corpus (goal-orientation)
-- `judge` — runs last; receives all unique translations from every prior service and variant, selects or improves the best one
+## Terms and Data
+
+Term-specific data live under `datasets/translated_terms/{term_slug}/`. A complete term directory can contain:
+
+```text
+{term_slug}/
+├── direct_services/   # Community and dedicated translation-service outputs
+├── prompt_services/   # LLM outputs and rationales by prompt condition
+├── evaluation/        # Automated signals, comparisons, and review decisions
+└── search_terms/      # Grouped and reviewed terms prepared for retrieval
+```
+
+*Digital Humanities* is currently the complete reference corpus. Other disciplinary terms are present at earlier stages of generation and will adopt the same structure as their translation, review, and retrieval stages are completed. See [Term datasets](datasets/translated_terms/README.md) for current status.
+
+## Research Outputs
+
+This shared repository supports multiple publications and analyses. Publication-specific documentation identifies the relevant repository code and datasets.
+
+| Research output | Status | Documentation |
+| --- | --- | --- |
+| *From Translation to Transmogrification: Exploring Multilingual Metadata and the Limits of AI-Augmented Translation in Digital Humanities* | Forthcoming article | [Translation to Transmogrification](docs/papers/translation-to-transmogrification/README.md) |
+| Comparative analysis of multilingual translation and rationale embeddings | In development | [Multilingual translation embeddings](docs/papers/multilingual-translation-embeddings/README.md) |
 
 ## Documentation
 
-- [datasets/metadata_files/README.md](datasets/metadata_files/README.md) — Column-level reference for `language_codes_comprehensive.csv` and every other file in the metadata layer (provenance, BCP 47, service support, family reconciliation, dated snapshots)
-- [scripts/experiment/README.md](scripts/experiment/README.md) — Per-script reference for the build, refresh, audit, and spot-check tools (`generate_language_codes`, `refresh_service_support`, `audit_language_identifiers`, `spotcheck_bcp47_codes`, etc.)
-- [docs/exclusion_strategy.md](docs/exclusion_strategy.md) — Automated review signals, manual exclusion taxonomy, and the three-tier exclusion policy (service exploration → translation analysis → search term generation)
-- [figures/dhq_article/language_code_pipeline_history_and_final.svg](figures/dhq_article/language_code_pipeline_history_and_final.svg) — Historical expansion from the original 185-code list to 881 rows, followed by the final distinction between row-defining sources and metadata enrichment
-- [html_files/translation_pipeline_methods.svg](html_files/translation_pipeline_methods.svg) — Pipeline architecture diagram
+| Resource | Contents |
+| --- | --- |
+| [Project documentation](docs/README.md) | Shared methods, publication materials, and documentation boundaries |
+| [Datasets](datasets/README.md) | Data layers, canonical files, provenance, missing values, and regeneration boundaries |
+| [Language metadata](datasets/metadata_files/README.md) | Language codes, scripts, families, population evidence, and service support |
+| [Term datasets](datasets/translated_terms/README.md) | Completed and developing source-term corpora |
+| [Digital Humanities dataset](datasets/translated_terms/digital_humanities/README.md) | The first complete direct-service, LLM, evaluation, and search-term corpus |
+| [Scripts](scripts/README.md) | Metadata construction, candidate generation, review, analysis, and search preparation |
+| [HTML review interfaces](html_files/README.md) | Browser interfaces and the files each one reads and writes |
+| [Exclusion strategy](docs/exclusion_strategy.md) | Automated signals, manual decisions, and analysis-specific exclusions |
 
 ## Repository Structure
 
 ```text
-translation_transmogrification_pipeline/
-├── notebooks/                          # Analysis notebooks (run in order)
-│   ├── 01_language_exploration.ipynb   # Language set construction and source coverage
-│   ├── 02_translation_overview.ipynb   # Automated review signals, exclusions, correction patterns
-│   ├── 03_baseline_services.ipynb      # Direct service analysis
-│   ├── 04_prompt_services.ipynb        # LLM service and prompt variant analysis
-│   ├── 05_translation_projection.ipynb # Embedding projections and family clustering
-│   ├── 06_rationale_classification.ipynb # LLM rationale style and prompt/service fingerprints
-│   ├── 07_definitional_patterns.ipynb  # What LLMs encode about "Digital Humanities"
-│   ├── 08_disagreement_patterns.ipynb  # Multidimensional disagreement synthesis
-│   └── 09_search_results.ipynb         # GitHub search coverage and language distribution
+multilingual-search-term-transmogrifier/
+├── notebooks/          # Analyses of metadata, outputs, disagreement, and retrieval
 ├── scripts/
-│   ├── utils.py                        # Shared utilities (load_manual_exclusions, etc.)
-│   ├── generate_search_terms.py        # Build grouped_translated_terms.csv for search
-│   ├── experiment/                     # Translation generation scripts
-│   │   ├── generate_language_codes.py  # Build language_codes_comprehensive.csv
-│   │   ├── generate_translations.py    # Main translation loop
-│   │   ├── translation_services.py     # Per-service API calls
-│   │   └── translation_prompts.py      # Prompt variant definitions
-│   └── exploration/                    # Post-translation analysis scripts
-│       ├── build_family_*              # Family-label review and application
-│       ├── build_review_explorer_data.py
-│       ├── build_historic_reference_convergence.py
-│       ├── explore_confidence_*.py     # Within/across prompt convergence
-│       ├── explore_disagreements.py    # Neutral string comparison and evidence
-│       └── build_disagreement_patterns.py # Multidimensional disagreement synthesis
+│   ├── experiment/     # Metadata and candidate-term generation
+│   ├── exploration/    # Review datasets and analytical artifacts
+│   └── utils.py        # Shared loading, normalization, script, and family helpers
 ├── datasets/
-│   ├── metadata_files/                 # Language codes, family assignments, scripts
-│   └── translated_terms/{term_slug}/
-│       ├── direct_services/            # GT, EasyNMT, Lingvanex, Wikipedia outputs
-│       ├── prompt_services/            # LLM × variant outputs
-│       ├── evaluation/                 # Automated review signals, disagreement analysis, exclusions
-│       └── search_terms/               # reviewed_grouped_translated_terms.csv
-├── html_files/                         # Interactive HTML review tools and figures
-│   ├── review_explorer.html            # Manual exclusion and term correction interface
-│   └── search_term_reviewer.html       # Search term keep/exclude review interface
-└── docs/
-    └── exclusion_strategy.md
+│   ├── metadata_files/ # Shared language, family, population, and support metadata
+│   └── translated_terms/
+│       └── {term_slug}/
+│           ├── direct_services/
+│           ├── prompt_services/
+│           ├── evaluation/
+│           └── search_terms/
+├── historic_materials/ # Dated precursor datasets for the initial case study
+├── html_files/         # Browser-based review interfaces
+├── figures/            # Shared and publication-specific figures
+└── docs/               # Project methods and publication documentation
 ```
 
-## Workflow
+## Installation
 
-1. **Build language set** — `scripts/experiment/generate_language_codes.py` merges CLDR 48.2, CLDR v45 supplement, LOC ISO 639-2, and Wikimedia into `language_codes_comprehensive.csv` (881 codes). The same script also adds a parallel interoperability layer via `add_identifier_context()` and `add_service_language_codes()`:
-   - **BCP 47 identifier columns** (`bcp47_tag`, `bcp47_source`, `bcp47_note`, `wikimedia_code`, `service_code_candidates`) provide preferred IANA-registry web tags alongside the project's stable `language_code`. Canonicalization is delegated to the [`langcodes`](https://github.com/georgkrause/langcodes) library (which validates against the IANA Language Subtag Registry shipped via `language_data`); a small `BCP47_GRANDFATHERED_FALLBACKS` dict in `generate_language_codes.py` handles seven Wikimedia legacy tags absent from the 2021-08-06 IANA snapshot. The columns do not change row identity and intentionally do not expand the dataset into BCP 47 locale variants (en-US, en-GB, es-MX, etc.) — the unit of analysis for this project is language/community discovery, not locale-specific localization. A 13-row supplementary spot-check (run via `scripts/experiment/curation/spotcheck_bcp47_codes.py`, results committed at `datasets/metadata_files/bcp47_spotcheck_results.csv`) confirmed that for every row where Google Translate accepts both the `language_code` and the canonical `bcp47_tag` form, the returned translation is identical — so the BCP 47 layer functions as interoperability documentation rather than as an alternative query path, and the pipeline's translations are not affected by the choice between forms. See nb01 §1.1 for the per-row results and the few asymmetric cases (`map-bms` → `jv` overreach; `cnr` Montenegrin unsupported under either form).
-   - **Service-support columns** (`google_nmt_code`, `google_nmt_supported`, `google_translation_llm_code`, `google_translation_llm_supported`) map each language to the exact code the named service accepts, drawing from `datasets/metadata_files/service_language_code_support.csv`. Of the 881 pipeline languages, ~184 are officially supported by Google NMT and ~87 by Google's Translation LLM endpoint; the gap is itself a finding documenting the long tail of unsupported scholarly language communities. Use `scripts/experiment/curation/audit_language_identifiers.py` to inspect the layer at any time. The support CSV is a dated snapshot — refresh it with `python -m scripts.experiment.curation.refresh_service_support`, which calls the Translation v3 `get_supported_languages` API and stamps `snapshot_date` / `snapshot_source` on every row (NMT on the `global` endpoint, Translation LLM on `us-central1`). Previous snapshots are backed up alongside the file so paper-time analyses stay reproducible against their original snapshot date.
-2. **Curate family classifications** — run notebook 01 §1.3 to cross-validate the ISO 639-5 based `family_name` column against Glottolog 5.3 ([CC-BY-4.0](https://glottolog.org/), cached at `datasets/metadata_files/glottolog-cache/`). The generated language list remains `language_codes_comprehensive.csv`; family review is applied as a later analytical metadata layer. First run `scripts/exploration/build_family_analysis_mapping.py` and review `family_analysis_mapping.csv` in `html_files/family_analysis_mapping_reviewer.html` to set the family-label policy. Then run `scripts/exploration/build_family_reconciliation_review.py`; it creates `family_reconciliation_review.csv`, a unified review queue combining ISO/Glottolog disagreement pairs with JSON fallback language rows and analysis-policy flags. Review it in `html_files/family_reconciliation_reviewer.html`, save the download as `datasets/metadata_files/family_reconciliation_reviewed.csv`, then run `scripts/exploration/apply_family_review_metadata.py`. This writes `language_codes_comprehensive_family_reviewed.csv`, preserving the raw `family_name` trace while adding `family_name_reconciled_reviewed` and `family_name_analysis`. The `get_language_family()` utility prefers this reviewed file when present.
-3. **Run translations** — `scripts/experiment/generate_translations.py` queries all services and variants per term × language pair.
-4. **Analyse** — run notebooks 02–08 in order to generate automated review signals, disagreement analysis, embeddings, rationale classifications, and definitional-pattern analysis. Before running notebook 02's historic reference-convergence section, refresh its precomputed tables with `python scripts/exploration/build_historic_reference_convergence.py --term "Digital Humanities"`; this reads both historic materials (`translated_dh_terms.csv` from November 2022 and `initial_translated_terms.csv` from November 2024) and writes `historic_2022_*.csv` and `historic_2024_*.csv` outputs to `datasets/translated_terms/digital_humanities/evaluation/`.
-5. **Review** — open `html_files/review_explorer.html` to apply manual exclusions and term corrections; results saved to `evaluation/manual_exclusions.csv`.
-6. **Build disagreement evidence** — `scripts/exploration/explore_disagreements.py`, `build_disagreement_explorer_data.py`, and `build_disagreement_patterns.py` create the neutral comparison and synthesis tables used by notebooks 05–08.
-7. **Generate search terms** — `scripts/generate_search_terms.py` applies all exclusions and produces `grouped_translated_terms.csv`; review in `html_files/search_term_reviewer.html`.
-8. **Search** — feed `reviewed_grouped_translated_terms.csv` to the companion [searching_for_DH](https://github.com/CodingDH/searching_for_DH) pipeline.
-9. **Review search relevance** — run `scripts/exploration/build_search_relevance_review.py`, review the provisional term/retrieval assessments and representative results in `html_files/search_relevance_reviewer.html`, and save `search_result_relevance_reviewed.csv`. Provisional Codex suggestions remain distinct from rows you have marked as human-reviewed.
-10. **Search results** — run notebook 09 to analyse GitHub coverage, vocabulary-source ablation, term redundancy, strong retrieval clusters, and language distribution. Treat its raw counts as provisional until the relevance review has been applied. Its overlap section reads `search_result_term_overlap_edges.csv` and `search_result_overlap_summary.csv`, both generated with the relevance queue.
+The repository was tested with Python 3.13.3. Dependencies can be installed with `pip` in a virtual environment:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+```
+
+The language-metadata build requires Node.js/npm when downloading pinned CLDR packages for the first time. Candidate generation additionally requires provider credentials and, for local models, [Ollama](https://ollama.com/).
+
+## Regenerating Pipeline Artifacts
+
+The principal stages are:
+
+1. Build shared language metadata with `scripts/experiment/generate_language_codes.py`.
+2. Apply the documented family-label and language-level review process.
+3. Generate direct-service and LLM candidates for one or more source terms.
+4. Build automated review and disagreement artifacts with `scripts/exploration/`.
+5. Review outputs through the interfaces documented in [html_files/README.md](html_files/README.md).
+6. Generate reviewed search terms with `scripts/generate_search_terms.py`.
+7. Evaluate retrieval results for the relevant term or comparative study.
+
+See [Scripts](scripts/README.md) for commands and dependencies. Rebuilding generated stages can change results because APIs, hosted models, service support, web resources, and local model versions change over time. Tagged releases preserve the data used for reported analyses.
 
 ## Credentials
 
-API keys are stored via the `apikey` library:
+Generation scripts retrieve credentials through the `apikey` package. Required keys depend on the enabled services:
 
 ```bash
-python -c "import apikey; apikey.save('GOOGLE_TRANSLATE_CREDENTIALS', 'path/to/credentials.json')"
+python -c "import apikey; apikey.save('CODING_DH_GOOGLE_TRANSLATE_CREDENTIALS', 'path/to/credentials.json')"
 python -c "import apikey; apikey.save('CODING_DH_OPENAI_KEY', 'your-key')"
 python -c "import apikey; apikey.save('CODING_DH_OPENAI_PROJECT_ID', 'your-project-id')"
-python -c "import apikey; apikey.save('CODING_DH_OPENAI_ORGANIZATION_ID', 'your-org-id')"
+python -c "import apikey; apikey.save('CODING_DH_OPENAI_ORGANIZATION_ID', 'your-organization-id')"
 python -c "import apikey; apikey.save('CODING_DH_CLAUDE_KEY', 'your-key')"
 python -c "import apikey; apikey.save('CODING_DH_GEMINI_KEY', 'your-key')"
 python -c "import apikey; apikey.save('CODING_DH_DEEPSEEK_KEY', 'your-key')"
 ```
 
-Local models require Ollama running with the relevant models pulled:
+Set a descriptive Wikimedia User-Agent before rebuilding language metadata:
 
 ```bash
-ollama serve
-ollama pull llama3.1
-ollama pull gemma3:12b
-ollama pull qwen2.5:7b
-ollama pull mistral:7b
+export WIKIMEDIA_USER_AGENT="multilingual-language-metadata-research/1.0 (contact: your-email@example.org)"
 ```
 
-Data directory paths are also stored via `apikey`:
+Store the path to this repository's `datasets/` directory under the repository-specific key:
 
 ```bash
-python -c "import apikey; apikey.save('TRANSLATION_TRANSMOGRIFICATION_DATA_DIRECTORY', 'path/to/datasets/')"
+python -c "import apikey; apikey.save('MULTILINGUAL_SEARCH_TERM_TRANSMOGRIFIER_DATA_DIRECTORY', '/absolute/path/to/datasets')"
 ```
 
-## Citation
+Notebook 09 also reads the GitHub retrieval datasets produced by `searching_for_DH`. Store that external directory separately:
 
-If you use this pipeline, please cite:
+```bash
+python -c "import apikey; apikey.save('SEARCHING_FOR_DH_DATA_DIRECTORY', '/absolute/path/to/search/datasets')"
+```
 
-> LeBlanc, Zoe. "From Translation to Transmogrification: Exploring Multilingual Metadata and the Limits of AI-Augmented Translation in Digital Humanities." *Digital Humanities Quarterly* (forthcoming).
+Local generation requires Ollama and the model versions documented in [scripts/experiment/README.md](scripts/experiment/README.md).
+
+## Responsible Use
+
+The pipeline produces candidate terms rather than verified translations. A populated response does not demonstrate linguistic accuracy, and agreement among models or services may reflect shared training data, prompt framing, borrowing, or repetition rather than independent confirmation. Expected script use provides another useful review signal, but a term written in the anticipated script can still be fabricated, misleading, or inappropriate for the relevant language community. Automated signals should therefore be understood as ways to prioritize inspection, not as substitutes for linguistic judgment. Human review decisions should remain distinguishable from those automated assessments.
+
+Responsible reuse also requires preserving the provenance attached to each candidate. Publications and derived datasets should identify the source term, language identifier, service or model, prompt condition, review status, and repository snapshot associated with the result. Researchers should retain competing forms and documented disagreements when those differences matter to the analysis rather than presenting the pipeline's preferred candidate as settled terminology. Consultation with language experts and relevant communities remains necessary before generated terms are described as established usage, used to characterize a community, or incorporated into public-facing multilingual metadata.
+
+## Citing the Repository
+
+Repository-level citation metadata will be added with the first versioned public release. Until then, cite the repository URL together with the commit hash or release tag used for the analysis.

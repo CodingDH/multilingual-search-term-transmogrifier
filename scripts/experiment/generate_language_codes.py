@@ -107,7 +107,12 @@ from scripts.experiment.parse_cldr_json import (
 
 # ── Shared user-agent (Wikimedia and Wikipedia require a real UA) ─────────────
 def _ua():
-    return {"User-Agent": "iso639-research/1.0 (contact: zleblanc@illinois.edu)"}
+    return {
+        "User-Agent": os.environ.get(
+            "WIKIMEDIA_USER_AGENT",
+            "multilingual-language-metadata-research/1.0",
+        )
+    }
 
 
 

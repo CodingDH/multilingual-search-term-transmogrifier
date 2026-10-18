@@ -1,13 +1,13 @@
-# Translation Pipeline Scripts
+# Transmogrifier Scripts
 
-Scripts for generating and evaluating translations of Digital Humanities terms across 881 project language-code rows.
+Scripts for building multilingual metadata, generating candidate terms, constructing review artifacts, and analyzing the results across 881 project language-code rows. Historical filenames and columns retain the word `translation`, but the repository treats their outputs as candidates rather than validated translations.
 
 ## Structure
 
 ```text
 scripts/
-  experiment/         - Active translation pipeline
-  exploration/        - Analysis and disagreement exploration scripts
+  experiment/         - Metadata and candidate-term generation
+  exploration/        - Review datasets and analytical artifacts
   utils.py            - Shared utilities (see below)
 ```
 
@@ -22,9 +22,9 @@ scripts/
 | `is_placeholder_rationale` | Returns `True` for literal placeholder strings such as `"No rationale provided"` or `"N/A"` that LLMs return instead of real reasoning |
 | `enforce_translation_rationale_pairing` | Nulls out the unpaired side of any LLM translation ↔ rationale mismatch (translation-without-rationale or rationale-without-translation) in a DataFrame; called automatically by `load_variant_df` so all downstream code receives clean data |
 
-## Language Coverage
+## Generation Target
 
-Translations target all **881 language-code rows** in `language_codes_comprehensive.csv`, built by combining registry, community, and localization metadata via `experiment/generate_language_codes.py`. The four non-language sentinel codes (`und`, `zxx`, `mis`, `mul`) are excluded before the final CSV is written; everything in the committed comprehensive file is part of the translation target set.
+Candidate generation targets all **881 language-code rows** in `language_codes_comprehensive.csv`, built by combining registry, community, and localization metadata via `experiment/generate_language_codes.py`. The four non-language sentinel codes (`und`, `zxx`, `mis`, `mul`) are excluded before the final CSV is written; everything in the committed comprehensive file is part of the target set.
 
 | Source | Coverage |
 | --- | --- |
@@ -80,4 +80,4 @@ Select individual variants or "ALL" from the interactive menu. When "ALL" is cho
 python scripts/exploration/build_historic_reference_convergence.py --term "Digital Humanities"
 ```
 
-This reads `historic_materials/translated_dh_terms.csv` and writes `historic_*.csv` outputs to `datasets/translated_terms/digital_humanities/evaluation/`. It supports the historic-reference section of notebook 02 and does not use `old_digital_humanities`.
+This reads `historic_materials/translated_dh_terms.csv` and writes `historic_*.csv` outputs to `datasets/translated_terms/digital_humanities/evaluation/`. It supports the historic-reference section of notebook 02.

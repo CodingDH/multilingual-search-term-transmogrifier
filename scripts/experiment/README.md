@@ -1,6 +1,6 @@
-# experiment/
+# Generation Scripts
 
-Active translation pipeline — generation, prompt variant testing, and output verification.
+Language-metadata and candidate-term generation, prompt-variant testing, and output verification. Historical filenames retain the word `translation`, but a populated output is not treated as proof of linguistic validity.
 
 ## Files
 

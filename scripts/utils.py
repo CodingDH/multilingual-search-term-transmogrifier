@@ -31,7 +31,7 @@ console = Console()
 
 def save_chart(chart: "alt.Chart", filename: str, scale_factor: float = 2.0) -> None:
 	"""
-	Save an Altair chart using vl-convert.
+	Save an Altair chart using vl-convert without changing its display renderer.
 
 	Parameters
 	----------
@@ -206,21 +206,26 @@ def clean_write_error_file(
 
 def set_data_directory_path(path: str) -> None:
 	"""
-	Sets data directory path.
+	Sets the Multilingual Search Term Transmogrifier data directory path.
 
 	:param path: Path to data directory
 	"""
-	apikey.save("TRANSLATION_TRANSMOGRIFICATION_DATA_DIRECTORY", path)
-	console.print(f'Translation pipeline data directory path set to {path}', style='bold blue')
+	apikey.save("MULTILINGUAL_SEARCH_TERM_TRANSMOGRIFIER_DATA_DIRECTORY", path)
+	console.print(f'Multilingual Search Term Transmogrifier data directory path set to {path}', style='bold blue')
 
 def get_data_directory_path() -> str:
 	"""
-	Gets data directory path.
+	Gets the Multilingual Search Term Transmogrifier data directory path.
 
 	:return: Data directory path
 	"""
-	console.print('Retrieving translation pipeline data directory path...', style='bold blue')
-	return apikey.load("TRANSLATION_TRANSMOGRIFICATION_DATA_DIRECTORY")
+	console.print('Retrieving Multilingual Search Term Transmogrifier data directory path...', style='bold blue')
+	return apikey.load("MULTILINGUAL_SEARCH_TERM_TRANSMOGRIFIER_DATA_DIRECTORY")
+
+
+def get_search_data_directory_path() -> str:
+	"""Return the external search-results directory used by ``searching_for_DH``."""
+	return apikey.load("SEARCHING_FOR_DH_DATA_DIRECTORY")
 
 
 _LANG_FAMILY_CACHE: Optional[Dict[str, str]] = None
@@ -819,7 +824,3 @@ def apply_manual_analysis_exclusions(
         result.loc[excluded, col] = None
 
     return result
-
-
-if __name__ == "__main__":
-	 set_data_directory_path("/Users/zleblanc/CodingDH/translation_transmogrification_pipeline/datasets")

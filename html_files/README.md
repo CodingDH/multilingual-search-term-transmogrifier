@@ -164,7 +164,7 @@ Use this after the GitHub search run finishes. The builder deduplicates GitHub i
 
 Each term also reports how many results are exclusive to that term, shared with another term, already covered by the English `digital humanities` query, or new beyond English. The overlap panel draws a compact term-neighborhood graph and lists the ten alternative terms with the greatest material overlap. The builder also writes the complete edge list to `search_result_term_overlap_edges.csv` and global multiplicity counts to `search_result_overlap_summary.csv`; Notebook 09 uses both for its cluster analysis.
 
-The generated Digital Humanities queue begins with conservative Codex proposals. These are visibly labeled `Codex provisional` in the interface and should not be treated as completed review. Editing either assessment or the note changes that row's `review_status` to `human_reviewed`; the downloaded CSV preserves the distinction. Rebuilding later carries the downloaded human decisions forward over the provisional defaults. Notebook 09 excludes only human-confirmed exclusions, so untouched provisional suggestions remain available for analysis.
+The generated Digital Humanities queue begins with conservative Codex proposals. These are visibly labeled `Codex provisional` in the interface and should not be treated as completed review. Editing either assessment or the note changes that row's `review_status` to `human_reviewed`; the downloaded CSV preserves the distinction. A separately documented assistant audit may use `assistant_reviewed`. Rebuilding later carries either reviewed status forward over the provisional defaults. Notebook 09 applies exclusions marked `human_reviewed` or `assistant_reviewed`, while untouched provisional suggestions remain available for analysis.
 
 ```bash
 python scripts/exploration/build_search_relevance_review.py
@@ -187,5 +187,5 @@ Rebuilding the queue preserves decisions from that reviewed file by normalized s
 ## Notes
 
 - These tools rely on browser-side JavaScript and `localStorage`. If a page seems to remember stale decisions, clear the page's local storage or reload the saved CSV explicitly.
-- Use the current generated CSVs rather than older files in `old_digital_humanities` or `older_datasets` unless you are intentionally auditing historical behavior.
+- Use the current generated CSVs rather than files in `older_datasets` unless you are intentionally auditing historical behavior.
 - Keep downloaded filenames exact where possible. Several scripts look for the reviewed filenames listed above.

@@ -279,9 +279,10 @@ notebooks/05_translation_projection.ipynb   [Tier 2 — strict]
 notebooks/06_rationale_classification.ipynb [Tier 2 — strict]
 notebooks/07_definitional_patterns.ipynb    [Tier 2 — strict]
 notebooks/08_disagreement_patterns.ipynb    [Tier 2 — strict]
-    apply full manual_exclusions
-    exclude flagged term-error flags
-    keep source retention and script disagreement as independent evidence
+    05 applies full translation exclusions before distance and pattern analysis
+    06–07 apply translation/rationale exclusions for rationale analysis
+    08 reads the reviewed pattern and rationale evidence for close reading
+    source retention and script disagreement remain independent evidence
 
 scripts/generate_search_terms.py            [Tier 3 — strictest]
     apply all exclusions (automated review signals + manual_exclusions.csv)

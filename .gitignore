@@ -4,13 +4,21 @@
 *.pyc
 __pycache__/
 notebooks/eda_cache/
-confidence_scores.csv
-notebooks/older_notebooks/
+notebooks/older_notebooks/*
 !notebooks/older_notebooks/03_within_variant_confidence.ipynb
 temp/
 datasets/metadata_files/cldr-cache/
-docs/
-# Local article prose draft; intentionally not committed.
+
+# Public methods and paper artifact guides under docs/ are committed. Local
+# article drafts, reading notes, and working outlines remain private.
+docs/DHQ_Draft_2026.md
+docs/claude_prompts.md
 docs/error_patterns_working_draft.md
+docs/findings.md
+docs/notebook_findings/
+docs/scratch.md
+docs/secondary_litt.md
+docs/section2_how_to_explore_llm_outputs_draft.md
+docs/section2_outline.md
 .vscode/
 .claude/

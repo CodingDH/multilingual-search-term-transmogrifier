@@ -82,7 +82,7 @@ MAX_CONSECUTIVE_TIMEOUTS = 3
 console = Console()
 
 # Load Google Cloud Translate credentials
-google_translate_key_path = apikey.load("GOOGLE_TRANSLATE_CREDENTIALS")
+google_translate_key_path = apikey.load("CODING_DH_GOOGLE_TRANSLATE_CREDENTIALS")
 credentials = service_account.Credentials.from_service_account_file(
 	google_translate_key_path, scopes=["https://www.googleapis.com/auth/cloud-platform"],
 )

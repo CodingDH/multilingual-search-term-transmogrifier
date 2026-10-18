@@ -1,0 +1,59 @@
+error_date,error_url,status_code,error_message,term_source,language_code,variant,gemma_translated_term
+2026-05-11,ollama.chat - Parsing Error,400,"Could not parse translation response: ```json
+{
+  ""translated_term"": ""Gikweretho ĩrĩa ĩrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũr",Digital Humanities,ki,minimal,
+2026-05-11,ollama.chat - Parsing Error,400,"Could not parse translation response: ```json
+{
+  ""translated_term"": ""Hụm-hụm-hụm-hụm-hụm-hụm-hụm-hụm-hụm-hụm-hụm-hụm-hụm-hụm-hụm-hụm-hụm-hụm-hụm-hụm-hụm-hụm-hụm-hụm-hụm-hụm-hụm-hụm-hụm-hụm-hụm-hụm-hụm-hụm-hụm-hụm-hụm-hụm-hụm-hụm-hụm-hụm-",Digital Humanities,blt,minimal,
+2026-05-11,ollama.chat - Parsing Error,400,"Could not parse translation response: ```json
+{
+  ""translated_term"": ""ŋəŋə ŋəŋə ŋəŋə ŋəŋə ŋəŋə ŋəŋə ŋəŋə ŋəŋə ŋəŋə ŋəŋə ŋəŋə ŋəŋə ŋəŋə ŋəŋə ŋəŋə ŋəŋə ŋəŋə ŋəŋə ŋəŋə ŋəŋə ŋəŋə ŋəŋə ŋəŋə ŋəŋə ŋəŋə ŋəŋə ŋəŋə ŋəŋə ŋəŋə ŋəŋə ŋəŋə ŋəŋə ŋəŋə ŋəŋ",Digital Humanities,tdd,minimal,
+2026-05-11,ollama.chat - Parsing Error,400,"Could not parse translation response: ```json
+{
+  ""translated_term"": ""gitt’a’a’a’a’a x’aats’i’i”, gitt’a’a’a’a’a x’aats’i’i’”, gitt’a’a’a’a’a x’aats’i’i’”, gitt’a’a’a’a’a x’aats’i’i’”, gitt’a’a’a’a’a x’aats’i’i’”, gitt’a’a’a’a’a x’aats’i’",Digital Humanities,tht,minimal,
+2026-05-11,ollama.chat - Parsing Error,400,"Could not parse translation response: ```json
+{
+  ""translated_term"": ""K'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'a'",Digital Humanities,blo,minimal,
+2026-05-11,ollama.chat - HallucinationLoop,400,done=False for Fur (fvr) — model hit token limit mid-generation,Digital Humanities,fvr,minimal,
+2026-05-11,ollama.chat - Parsing Error,400,"Could not parse translation response: ```json
+{
+  ""translated_term"": ""𐝬𐝤𐝫𐝫 𐝬𐝤𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫𐝬𐝫𐝫",Digital Humanities,za,minimal,
+2026-05-11,ollama.chat - Parsing Error,400,"Could not parse translation response: ```json
+{
+  ""translated_term"": ""Kĩthaka ĩrĩa ĩrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũrĩa ũrĩa ",Digital Humanities,ebu,minimal,
+2026-05-11,ollama.chat - Parsing Error,400,"Could not parse translation response: ```json
+{
+  ""translated_term"": ""رېږدې‌نې‌نې‌زما‌نې‌ري‌نې‌ري‌نې‌ري‌نې‌ري‌نې‌ري‌نې‌ري‌نې‌ري‌نې‌ري‌نې‌ري‌نې‌ري‌نې‌ري‌نې‌ري‌نې‌ري‌نې‌ري‌نې‌ري‌نې‌ري‌نې‌ري‌نې‌ري‌نې‌ري‌نې‌ري‌نې‌ري‌نې‌ري‌نې‌ري‌نې‌ري‌نې‌ري‌نې",Digital Humanities,haz,minimal,
+2026-05-11,ollama.chat - Parsing Error,400,"Could not parse translation response: ```json
+{
+  ""translated_term"": ""ŋi'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i'i",Digital Humanities,gld,minimal,
+2026-05-11,ollama.chat - Parsing Error,400,"Could not parse translation response: ```json
+{
+  ""translated_term"": ""Hluam-xij-ntuj-ntuj-ntuj-ntuj-ntuj-ntuj-ntuj-ntuj-ntuj-ntuj-ntuj-ntuj-ntuj-ntuj-ntuj-ntuj-ntuj-ntuj-ntuj-ntuj-ntuj-ntuj-ntuj-ntuj-ntuj-ntuj-ntuj-ntuj-ntuj-ntuj-ntuj-ntu",Digital Humanities,kjg,minimal,
+2026-05-11,ollama.chat - HallucinationLoop,400,done=False — model hit token limit mid-generation,Digital Humanities,tmh,minimal,
+2026-05-11,ollama.chat - Parsing Error,400,"Could not parse translation response: ```json
+{
+  ""translated_term"": ""Eŋa-ŋa-ŋa-ŋa-ŋa-ŋa-ŋa-ŋa-ŋa-ŋa-ŋa-ŋa-ŋa-ŋa-ŋa-ŋa-ŋa-ŋa-ŋa-ŋa-ŋa-ŋa-ŋa-ŋa-ŋa-ŋa-ŋa-ŋa-ŋa-ŋa-ŋa-ŋa-ŋa-ŋa-ŋa-ŋa-ŋa-ŋa-ŋa-ŋa-ŋa-ŋa-ŋa-ŋa-ŋa-ŋa-ŋa-ŋa-ŋa-ŋa-ŋa-ŋa-ŋa-ŋa-ŋa-ŋa",Digital Humanities,laj,minimal,
+2026-05-11,ollama.chat - Parsing Error,400,"Could not parse translation response: ```json
+{
+  ""translated_term"": ""Hüütü-tüütü-tüütü-tüütü-tüütü-tüütü-tüütü-tüütü-tüütü-tüütü-tüütü-tüütü-tüütü-tüütü-tüütü-tüütü-tüütü-tüütü-tüütü-tüütü-tüütü-tüütü-tüütü-tüütü-tüütü-tüütü-tüütü-tüütü-",Digital Humanities,aoz,minimal,
+2026-05-11,ollama.chat - Parsing Error,400,"Could not parse translation response: ```json
+{
+  ""translated_term"": ""ၵႂၢမ်းၼႃႉၵႂၢမ်းၵုင်းဢၼ်ၵႂၢမ်းၵုၼ်ႇဢၼ်ၵႂၢမ်းၵုၼ်ႇဢၼ်ၵႂၢမ်းၵုၼ်ႇဢၼ်ၵႂၢမ်းၵုၼ်ႇဢၼ်ၵႂၢမ်းၵုၼ်ႇဢၼ်ၵႂၢမ်းၵုၼ်ႇဢၼ်ၵႂၢမ်းၵုၼ်ႇဢၼ်ၵႂၢမ်းၵုၼ်ႇဢၼ်ၵႂၢမ်းၵုၼ်ႇဢၼ်ၵႂၢမ်းၵုၼ်ႇဢၼ်ၵႂၢမ်",Digital Humanities,rhg,minimal,
+2026-05-11,ollama.chat - Parsing Error,400,"Could not parse translation response: ```json
+{
+  ""translated_term"": ""Ŋaŋŋa-ŋaŋŋa-ŋaŋŋa-ŋaŋŋa-ŋaŋŋa-ŋaŋŋa-ŋaŋŋa-ŋaŋŋa-ŋaŋŋa-ŋaŋŋa-ŋaŋŋa-ŋaŋŋa-ŋaŋŋa-ŋaŋŋa-ŋaŋŋa-ŋaŋŋa-ŋaŋŋa-ŋaŋŋa-ŋaŋŋa-ŋaŋŋa-ŋaŋŋa-ŋaŋŋa-ŋaŋŋa-ŋaŋŋa-ŋaŋŋa-ŋaŋŋa-ŋaŋŋa-ŋaŋŋa-",Digital Humanities,bss,minimal,
+2026-05-20,ollama.chat - Parsing Error,400,"Could not parse translation response: ```json
+{""translated_term"": ""ᐋᖙᖚᖚᖘᖚᖗᖘᖚᖘᖚᖗᖘᖚᖘᖚᖗᖘᖚᖘᖚᖗᖘᖚᖘᖚᖗᖘᖚᖘᖚᖗᖘᖚᖘᖚᖗᖘᖚᖘᖚᖗᖘᖚᖘᖚᖗᖘᖚᖘᖚᖗᖘᖚᖘᖚᖗᖘᖚᖘᖚᖗᖘᖚᖘᖚᖗᖘᖚᖘᖚᖗᖘᖚᖘᖚᖗᖘᖚᖘᖚᖗᖘᖚᖘᖚᖗᖘᖚᖘᖚᖗᖘᖚᖘᖚᖗᖘᖚᖘᖚᖗᖘᖚᖘᖚᖗᖘᖚᖘᖚᖗᖘᖚᖘᖚᖗᖘᖚᖘᖚᖗᖘᖚᖘᖚᖗᖘᖚᖘᖚᖗᖘᖚᖘᖚᖗᖘᖚᖘᖚᖗᖘᖚᖘᖚᖗᖘᖚᖘᖚᖗᖘᖚᖘᖚᖗᖘᖚᖘᖚᖗᖘᖚᖘᖚᖗᖘᖚᖘᖚ",Digital Humanities,csw,github_searcher,
+2026-05-20,ollama.chat - Parsing Error,400,"Could not parse translation response: ```json
+{""translated_term"": ""𐒅𐒪𐒕𐒷𐒕𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪𐒱𐒷𐒪",Digital Humanities,lab,github_searcher,
+2026-05-20,ollama.chat - Parsing Error,400,"Could not parse translation response: ```json
+{""translated_term"": ""ᐋᓐᓂᕽ ᐦᐃᐦᑭᐦᐃᐦᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗᑮᐗ",Digital Humanities,ojs,github_searcher,
+2026-05-20,ollama.chat - Parsing Error,400,"Could not parse translation response: ```json
+{""translated_term"": ""ʻAkilisi Numera ʻi Ngāue ki moʻongā ʻi ʻi ʻi ʻi ʻi ʻi ʻi ʻi ʻi ʻi ʻi ʻi ʻi ʻi ʻi ʻi ʻi ʻi ʻi ʻi ʻi ʻi ʻi ʻi ʻi ʻi ʻi ʻi ʻi ʻi ʻi ʻi ʻi ʻi ʻi ʻi ʻi ʻi ʻi ʻi ʻi ʻi ʻi ʻi ʻi ",Digital Humanities,to,github_searcher,
+2026-05-20,ollama.chat - HallucinationLoop,400,done=False for Tsonga (ts) — model hit token limit mid-generation,Digital Humanities,ts,github_searcher,
+2026-05-20,ollama.chat - Parsing Error,400,"Could not parse translation response: ```json
+{""translated_term"": ""𐩱𐩨𐩲𐩧𐩨𐩱𐩨𐩲𐩧𐩨𐩱𐩨𐩲𐩧𐩨𐩱𐩨𐩲𐩧𐩨𐩱𐩨𐩲𐩧𐩨𐩱𐩨𐩲𐩧𐩨𐩱𐩨𐩲𐩧𐩨𐩱𐩨𐩲𐩧𐩨𐩱𐩨𐩲𐩧𐩨𐩱𐩨𐩲𐩧𐩨𐩱𐩨𐩲𐩧𐩨𐩱𐩨𐩲𐩧𐩨𐩱𐩨𐩲𐩧𐩨𐩱𐩨𐩲𐩧𐩨𐩱𐩨𐩲𐩧𐩨𐩱𐩨𐩲𐩧𐩨𐩱𐩨𐩲𐩧𐩨𐩱𐩨𐩲𐩧𐩨𐩱𐩨𐩲𐩧𐩨𐩱𐩨𐩲𐩧𐩨𐩱𐩨𐩲𐩧𐩨𐩱𐩨𐩲𐩧𐩨𐩱𐩨𐩲𐩧𐩨𐩱𐩨𐩲𐩧𐩨𐩱𐩨𐩲𐩧𐩨𐩱𐩨𐩲𐩧𐩨𐩱𐩨𐩲𐩧𐩨𐩱𐩨𐩲𐩧𐩨𐩱𐩨𐩲𐩧𐩨𐩱𐩨𐩲𐩧𐩨𐩱𐩨𐩲𐩧𐩨𐩱𐩨𐩲𐩧𐩨𐩱𐩨𐩲𐩧𐩨𐩱𐩨𐩲𐩧𐩨𐩱",Digital Humanities,xsa,github_searcher,
+2026-05-20,ollama.chat - HallucinationLoop,400,done=False for Saho (ssy) — model hit token limit mid-generation,Digital Humanities,ssy,fluent_speaker,
+2026-05-20,ollama.chat - Parsing Error,400,"Could not parse translation response: ```json
+{""translated_term"": ""ʼyaʼtsoh ɬíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼíʼí",Digital Humanities,zun,github_searcher,
