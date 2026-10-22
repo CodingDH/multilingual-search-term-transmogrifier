@@ -7,7 +7,7 @@ from matplotlib.patches import FancyBboxPatch, Rectangle
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-OUTPUT_DIR = PROJECT_ROOT / "figures" / "dhq_article"
+OUTPUT_DIR = PROJECT_ROOT / "docs" / "papers" / "translation-to-transmogrification" / "figures" / "analysis"
 OUTPUT_STEM = OUTPUT_DIR / "language_code_pipeline_history_and_final"
 
 

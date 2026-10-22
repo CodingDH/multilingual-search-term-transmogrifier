@@ -108,7 +108,7 @@ Builds the methods figure that combines two views of the language-code pipeline:
 - **Historical sequence**: ISO 639-1 baseline → Wikimedia → LOC ISO 639-2 → CLDR 48.2 plus the retained CLDR 45 supplement
 - **Current row-defining sources**: CLDR 48.2, LOC ISO 639-2, Wikimedia, and the CLDR 45 supplement
 - **Metadata enrichment**: SIL ISO 639-3 names, ISO 639-5/CLDR and Glottolog family evidence, reviewed family decisions, and IANA/BCP 47 normalization through `langcodes`
-- **Outputs**: `figures/dhq_article/language_code_pipeline_history_and_final.{png,pdf,svg}`
+- **Outputs**: `docs/papers/translation-to-transmogrification/figures/analysis/language_code_pipeline_history_and_final.{png,pdf,svg}`
 
 ```bash
 python scripts/exploration/build_language_code_pipeline_figure.py
@@ -172,7 +172,7 @@ python scripts/exploration/build_review_explorer_data.py --output-dir path/to/di
 
 Builds the precomputed tables used by notebook 02's historic reference-convergence section. This script intentionally uses only the two CSVs in `historic_materials/` and hard-filters both to `term_source == "Digital Humanities"` by default.
 
-The November 2022 file, `translated_dh_terms.csv`, supports the first historic check: exact normalized agreement between `term` (pre-existing/Wikipedia-derived Digital Humanities term where available) and `translated_term` (historic Google Translate output). The November 2024 file, `initial_translated_terms.csv`, supports the second historic check: exact normalized agreement among `wikipedia_translated_term`, `gt_translated_term`, `enmt_translated_term`, and `openai_translated_term`.
+The December 13, 2022 file, `translated_dh_terms.csv`, supports the first historic check: exact normalized agreement between `term` (pre-existing/Wikipedia-derived Digital Humanities term where available) and `translated_term` (historic Google Translate output). The November 2024 file, `initial_translated_terms.csv`, supports the second historic check: exact normalized agreement among `wikipedia_translated_term`, `gt_translated_term`, `enmt_translated_term`, and `openai_translated_term`.
 
 - **Inputs**: `historic_materials/translated_dh_terms.csv`, `historic_materials/initial_translated_terms.csv`
 - **Output**: `translated_terms/digital_humanities/evaluation/historic_2022_*.csv` and `historic_2024_*.csv`

@@ -9,7 +9,7 @@ time, not as active source files for the current translation run.
 
 ### `translated_dh_terms.csv`
 
-Approximate date: November 2022.
+Artifact date: December 13, 2022.
 
 This is the earliest flattened translation artifact. It contains seven
 `term_source` values, each repeated across the early language list. For the
@@ -26,7 +26,8 @@ exactly agreed after conservative normalization.
 
 ### `initial_translated_terms.csv`
 
-Approximate date: November 2024.
+Artifact date: November 17-18, 2024. The generating script dates to September
+22, 2024; that script date should not be read as the date of the saved outputs.
 
 This is the later initial prompt-reference artifact for `Digital Humanities`.
 Unlike `translated_dh_terms.csv`, it stores multiple service outputs side by

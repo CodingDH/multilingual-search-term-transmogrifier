@@ -28,6 +28,21 @@ import apikey
 
 console = Console()
 
+# Colorblind-friendly Coding DH palette for publication figures. The order is
+# stable so categorical colors remain consistent across notebooks and exports.
+CODING_DH_CATEGORICAL_COLORS: Tuple[str, ...] = (
+	"#0072B2",  # electric blue
+	"#E69F00",  # amber
+	"#009E73",  # teal green
+	"#CC79A7",  # neon pink
+	"#D55E00",  # vermilion
+	"#56B4E9",  # cyan
+	"#F0C808",  # print-friendly yellow
+	"#3A3A3A",  # charcoal
+)
+CODING_DH_SEQUENTIAL_SCHEME = "viridis"
+CODING_DH_DIVERGING_SCHEME = "blueorange"
+
 
 def save_chart(chart: "alt.Chart", filename: str, scale_factor: float = 2.0) -> None:
 	"""
@@ -219,8 +234,17 @@ def get_data_directory_path() -> str:
 
 	:return: Data directory path
 	"""
-	console.print('Retrieving Multilingual Search Term Transmogrifier data directory path...', style='bold blue')
-	return apikey.load("MULTILINGUAL_SEARCH_TERM_TRANSMOGRIFIER_DATA_DIRECTORY")
+	configured_path = apikey.load("MULTILINGUAL_SEARCH_TERM_TRANSMOGRIFIER_DATA_DIRECTORY")
+	if configured_path and os.path.isdir(configured_path):
+		return configured_path
+
+	project_data_path = os.path.abspath(
+		os.path.join(os.path.dirname(__file__), os.pardir, 'datasets')
+	)
+	if os.path.isdir(project_data_path):
+		return project_data_path
+
+	return configured_path
 
 
 def get_search_data_directory_path() -> str:

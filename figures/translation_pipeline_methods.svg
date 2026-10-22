@@ -1,50 +1,47 @@
-<svg width="100%" viewBox="0 0 1200 790" role="img" xmlns="http://www.w3.org/2000/svg">
+<svg width="100%" viewBox="0 65 1200 725" role="img" xmlns="http://www.w3.org/2000/svg">
   <title>Coding DH translation generation pipeline</title>
   <desc>A source term and 881 reviewed language rows feed prompt-invariant sources and eight language models under three independent prompts. Eight judge runs synthesize the candidate pool. Every translation, rationale, error, and provenance field remains preserved as pipeline evidence.</desc>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M2 1 L8 5 L2 9" fill="none" stroke="#5f6368" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M2 1 L8 5 L2 9" fill="none" stroke="#4B5563" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
     </marker>
     <style>
       text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; fill: #202124; letter-spacing: 0; }
       .title { font-size: 22px; font-weight: 700; }
-      .subtitle { font-size: 12px; fill: #5f6368; }
+      .subtitle { font-size: 12px; fill: #4B5563; }
       .stage { font-size: 11px; font-weight: 700; letter-spacing: .7px; }
       .head { font-size: 14px; font-weight: 700; }
       .body { font-size: 11px; }
-      .small { font-size: 10px; fill: #5f6368; }
+      .small { font-size: 10px; fill: #4B5563; }
       .count { font-size: 11px; font-weight: 700; }
       .mono { font-family: "SFMono-Regular", Consolas, monospace; font-size: 9.5px; }
-      .arrow { fill: none; stroke: #5f6368; stroke-width: 1.4; marker-end: url(#arrow); }
+      .arrow { fill: none; stroke: #4B5563; stroke-width: 1.4; marker-end: url(#arrow); }
       .rule { stroke-width: .7; opacity: .65; }
     </style>
   </defs>
 
   <rect width="1200" height="790" fill="#ffffff"/>
 
-  <text x="44" y="34" class="title">Coding DH Translation Generation Pipeline</text>
-  <text x="44" y="55" class="subtitle">How each disciplinary source term produces prompt-invariant, independent LLM, and evidence-aware judge responses.</text>
-
-  <text x="44" y="88" class="stage" fill="#325a3d">1  RESEARCH INPUTS</text>
-  <rect x="44" y="101" width="530" height="78" rx="6" fill="#edf5ee" stroke="#6b9273"/>
+  <text x="44" y="88" class="stage" fill="#0072B2">1  RESEARCH INPUTS</text>
+  <rect x="44" y="101" width="530" height="78" rx="6" fill="#E6F3FA" stroke="#0072B2"/>
   <text x="64" y="125" class="head">Source term</text>
   <text x="64" y="146" class="body">Example: “Digital Humanities”</text>
   <text x="64" y="164" class="small">The same workflow can be rerun for additional disciplinary terms.</text>
 
-  <rect x="594" y="101" width="562" height="78" rx="6" fill="#edf5ee" stroke="#6b9273"/>
+  <rect x="594" y="101" width="562" height="78" rx="6" fill="#E6F3FA" stroke="#0072B2"/>
   <text x="614" y="125" class="head">881 reviewed language-code rows</text>
   <text x="614" y="146" class="body">Row sources: ISO 639-1/2, Wikimedia, CLDR 48.2, and CLDR v45 supplement</text>
   <text x="614" y="164" class="small">Enriched with SIL/ISO 639-3, Glottolog, ISO 639-5, scripts, BCP 47/IANA context, families, and population evidence.</text>
 
   <path d="M309 179 V202 H323 V218" class="arrow"/>
   <path d="M875 179 V202 H877 V218" class="arrow"/>
-  <line x1="309" y1="202" x2="875" y2="202" stroke="#5f6368" stroke-width="1.4"/>
+  <line x1="309" y1="202" x2="875" y2="202" stroke="#4B5563" stroke-width="1.4"/>
 
-  <text x="44" y="222" class="stage" fill="#7a3e00">2  CANDIDATE GENERATION</text>
-  <rect x="44" y="238" width="340" height="210" rx="6" fill="#eaf4f8" stroke="#4e879d"/>
+  <text x="44" y="222" class="stage" fill="#8F5F00">2  CANDIDATE GENERATION</text>
+  <rect x="44" y="238" width="340" height="210" rx="6" fill="#E5F5EF" stroke="#009E73"/>
   <text x="64" y="264" class="head">Prompt-invariant sources</text>
-  <text x="64" y="284" class="count" fill="#245f75">Up to 4 candidates per language</text>
-  <line x1="64" y1="296" x2="364" y2="296" class="rule" stroke="#4e879d"/>
+  <text x="64" y="284" class="count" fill="#006B4F">Up to 4 candidates per language</text>
+  <line x1="64" y1="296" x2="364" y2="296" class="rule" stroke="#009E73"/>
   <text x="64" y="319" class="body">Machine translation</text>
   <text x="80" y="339" class="body">• Google Translate</text>
   <text x="80" y="357" class="body">• EasyNMT / Helsinki-NLP</text>
@@ -53,50 +50,52 @@
   <text x="80" y="420" class="body">• Wikipedia interlanguage title</text>
   <text x="64" y="438" class="small">Queried once per term × supported language.</text>
 
-  <rect x="404" y="238" width="752" height="210" rx="6" fill="#f8edf3" stroke="#a34f78"/>
+  <rect x="404" y="238" width="752" height="210" rx="6" fill="#F8EAF3" stroke="#CC79A7"/>
   <text x="424" y="264" class="head">Eight LLM services × three independent prompts</text>
-  <text x="424" y="284" class="count" fill="#813556">Up to 24 independent candidates per language</text>
-  <line x1="424" y1="296" x2="1136" y2="296" class="rule" stroke="#a34f78"/>
+  <text x="424" y="284" class="count" fill="#8E4774">Up to 24 independent candidates per language</text>
+  <line x1="424" y1="296" x2="1136" y2="296" class="rule" stroke="#CC79A7"/>
 
-  <rect x="424" y="310" width="219" height="102" rx="5" fill="#fffaf2" stroke="#c58e35"/>
+  <rect x="424" y="310" width="219" height="102" rx="5" fill="#FFF4D6" stroke="#E69F00"/>
   <text x="438" y="332" class="head">Minimal</text>
   <text x="438" y="351" class="body">No system persona; term, language,</text>
   <text x="438" y="368" class="body">code, and JSON response structure.</text>
   <text x="438" y="393" class="small">Baseline instruction condition</text>
 
-  <rect x="660" y="310" width="219" height="102" rx="5" fill="#f2f4fb" stroke="#6678ad"/>
+  <rect x="660" y="310" width="219" height="102" rx="5" fill="#EAF7FC" stroke="#56B4E9"/>
   <text x="674" y="332" class="head">Fluent speaker</text>
   <text x="674" y="351" class="body">Multilingual-scholar persona;</text>
   <text x="674" y="368" class="body">rationale written in target language.</text>
   <text x="674" y="393" class="small">Linguistic-role condition</text>
 
-  <rect x="896" y="310" width="240" height="102" rx="5" fill="#eef6f1" stroke="#56836a"/>
+  <rect x="896" y="310" width="240" height="102" rx="5" fill="#E5F5EF" stroke="#009E73"/>
   <text x="910" y="332" class="head">GitHub searcher</text>
   <text x="910" y="351" class="body">Frames the term as a query for finding</text>
   <text x="910" y="368" class="body">repositories, users, issues, and topics.</text>
   <text x="910" y="393" class="small">Goal-oriented retrieval condition</text>
 
-  <text x="424" y="433" class="small">Cloud: OpenAI, Claude, Gemini, DeepSeek   •   Local via Ollama: Llama, Gemma, Qwen, Mistral</text>
+  <text x="424" y="427" class="small">Hosted APIs: GPT-4o (2024-08-06) · Claude Sonnet 4.5 · Gemini 2.5 Flash · DeepSeek-V3</text>
+  <text x="424" y="441" class="small">Local via Ollama: Llama 3.1 · Gemma 3 12B · Qwen 2.5 7B · Mistral 7B</text>
 
-  <path d="M214 448 V474 H580" fill="none" stroke="#5f6368" stroke-width="1.4"/>
-  <path d="M780 448 V474 H620" fill="none" stroke="#5f6368" stroke-width="1.4"/>
+  <path d="M214 448 V474 H580" fill="none" stroke="#4B5563" stroke-width="1.4"/>
+  <path d="M780 448 V474 H620" fill="none" stroke="#4B5563" stroke-width="1.4"/>
   <path d="M600 474 V490" class="arrow"/>
 
-  <text x="44" y="494" class="stage" fill="#54358a">3  EVIDENCE-AWARE SYNTHESIS</text>
-  <rect x="174" y="508" width="852" height="102" rx="6" fill="#f0ebf8" stroke="#7755a8"/>
+  <text x="44" y="494" class="stage" fill="#B34700">3  EVIDENCE-AWARE SYNTHESIS</text>
+  <rect x="174" y="508" width="852" height="102" rx="6" fill="#FBECE5" stroke="#D55E00"/>
   <text x="600" y="532" text-anchor="middle" class="head">Judge prompt × eight LLM services</text>
-  <text x="600" y="552" text-anchor="middle" class="count" fill="#54358a">Up to 8 additional responses per language</text>
+  <text x="600" y="552" text-anchor="middle" class="count" fill="#B34700">Up to 8 additional responses per language</text>
   <text x="600" y="573" text-anchor="middle" class="body">Receives distinct candidates from the three independent prompts, direct services, and Wikipedia, grouped to expose agreement.</text>
   <text x="600" y="592" text-anchor="middle" class="body">Each judge may select a supplied candidate or generate a new form; its rationale and provenance are retained.</text>
 
   <path d="M600 610 V632" class="arrow"/>
 
-  <text x="44" y="636" class="stage" fill="#8a4a14">4  PRESERVED OUTPUTS</text>
-  <rect x="174" y="650" width="852" height="96" rx="6" fill="#fff5e8" stroke="#b87637"/>
+  <text x="44" y="636" class="stage" fill="#0072B2">4  PRESERVED OUTPUTS</text>
+  <rect x="174" y="650" width="852" height="108" rx="6" fill="#E6F3FA" stroke="#0072B2"/>
   <text x="600" y="675" text-anchor="middle" class="head">Evidence retained for every service × prompt × language cell</text>
-  <text x="600" y="697" text-anchor="middle" class="body">Translation and rationale • API, parsing, refusal, and repetition errors • service, prompt, language, and timestamp provenance</text>
-  <text x="600" y="718" text-anchor="middle" class="small">Judge responses remain additional evidence: they never overwrite the independent candidates or prompt-invariant references.</text>
-  <text x="600" y="737" text-anchor="middle" class="mono">direct_services/  ·  prompt_services/  ·  error_logs/</text>
+  <text x="600" y="697" text-anchor="middle" class="body">Translation and rationale • API, parsing, refusal, and repetition errors</text>
+  <text x="600" y="714" text-anchor="middle" class="body">Service, prompt, language, timestamp, and model provenance</text>
+  <text x="600" y="735" text-anchor="middle" class="small">Judge responses remain additional evidence: they never overwrite the independent candidates or prompt-invariant references.</text>
+  <text x="600" y="752" text-anchor="middle" class="mono">direct_services/  ·  prompt_services/  ·  error_logs/</text>
 
   <text x="44" y="775" class="small">Potential maximum before failures: 4 prompt-invariant candidates + 24 independent LLM responses + 8 judge responses = 36 service-prompt-language cells.</text>
 </svg>

@@ -4,7 +4,7 @@ This guide identifies the repository artifacts supporting the forthcoming articl
 
 ## Article Scope
 
-The article treats multilingual candidate generation as an interpretive and infrastructural problem rather than a benchmark translation task. Its principal claims concern:
+The article treats multilingual candidate generation as an interpretive and infrastructural problem rather than a benchmark translation task. The article details the following:
 
 - the historical construction of the 881-row language inventory;
 - differences between community, standards, localization, and service infrastructures;
@@ -43,11 +43,16 @@ The article's numerical claims should be checked against these committed reviewe
 
 ## Figures
 
-Publication-ready figures are stored in `figures/dhq_article/`. Shared methods diagrams in `figures/` may also be used where the article guide or manuscript identifies them.
+Article-specific visual materials are stored with this guide:
 
-## Reproducible Snapshot
+- [`figures/analysis/`](figures/analysis/) contains notebook-generated source
+  figures, exploratory charts, and titleless derivatives used to assemble the
+  article figures.
+- [`figures/publication/`](figures/publication/) contains the numbered figures
+  and tables selected for the article. Its
+  [manifest](figures/publication/README.md) records captions, alt text, source
+  notebooks, and production notes.
 
-Release tag: **to be assigned before submission**.
-
-The release should include the article-facing figures, executed notebooks, reviewed CSVs, and documentation current at submission. API generation does not need to be rerun to inspect the reported analyses.
+Shared pipeline diagrams that may support more than one publication remain in
+the repository-level [`figures/`](../../../figures/) directory.
 

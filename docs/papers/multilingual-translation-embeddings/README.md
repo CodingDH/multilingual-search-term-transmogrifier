@@ -2,7 +2,7 @@
 
 **Status:** In development.
 
-This planned follow-up study uses the Multilingual Search Term Transmogrifier's shared corpus to examine the geometric structure of candidate translations and rationales. It is intentionally separated from the first article's artifact guide so that embedding experiments can evolve without changing that article's evidentiary scope.
+This planned follow-up study uses the Multilingual Search Term Transmogrifier's shared corpus to examine the geometric structure of candidate translations and rationales. 
 
 ## Planned Scope
 
@@ -24,6 +24,3 @@ This planned follow-up study uses the Multilingual Search Term Transmogrifier's 
 | `notebooks/08_disagreement_patterns.ipynb` | Multidimensional disagreement synthesis and close-reading cases |
 | `datasets/translated_terms/` | Completed and pilot term corpora |
 
-## Reproducibility Note
-
-The follow-up paper should receive its own tagged release once its term inventory, model choices, robustness analyses, and publication figures are finalized. Until then, results in these notebooks are development analyses rather than fixed publication claims.

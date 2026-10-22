@@ -4,7 +4,7 @@ Build historic reference convergence tables for notebook 02.
 
 This script keeps two historic artifacts separate:
 
-1. ``historic_materials/translated_dh_terms.csv`` (November 2022)
+1. ``historic_materials/translated_dh_terms.csv`` (December 13, 2022)
    The flattened early translation artifact. For ``Digital Humanities``, the
    ``term`` column contains pre-existing/Wikipedia-derived terms where available
    and ``translated_term`` contains the historic Google Translate output.
@@ -57,7 +57,7 @@ class HistoricArtifactConfig:
 HISTORIC_ARTIFACTS = [
     HistoricArtifactConfig(
         prefix='historic_2022',
-        label='November 2022 flattened historic translation artifact',
+        label='December 13, 2022 flattened historic translation artifact',
         relative_path='historic_materials/translated_dh_terms.csv',
         language_col='language',
         service_columns={
@@ -66,7 +66,7 @@ HISTORIC_ARTIFACTS = [
         },
         context_columns={},
         role=(
-            'November 2022 flattened output; compares pre-existing/Wikipedia-derived '
+            'December 13, 2022 flattened output; compares pre-existing/Wikipedia-derived '
             'Digital Humanities terms with historic Google Translate outputs'
         ),
     ),
