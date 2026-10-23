@@ -258,12 +258,12 @@ def score_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     - ``llm_*``: LLM services only (OpenAI, Claude, Gemini, Ollama). These vary per prompt variant and are the main signal.
     - ``baseline_*``: Non-LLM services (GT, EasyNMT, Lingvanex, Wikipedia). Prompt-invariant — identical across all variant CSVs, kept as a fixed reference for comparison.
     - ``all_*`` : All services combined.
-    
+
     Parameters
     ----------
     df : pd.DataFrame
 		DataFrame containing translation outputs from various services for a single term/variant. Must include columns corresponding to the services in LLM_SERVICES and BASELINE_SERVICES.
-          
+
     Returns
     -------
     pd.DataFrame with new columns appended for confidence scores and related metadata.
@@ -293,7 +293,7 @@ def score_dataframe(df: pd.DataFrame) -> pd.DataFrame:
 def compute_summary(scored_df: pd.DataFrame, variant: str, term: str) -> dict:
     """
     Compute aggregate stats for a single variant/term combination.
-     
+
     Parameters
     ----------
     scored_df : pd.DataFrame
@@ -301,7 +301,7 @@ def compute_summary(scored_df: pd.DataFrame, variant: str, term: str) -> dict:
 	variant : str
 		Prompt variant name (e.g. 'github_searcher', 'minimal', etc.) — used for labeling the summary row.
 	term : str
-     	Term name (e.g. 'Digital Humanities') — used for labeling the summary row. 
+		Term name (e.g. 'Digital Humanities') — used for labeling the summary row.
 
     Returns
     -------
@@ -317,7 +317,7 @@ def compute_summary(scored_df: pd.DataFrame, variant: str, term: str) -> dict:
     - llm_unique_candidates_mean
     - languages_with_baseline
     - mean_baseline_confidence
-     
+
     """
     total = len(scored_df)
     has_llm = scored_df['llm_total_services'] > 0
@@ -352,7 +352,7 @@ def run_confidence_evaluation(
 ) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """
     Run confidence scoring for all term/variant combinations.
-    
+
     Parameters
     ----------
     data_directory_path : str

@@ -376,7 +376,7 @@ def is_refusal_rationale(rationale: str) -> bool:
 def is_placeholder_term(text: str) -> bool:
     """
     Return True if text is a refusal/placeholder rather than a real translation. Uses the _PLACEHOLDER_RE regex to catch common refusal patterns such as "untranslatable", "no direct translation", and "Note: ...".
-    
+
     Parameters
     ----------
     text : str
@@ -401,7 +401,7 @@ def is_repetition_loop(text: str) -> bool:
     'bình bình bình ... bình' (Vietnamese) or 'kàlā kàlā kàlā ...' (Ngambay).
     The 30% fraction guard avoids false-positives from high-frequency function
     words in short strings (e.g. Arabic definite article or Bantu class prefixes).
-    
+
     Parameters
     ----------
     text : str
@@ -430,7 +430,7 @@ def has_extreme_term_length(text: str, max_chars: int = 100) -> bool:
     Lozi EasyNMT 109-char repeated phrase), and (b) LLM disclaimer text that
     slipped past placeholder detection (e.g. 312-char 'As of my knowledge
     cutoff...' responses).
-    
+
     Parameters
     ----------
     text : str
@@ -480,7 +480,7 @@ def has_unicode_escape(text: str) -> bool:
 
     Indicates the model emitted raw JSON/Python Unicode escapes instead of
     rendering the actual characters (e.g. Shor/Ollama: '\\u041d\\u0430...').
-    
+
     Parameters
     ----------
     text : str
@@ -499,9 +499,9 @@ def has_unicode_escape(text: str) -> bool:
 def _script_profile(text: str) -> dict[str, int]:
     """
     Return {script: char_count}, ignoring punctuation/digits/spaces.
-    
+
     Punctuation, symbols, separators, and digits are ignored as they do not reliably indicate script mixing. CJK codepoints and Japanese syllabaries are treated as one script family because their co-occurrence is normal in Japanese text.
-    
+
     Parameters
     ----------
     text : str

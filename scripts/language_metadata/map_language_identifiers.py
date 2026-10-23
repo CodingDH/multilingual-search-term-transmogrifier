@@ -10,6 +10,7 @@ from rich.console import Console
 
 console = Console()
 
+
 BCP47_GRANDFATHERED_FALLBACKS = {
     'zh-classical': 'lzh',       # Literary/Classical Chinese
     'be-x-old':     'be-tarask', # Belarusian Taraškievica orthography
@@ -21,6 +22,7 @@ BCP47_GRANDFATHERED_FALLBACKS = {
 }
 
 SERVICE_LANGUAGE_CODE_SUPPORT_FILENAME = 'service_language_code_support.csv'
+
 
 def _canonicalize_bcp47_like_tag(tag: str) -> str:
     """Return a canonical BCP 47 tag, or ''.
@@ -54,6 +56,7 @@ def _canonicalize_bcp47_like_tag(tag: str) -> str:
         # joins still work and the audit script can surface it.
         return tag.replace('_', '-')
 
+
 def _preferred_bcp47_for_row(row):
     """Choose a preferred BCP 47 tag for a language row.
 
@@ -75,6 +78,7 @@ def _preferred_bcp47_for_row(row):
     if iso2t and iso2t.lower() not in {'nan', 'none'}:
         return (_canonicalize_bcp47_like_tag(iso2t), 'iso639_2_t', '')
     return (_canonicalize_bcp47_like_tag(code), 'language_code', '')
+
 
 def _candidate_codes_for_services(row) -> list:
     """Return likely codes/tags to test against service-specific support lists.
@@ -107,6 +111,7 @@ def _candidate_codes_for_services(row) -> list:
             if cand and cand not in out:
                 out.append(cand)
     return out
+
 
 def add_identifier_context(comp_df: pd.DataFrame) -> pd.DataFrame:
     """Add BCP 47 and platform-code context columns without changing row identity.
@@ -157,6 +162,7 @@ def add_identifier_context(comp_df: pd.DataFrame) -> pd.DataFrame:
                   f'{n_over} grandfathered fallbacks')
     return df
 
+
 def add_service_language_codes(comp_df: pd.DataFrame, support_csv: str = None) -> pd.DataFrame:
     """Map rows to exact codes required by services/APIs when a support CSV exists.
 
@@ -174,7 +180,6 @@ def add_service_language_codes(comp_df: pd.DataFrame, support_csv: str = None) -
     df = comp_df.copy()
     if support_csv is None:
         # default lookup: metadata_files/service_language_code_support.csv
-        from pathlib import Path
         here = Path(__file__).resolve()
         # Language metadata lives three levels below the repository root.
         candidate = here.parent.parent.parent / 'datasets' / 'metadata_files' / SERVICE_LANGUAGE_CODE_SUPPORT_FILENAME

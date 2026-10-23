@@ -4,6 +4,17 @@ Curation scripts that are *not part of the standard pipeline run*. They live her
 
 Nothing in this folder is imported by the active pipeline. Each script is a standalone CLI tool.
 
+## When To Run These Scripts
+
+| Script | Frequency | Position in workflow |
+| --- | --- | --- |
+| `refresh_service_support.py` | When Google changes supported languages or before a new dated study | Before `generate_language_codes.py` |
+| `audit_language_identifiers.py` | After rebuilding the comprehensive metadata CSV | After `generate_language_codes.py` |
+| `spotcheck_bcp47_codes.py` | Only when re-evaluating identifier behavior or testing a new service snapshot | After metadata generation; independent of candidate generation |
+| `generate_family_assignments.py` | Only when intentionally revising the committed fallback assignments | Before regenerating language metadata and family review queues |
+
+None of these commands is required when working from the committed metadata snapshot. A routine new-term run normally begins with candidate generation and does not refresh these files.
+
 ## Files
 
 ### `audit_language_identifiers.py`

@@ -135,7 +135,7 @@ def run_across_variant_evaluation(
 ) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """
     For each (language × service), compare translations across prompt variants.
-    
+
     Parameters
     ----------
     data_directory_path : str

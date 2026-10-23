@@ -150,7 +150,7 @@ def get_minimal_prompt(term_source: str, language_name: str, language_code: str)
     Minimal/baseline user prompt — bare translation request plus a JSON schema for parseable output. No scholarly framing, no urgency markers, no role-play. Paired with NO system prompt (see get_system_prompt()).
 
     The ISO code is a disambiguation control (not scaffolding) — it ensures all variants target the same language, which matters for codes like zh vs zh-tw or ambiguous language names. The JSON requirement is plumbing.
-    
+
     Parameters
     ----------
     term_source : str
@@ -159,11 +159,11 @@ def get_minimal_prompt(term_source: str, language_name: str, language_code: str)
 		The target language name (e.g. "French").
     language_code : str
 		The target language ISO code (e.g. "fr"). Used for disambiguation, not as scaffolding.
-        
+
     Returns
     -------
     str		 The formatted user prompt for the minimal variant.
-    
+
     """
     return (
         f"Translate '{term_source}' into {language_name} (ISO {language_code}). "

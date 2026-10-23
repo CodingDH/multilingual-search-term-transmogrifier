@@ -65,7 +65,7 @@ RTL_SCRIPT_CODES = {
 def _fetch_npm_package(package: str, version: str, cache_dir: str) -> str:
     """
     Download and extract a CLDR JSON package from the npm registry if not already cached. Returns the path to the extracted package directory.
-    
+
     Parameters
     ----------
     package : str
@@ -74,7 +74,7 @@ def _fetch_npm_package(package: str, version: str, cache_dir: str) -> str:
 		The CLDR version to fetch (e.g. '48.2.0').
 	cache_dir : str
 		Local directory to cache downloaded packages. Each package is stored under a subdirectory named '{package}-{version}' (e.g. 'cldr-core-48.2.0'). If the subdirectory already exists and is non-empty, it is reused without re-downloading.
-        
+
     Returns
 	-------
 	str
@@ -110,7 +110,7 @@ def _fetch_npm_package(package: str, version: str, cache_dir: str) -> str:
 def parse_cldr_json(cldr_version: str = '48.2.0', cache_dir: str = './cldr-cache') -> tuple:
     """
     Build (lang_df, long_df) from CLDR JSON.
-    
+
     Parameters
 	----------
     cldr_version : str
@@ -259,7 +259,7 @@ def _parse_cldr_language_groups(cldr_version: str = '48.2.0', cache_dir: str = '
     The JSON format is: {group_code: 'space separated list of child codes'}.
     Children can be individual languages OR other groups (so the tree is
     multi-level and we need to compute top-level family by walking up).
-    
+
     Parameters
 	----------
     cldr_version : str
@@ -441,7 +441,7 @@ def parse_cldr_family_groups(cldr_version: str = '48.2.0', cache_dir: str = './c
     by add_family_info() in generate_language_codes.py.
 
     cldr-core is already downloaded by parse_cldr_json() so there is no extra network cost. English family names come from cldr-localenames-full's en/languages.json (also already cached), supplemented by _ISO639_5_NAMES for group codes not present in that file. Codes not resolvable from either source get an empty name (same behaviour as unmapped codes in the Wikipedia scraper).
-    
+
     Parameters
 	----------
     cldr_version : str
@@ -517,14 +517,14 @@ def parse_cldr_aliases(cldr_version: str = '48.2.0', cache_dir: str = './cldr-ca
         cnr -> sr-ME    (Montenegrin ISO 639-3 mapped to Serbian-Montenegro)
         sh  -> sr-Latn  (Serbo-Croatian legacy to Serbian-Latin)
         iw  -> he       (Hebrew old code deprecated)
-        
+
     Parameters
 	----------
     cldr_version : str
 		The CLDR version to fetch and parse (e.g. '48.2.0'). The 'cldr_version' provenance column in the output CSV records which version was used. To use a different version, just delete the cached packages and re-run, specifying the new version.
 	cache_dir : str
 		Local directory to cache downloaded packages. See _fetch_npm_package() for details.
-        
+
     Returns
     -------
     DataFrame with columns:

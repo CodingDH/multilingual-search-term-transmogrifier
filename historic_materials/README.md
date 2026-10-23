@@ -7,6 +7,15 @@ time, not as active source files for the current translation run.
 
 ## Files
 
+### `en.Digital humanities.json`
+
+Historic snapshot of the *Digital Humanities* interlanguage terms assembled for
+the Convergences project. The file contains twenty language-to-term mappings
+and supplied Wikipedia-derived reference terms to the early translation
+scripts. It is preserved for provenance but is not an active input to the
+current committed pipeline. The current generator can still read a file with
+this name from the separately configured external metadata directory.
+
 ### `translated_dh_terms.csv`
 
 Artifact date: December 13, 2022.
@@ -46,11 +55,22 @@ Wikipedia/GT `20/34`, Wikipedia/EasyNMT `8/22`, GT/OpenAI `50/112`,
 EasyNMT/OpenAI `14/52`, GT/EasyNMT `12/58`, and all four sources exactly agree
 in `8/22` overlapping rows.
 
-### `generate_translations.py`
+### `generate_translations_2022.py`
 
-Archived generation script associated with the older workflow. It is retained
-for provenance and should not be treated as the active translation-generation
-entry point.
+Archived script associated with the December 2022 translation workflow and
+`translated_dh_terms.csv`. It reads the Convergences JSON and records the
+earliest translation-service comparison preserved in this repository.
+
+### `generate_translations_2024.py`
+
+Archived script associated with the September 2024 prompt design and the
+November 2024 `initial_translated_terms.csv` output. It documents the expanded
+comparison among Wikipedia, Google Translate, EasyNMT, OpenAI, and an early
+local-model workflow.
+
+Both scripts are retained for provenance and should not be treated as active
+translation-generation entry points. The current implementation is documented
+under `scripts/candidate_generation/`.
 
 ## Rebuilding Notebook Tables
 

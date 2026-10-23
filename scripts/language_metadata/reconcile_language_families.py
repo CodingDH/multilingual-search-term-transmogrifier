@@ -1,5 +1,6 @@
 """Language-family assignment and Glottolog reconciliation."""
 
+import json as _json
 import os
 from pathlib import Path
 
@@ -10,6 +11,7 @@ from scripts.language_metadata.language_metadata_overrides import MANUAL_LANG_TO
 from scripts.language_metadata.parse_cldr_json import _ISO639_5_NAMES
 
 console = Console()
+
 
 def add_family_info(comp_df: pd.DataFrame, set5_df: pd.DataFrame,
                     fallback_json: str = None) -> pd.DataFrame:
@@ -33,9 +35,6 @@ def add_family_info(comp_df: pd.DataFrame, set5_df: pd.DataFrame,
     comp_df enriched with iso639_5_direct, iso639_5_family, family_name,
     and subfamily_name columns.
     """
-    import json as _json
-    from scripts.language_metadata.parse_cldr_json import _ISO639_5_NAMES
-
     code_to_parent = dict(zip(set5_df['iso639_5'], set5_df['parent_code']))
     code_to_name   = dict(zip(set5_df['iso639_5'], set5_df['family_name']))
     code_to_depth  = dict(zip(set5_df['iso639_5'], set5_df['depth']))
@@ -108,6 +107,7 @@ def add_family_info(comp_df: pd.DataFrame, set5_df: pd.DataFrame,
     console.print(f"  JSON fallback used: {sum(1 for lang in comp_df['language_code'] if lang in json_fallback and not MANUAL_LANG_TO_SET5.get(lang))} codes")
     return comp_df
 
+
 def _norm_family_name(s) -> str:
     """Strip trailing 'languages'/'language' suffix and lowercase for comparison."""
     if not isinstance(s, str): return ''
@@ -117,6 +117,7 @@ def _norm_family_name(s) -> str:
             s = s[:-len(suffix)]
             break
     return s
+
 
 def add_family_reconciliation(comp_df: pd.DataFrame, metadata_dir: str = None) -> pd.DataFrame:
     """Add `family_name_reconciled` by cross-checking against Glottolog 5.3.
@@ -131,7 +132,6 @@ def add_family_reconciliation(comp_df: pd.DataFrame, metadata_dir: str = None) -
     df = comp_df.copy()
 
     if metadata_dir is None:
-        from pathlib import Path
         here = Path(__file__).resolve()
         metadata_dir = str(here.parent.parent.parent / 'datasets' / 'metadata_files')
 

@@ -12,7 +12,6 @@ This directory contains the source metadata, generated candidate terms, review a
 | `metadata_files/` | Language identifiers, scripts, families, service support, and population evidence | Canonical source and reviewed metadata | [`metadata_files/README.md`](metadata_files/README.md) |
 | `error_logs/` | Visible service, parsing, refusal, and generation failures | Canonical run evidence; append/update with translation runs | [`error_logs/README.md`](error_logs/README.md) |
 | `translated_terms/` | Direct-service and LLM outputs organized by source term | Mixed: completed Digital Humanities corpus plus pilot terms | [`translated_terms/README.md`](translated_terms/README.md) |
-| `older_error_logs/` | Errors from superseded pipeline versions | Legacy; not used by current notebooks | [`older_error_logs/README.md`](older_error_logs/README.md) |
 
 ## Canonical Digital Humanities Path
 
@@ -74,10 +73,13 @@ Large explorer tables, chart summaries, and embedding metrics are derived and ca
 The repository-level [`README.md`](../README.md) gives the full workflow. In brief:
 
 1. Build language metadata with `scripts/language_metadata/generate_language_codes.py`.
-2. Apply reviewed family metadata with `scripts/review/apply_family_review_metadata.py`.
+2. Build and complete the family mapping and reconciliation reviews under `scripts/review/`, then run `apply_family_review_metadata.py`.
 3. Generate direct and prompt-service outputs with the scripts under `scripts/candidate_generation/`.
-4. Build review artifacts under `scripts/review/`, disagreement artifacts under `scripts/analysis/`, and notebook results in notebooks 02-08.
-5. Build and review search terms with `scripts/generate_search_terms.py` and the HTML review tools.
-6. Analyze the reviewed GitHub results in notebook 09.
+4. Run notebook 02, build the candidate-review dataset, and save the browser-review decisions.
+5. Build disagreement artifacts under `scripts/analysis/` and rerun the relevant notebooks 03-08.
+6. Build and review search terms with `scripts/generate_search_terms.py` and the HTML review tools.
+7. Analyze the reviewed GitHub results in notebook 09.
+
+See [`scripts/README.md`](../scripts/README.md) for the full command order and the distinction between required stages and optional metadata maintenance.
 
 API outputs may change as providers update models and services. The committed files are therefore research records, not promises that rerunning a current API will reproduce identical text.

@@ -535,9 +535,9 @@ def process_individual_terms(
 def process_grouped_terms(
 	translate_file_path: str,
 	translate_file_name: str,
-	translation_columns: List[str], 
-	final_df: pd.DataFrame, 
-	translation_function: Callable[[pd.Series], pd.Series], 
+	translation_columns: List[str],
+	final_df: pd.DataFrame,
+	translation_function: Callable[[pd.Series], pd.Series],
 	service_name: str,
 	should_use_cached_translations: bool,
 	should_override_wikipedia: bool,
@@ -859,7 +859,7 @@ def generate_initial_terms(target_terms: list, data_directory_path: str, process
 				console.print("No Wikipedia translations found", style="bold red")
 		else:
 			console.print("No Wikipedia translations found", style="bold red")
-				
+
 	# Translate the terms using Google Cloud Translate
 	terms_file_path = os.path.join(data_directory_path, "translated_terms")
 	if use_gt_translate:
@@ -878,11 +878,11 @@ def generate_initial_terms(target_terms: list, data_directory_path: str, process
 		final_df = _merge_translations(final_df, exploded_grouped_gt_terms, ['language_code', 'term_source'])
 
 		console.print(
-			f"Number of languages with Google Translate translations: {len(final_df[final_df.gt_translated_term.notna()])}", 
+			f"Number of languages with Google Translate translations: {len(final_df[final_df.gt_translated_term.notna()])}",
 			style="bright_magenta"
 		)
 		console.print(
-			f"Size of dataset currently {len(final_df)}", 
+			f"Size of dataset currently {len(final_df)}",
 			style="bright_cyan"
 		)
 
@@ -903,11 +903,11 @@ def generate_initial_terms(target_terms: list, data_directory_path: str, process
 		final_df = _merge_translations(final_df, exploded_grouped_enmt_terms, ['language_code', 'term_source'])
 
 		console.print(
-			f"Number of languages with EasyNMT translations: {len(final_df[final_df.enmt_translated_term.notna()])}", 
+			f"Number of languages with EasyNMT translations: {len(final_df[final_df.enmt_translated_term.notna()])}",
 			style="bright_magenta"
 		)
 		console.print(
-			f"Size of dataset currently {len(final_df)}", 
+			f"Size of dataset currently {len(final_df)}",
 			style="bright_cyan"
 		)
 
@@ -1083,7 +1083,7 @@ def generate_initial_terms(target_terms: list, data_directory_path: str, process
 
 	# Auto-continue without prompting
 	console.print("Do you want to continue? (y/n): y [auto]", style="dim")
-	
+
 	# Clean up the final DataFrame
 	cleaned_df = final_df.reset_index(drop=True)
 

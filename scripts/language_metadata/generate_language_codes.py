@@ -126,7 +126,6 @@ def _ua():
     }
 
 
-
 # ══════════════════════════════════════════════════════════════════════════════
 # CONSTANTS
 # ══════════════════════════════════════════════════════════════════════════════
@@ -184,11 +183,6 @@ def _is_valid_language_code(code) -> bool:
 # ships, and shrinks naturally when language_data updates.
 
 
-
-
-
-
-
 # Grandfathered Wikimedia / community tags NOT in the 2021-08-06 IANA snapshot
 # that ships with langcodes / language_data. Each of these has either no IANA
 # Preferred-Value entry in that snapshot (bat-smg, be-x-old, fiu-vro, map-bms,
@@ -243,18 +237,18 @@ GROUP_KEYWORDS = [
 def parse_loc_html(source: str) -> pd.DataFrame:
     """
     Parse LOC ISO 639-2 HTML. Returns DataFrame with iso639_1 / iso639_2_t / iso639_2_b mappings.
-    
+
     LOC ISO 639-2 is the primary source for ISO 639-2 codes and the mapping from ISO 639-1 two-letter codes to ISO 639-2 three-letter codes. The parser is designed to be robust to changes in the HTML structure; it identifies the relevant table by looking for the first one with at least 3 columns, and it handles both single-code rows (one code for both bibliographic and terminological) and dual-code rows (separate B and T codes). It also filters out group codes based on heuristic keywords in the language name, since ISO 639-2 includes both individual languages and groups/collectives.
-    
+
     Parameters:
     -----------
     source: str
 		Local file path or live URL of the LOC ISO 639-2 HTML page.
-        
+
     Returns:
     --------
     DataFrame with columns:
-		- iso639_1: two-letter code (if exists)	
+		- iso639_1: two-letter code (if exists)
 		- iso639_2_t: three-letter terminological code (if exists)
 		- iso639_2_b: three-letter bibliographic code (if different from T code)
 		- english_name: English name of the language
@@ -322,14 +316,14 @@ def parse_loc_html(source: str) -> pd.DataFrame:
 def parse_wikimedia(source: str) -> pd.DataFrame:
     """
     Load Wikimedia language codes from local CSV or live URL.
-    
+
     Wikimedia is the primary source for identifying which languages have active Wikipedia projects, which is a strong signal of modern usage and online presence. The parser can handle both a local CSV file (e.g. downloaded from Wikimedia) or a live URL pointing to the Wikimedia language code list. It filters out non-language codes based on known junk entries and code length, and it standardizes the column names for merging with the other sources.
-    
+
     Parameters:
     -----------
     source: str
 		Local file path or live URL of the Wikimedia language codes CSV or HTML page.
-        
+
     Returns:
     --------
     DataFrame with columns:
@@ -616,7 +610,6 @@ def add_cldr_v45_supplement(comp_df: pd.DataFrame) -> pd.DataFrame:
 # ══════════════════════════════════════════════════════════════════════════════
 
 
-
 # ══════════════════════════════════════════════════════════════════════════════
 # MERGE STEP 3 — Fill in missing English names from SIL ISO 639-3
 # ══════════════════════════════════════════════════════════════════════════════
@@ -684,9 +677,6 @@ def enrich_language_names_from_sil(comp_df: pd.DataFrame, cache_dir: str) -> pd.
 # reconciled column survives every regeneration of the comprehensive CSV.
 # Falls back to copying `family_name` if the Glottolog cache or the
 # reconciliation CSV is missing, so the column always exists downstream.
-
-
-
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -778,9 +768,6 @@ def _merge_with_previous_csv(comprehensive: pd.DataFrame,
 # ══════════════════════════════════════════════════════════════════════════════
 # MERGE STEP — Identifier context (BCP 47 + service support)
 # ══════════════════════════════════════════════════════════════════════════════
-
-
-
 
 
 # ══════════════════════════════════════════════════════════════════════════════

@@ -151,16 +151,17 @@ Normalization is intentionally conservative. It standardizes comparison without 
 
 ## Regeneration
 
-The principal builders are documented in [`scripts/analysis/README.md`](../../../../scripts/analysis/README.md). The usual order is:
+The review stage is documented in [`scripts/review/README.md`](../../../../scripts/review/README.md), and downstream comparison is documented in [`scripts/analysis/README.md`](../../../../scripts/analysis/README.md). The usual order is:
 
 1. `explore_confidence_within_variant.py`
 2. `explore_confidence_across_variants.py`
-3. notebook 02 and `build_review_explorer_data.py`
-4. browser review saved as `manual_exclusions.csv`
-5. `explore_disagreements.py`
-6. `build_disagreement_explorer_data.py`
-7. `build_disagreement_patterns.py`
-8. notebooks 05-08 for embedding and rationale analyses
+3. notebook 02 writes automated review signals
+4. `build_review_explorer_data.py` prepares the browser dataset
+5. browser review is saved as `manual_exclusions.csv`
+6. `explore_disagreements.py`
+7. `build_disagreement_explorer_data.py`
+8. `build_disagreement_patterns.py`
+9. notebooks 05-08 perform embedding and rationale analyses
 
 Historic tables are rebuilt with:
 

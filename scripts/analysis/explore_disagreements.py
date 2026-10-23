@@ -165,7 +165,7 @@ def derive_source_tokens(term: str) -> List[str]:
 
     This replaces manual curation: tokens emerge from the term itself so no
     domain knowledge is required when adding a new source term.
-    
+
     Parameters
     ----------
     term : str
@@ -174,7 +174,7 @@ def derive_source_tokens(term: str) -> List[str]:
 		not guaranteed to split into meaningful tokens but will still be
 		included as-is in the output list so the loan-word rule can still fire
 		on exact matches.
-        
+
     Returns
     -------
     List[str]
@@ -330,7 +330,7 @@ class Features:
     """All features a rule might read, computed once per (language × term).
 
     This is a plain data record of the rules read fields but it never mutates them. Keeps the rule functions short and makes it easy to add new rules without re-deriving features inside each one.
-    
+
     The features are all derived from the raw translation outputs and rationales, plus Wikipedia presence as external metadata. The rationale-based features are gated on `rationales_are_english` because the keyword matching only works for English rationales; when False, the rationale fields are still populated in the output CSV for inspection but the keyword-rule functions are no-ops.
     """
     translations: Dict[str, str]

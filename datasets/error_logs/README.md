@@ -49,6 +49,4 @@ These categories are operational rather than purely HTTP-semantic. Notebook 02 r
 - A refusal can be more epistemically responsible than a non-empty fabricated output; error counts should not be treated as a model-quality ranking.
 - Prompt-invariant services and LLM services have different opportunity counts. Rate calculations should use the denominators in `evaluation/service_variant_outcomes.csv`.
 
-## Current and Legacy Logs
-
-Files here support the current Digital Humanities analysis. Logs under `../older_error_logs/` come from superseded pipeline versions and are not read by the active notebooks.
+Files here support the current Digital Humanities analysis.
