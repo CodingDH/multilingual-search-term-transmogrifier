@@ -68,8 +68,11 @@ This shared repository supports multiple publications and analyses. Publication-
 multilingual-search-term-transmogrifier/
 ├── notebooks/          # Analyses of metadata, outputs, disagreement, and retrieval
 ├── scripts/
-│   ├── experiment/     # Metadata and candidate-term generation
-│   ├── exploration/    # Review datasets and analytical artifacts
+│   ├── language_metadata/   # Language inventory construction and curation
+│   ├── candidate_generation/# Direct-service and LLM candidate generation
+│   ├── review/              # Review queues, signals, and saved decisions
+│   ├── analysis/            # Agreement, disagreement, and rationale analysis
+│   ├── publication/         # Publication-specific figure builders
 │   └── utils.py        # Shared loading, normalization, script, and family helpers
 ├── datasets/
 │   ├── metadata_files/ # Shared language, family, population, and support metadata
@@ -102,10 +105,10 @@ The language-metadata build requires Node.js/npm when downloading pinned CLDR pa
 
 The principal stages are:
 
-1. Build shared language metadata with `scripts/experiment/generate_language_codes.py`.
+1. Build shared language metadata with `scripts/language_metadata/generate_language_codes.py`.
 2. Apply the documented family-label and language-level review process.
 3. Generate direct-service and LLM candidates for one or more source terms.
-4. Build automated review and disagreement artifacts with `scripts/exploration/`.
+4. Build automated review artifacts with `scripts/review/` and disagreement artifacts with `scripts/analysis/`.
 5. Review outputs through the interfaces documented in [html_files/README.md](html_files/README.md).
 6. Generate reviewed search terms with `scripts/generate_search_terms.py`.
 7. Evaluate retrieval results for the relevant term or comparative study.
@@ -144,13 +147,23 @@ Notebook 09 also reads the GitHub retrieval datasets produced by `searching_for_
 python -c "import apikey; apikey.save('SEARCHING_FOR_DH_DATA_DIRECTORY', '/absolute/path/to/search/datasets')"
 ```
 
-Local generation requires Ollama and the model versions documented in [scripts/experiment/README.md](scripts/experiment/README.md).
+Local generation requires Ollama and the model versions documented in [scripts/candidate_generation/README.md](scripts/candidate_generation/README.md).
+
+## GitHub Collection Access and Privacy
+
+The `searching_for_DH` repository and the full GitHub data-collection pipeline are not public. Although the workflow queries publicly accessible GitHub records, releasing a reusable bulk collector and complete raw exports could facilitate additional aggregation, monitoring, or mass surveillance of users and scholarly communities. This repository therefore documents the search methodology and provides the reviewed, derived artifacts needed to understand the reported analysis without distributing the complete collection infrastructure or raw corpus.
+
+This restriction marks a deliberate limit on end-to-end reproducibility rather than an accidental omission. Researchers interested in responsible reuse, methodological comparison, or collaboration may contact the principal investigator through the contact information associated with this repository. Requests will be considered in relation to research purpose, privacy, data minimization, and GitHub's terms of service.
 
 ## Responsible Use
 
-The pipeline produces candidate terms rather than verified translations. A populated response does not demonstrate linguistic accuracy, and agreement among models or services may reflect shared training data, prompt framing, borrowing, or repetition rather than independent confirmation. Expected script use provides another useful review signal, but a term written in the anticipated script can still be fabricated, misleading, or inappropriate for the relevant language community. Automated signals should therefore be understood as ways to prioritize inspection, not as substitutes for linguistic judgment. Human review decisions should remain distinguishable from those automated assessments.
+Outputs in this repository are candidate search terms, not verified translations. Coverage, agreement across services, and conformity with an expected script describe properties of the pipeline's outputs, but none independently establishes linguistic accuracy. The same form may recur because systems share training data, reproduce a common borrowing, or respond similarly to prompt framing. Conversely, a form can use the expected script while remaining fabricated, misleading, or inappropriate. Automated review signals identify outputs that warrant inspection, while recorded human decisions document how particular analyses treated them. Neither layer substitutes for linguistic expertise.
 
-Responsible reuse also requires preserving the provenance attached to each candidate. Publications and derived datasets should identify the source term, language identifier, service or model, prompt condition, review status, and repository snapshot associated with the result. Researchers should retain competing forms and documented disagreements when those differences matter to the analysis rather than presenting the pipeline's preferred candidate as settled terminology. Consultation with language experts and relevant communities remains necessary before generated terms are described as established usage, used to characterize a community, or incorporated into public-facing multilingual metadata.
+Each candidate is distributed with its source term, language identifier, service or model, prompt condition, rationale or error record, and review status. Interpretation and reuse depend on preserving this provenance and identifying the repository release or commit from which the data were drawn. Competing forms and documented disagreements remain part of the evidence and should not be collapsed into settled terminology without additional validation. Claims that a generated term represents established usage, identifies a language community, or is suitable for public-facing metadata require consultation with relevant language experts and communities.
+
+## AI-Assisted Development Disclosure
+
+Generative AI systems, specifically Claude and Codex, assisted with the development of code and documentation in this repository. The PI reviewed and revised all AI-assisted material and takes responsibility for the published contents. Questions about the implementation, documentation, or use of AI in the project's development should be directed to the PI.
 
 ## Citing the Repository
 

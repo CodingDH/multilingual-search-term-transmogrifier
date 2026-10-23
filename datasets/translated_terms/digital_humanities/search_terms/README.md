@@ -2,7 +2,9 @@
 
 This directory records the transition from reviewed translations to GitHub queries and then to term-level retrieval assessment.
 
-The complete raw GitHub endpoint exports are produced by the companion `searching_for_DH` collection workflow and are not duplicated in this directory. `build_search_relevance_review.py` reads those repository, issue, and account exports, deduplicates their objects, and writes the compact review and overlap files documented here. The `*_samples` columns are representative records for review; they are not the complete raw result corpus. A publication snapshot should therefore pair these derived files with the exact companion collector or an archived copy of its raw exports when full end-to-end reproduction is required.
+The complete raw GitHub endpoint exports were produced by the private companion `searching_for_DH` collection workflow and are not distributed in this repository. `build_search_relevance_review.py` reads those repository, issue, and account exports, deduplicates their objects, and writes the compact review and overlap files documented here. The `*_samples` columns are representative records for review; they are not the complete raw result corpus.
+
+The collector and complete exports are intentionally withheld to avoid releasing reusable infrastructure for further bulk aggregation or surveillance of GitHub users and scholarly communities. This creates a documented limit on end-to-end reproduction. The repository instead preserves reviewed search terms, derived counts, overlap summaries, representative samples, and the analytical code that consumes those artifacts. Researchers interested in responsible methodological comparison or collaboration may contact the principal investigator through the repository's contact information.
 
 ## Canonical Sequence
 
@@ -72,9 +74,9 @@ The reviewed file can contain more rows than a newly generated queue when a revi
 | `retrieval_assessment` | `mostly_relevant`, `mixed`, or `mostly_irrelevant`. |
 | `review_decision` | `retain`, `retain_track`, or `exclude`. |
 | `reviewer_notes` | Free-text evidence and rationale. |
-| `review_status` | Provenance of the decision, including `codex_provisional`, `assistant_reviewed`, or `human_reviewed`. |
+| `review_status` | Whether the assessment is `reviewed` or `unreviewed`; reviewer type is not encoded. |
 
-The current reviewed file contains an assistant-led, sample-based audit. It is not a manual reading of every retrieved GitHub object. `retain_track` means the term remains in downstream counts while its relevance remains analytically visible.
+The current file contains a sample-based audit produced through AI-assisted classification and subsequent human confirmation. It is not a manual reading of every retrieved GitHub object. `retain_track` means the term remains in downstream counts while its relevance remains analytically visible.
 
 ## Overlap Edge Columns
 

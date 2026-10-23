@@ -505,7 +505,7 @@
       <div class="upload-zone" onclick="document.getElementById('file-input').click()">
         <h2>Load a CSV to begin</h2>
         <p>Click here or use the "Load CSV" button above to load <code>review_explorer_data.csv</code>.<br><br>
-        Run <code>scripts/exploration/build_review_explorer_data.py</code> after notebook 02 to generate this file.</p>
+        Run <code>scripts/review/build_review_explorer_data.py</code> after notebook 02 to generate this file.</p>
       </div>
     </div>
     <div id="card-container" style="display:none;"></div>
@@ -576,7 +576,7 @@ const VARIANTS = [
   { key: 'judge',           label: 'Judge' },
 ];
 
-// Client-side port of is_refusal_rationale() from scripts/exploration/translation_classifier.py.
+// Client-side port of is_refusal_rationale() from scripts/review/translation_classifier.py.
 // Used to highlight specific (service × variant) cells whose rationale admits no real
 // translation exists, since quality_flags.csv stores only per-service aggregation
 // (not per-variant). English-only — fluent_speaker target-language rationales will

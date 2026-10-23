@@ -55,14 +55,15 @@ import pandas as pd
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 try:
-    from scripts.utils import get_data_directory_path, load_manual_exclusions
+    from scripts.utils import get_data_directory_path
+    from scripts.review.apply_review_filters import load_manual_exclusions
     _DATA_DIR = get_data_directory_path()
 except Exception:
     _DATA_DIR = None
     load_manual_exclusions = None
 
 try:
-    from scripts.exploration.translation_classifier import curate_translation, has_source_leakage
+    from scripts.review.translation_classifier import curate_translation, has_source_leakage
     _CLASSIFIER_AVAILABLE = True
 except Exception:
     _CLASSIFIER_AVAILABLE = False

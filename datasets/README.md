@@ -73,10 +73,10 @@ Large explorer tables, chart summaries, and embedding metrics are derived and ca
 
 The repository-level [`README.md`](../README.md) gives the full workflow. In brief:
 
-1. Build language metadata with `scripts/experiment/generate_language_codes.py`.
-2. Apply reviewed family metadata with `scripts/exploration/apply_family_review_metadata.py`.
-3. Generate direct and prompt-service outputs with the scripts under `scripts/experiment/`.
-4. Build review and disagreement artifacts with the scripts under `scripts/exploration/` and notebooks 02-08.
+1. Build language metadata with `scripts/language_metadata/generate_language_codes.py`.
+2. Apply reviewed family metadata with `scripts/review/apply_family_review_metadata.py`.
+3. Generate direct and prompt-service outputs with the scripts under `scripts/candidate_generation/`.
+4. Build review artifacts under `scripts/review/`, disagreement artifacts under `scripts/analysis/`, and notebook results in notebooks 02-08.
 5. Build and review search terms with `scripts/generate_search_terms.py` and the HTML review tools.
 6. Analyze the reviewed GitHub results in notebook 09.
 

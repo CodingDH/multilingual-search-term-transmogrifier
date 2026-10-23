@@ -151,7 +151,7 @@ Normalization is intentionally conservative. It standardizes comparison without 
 
 ## Regeneration
 
-The principal builders are documented in [`scripts/exploration/README.md`](../../../../scripts/exploration/README.md). The usual order is:
+The principal builders are documented in [`scripts/analysis/README.md`](../../../../scripts/analysis/README.md). The usual order is:
 
 1. `explore_confidence_within_variant.py`
 2. `explore_confidence_across_variants.py`
@@ -165,7 +165,7 @@ The principal builders are documented in [`scripts/exploration/README.md`](../..
 Historic tables are rebuilt with:
 
 ```bash
-python scripts/exploration/build_historic_reference_convergence.py --term "Digital Humanities"
+python scripts/analysis/build_historic_reference_convergence.py --term "Digital Humanities"
 ```
 
 ## Interpretation Boundaries

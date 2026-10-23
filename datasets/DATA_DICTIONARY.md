@@ -197,7 +197,7 @@ for the complete evaluation inventory and normalization assumptions.
 | `term_assessment` | Credibility of the proposed DH term. |
 | `retrieval_assessment` | Relevance of sampled GitHub results. |
 | `review_decision` | `retain`, `retain_track`, or `exclude`. |
-| `reviewer_notes`, `review_status` | Decision rationale and review provenance. |
+| `reviewer_notes`, `review_status` | Decision rationale and whether the assessment is reviewed; reviewer type is not encoded. |
 
 See [`search_terms/README.md`](translated_terms/digital_humanities/search_terms/README.md)
 for overlap-edge fields, allowed review values, and GitHub search limitations.
