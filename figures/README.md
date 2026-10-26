@@ -7,10 +7,10 @@ level because they may support multiple analyses and publications.
 Paper-specific figures live with the documentation for the paper that uses
 them:
 
-- [`Translation to Transmogrification`](../docs/papers/translation-to-transmogrification/figures/)
+- [`Translation to Transmogrification`](../public_docs/papers/translation-to-transmogrification/figures/)
   contains the analysis exports and numbered publication figures for the
   *Digital Humanities* case study.
-- [`Multilingual Translation Embeddings`](../docs/papers/multilingual-translation-embeddings/)
+- [`Multilingual Translation Embeddings`](../public_docs/papers/multilingual-translation-embeddings/)
   documents the planned comparative embedding study. Its figures will be
   stored with that paper when the analysis is finalized.
 

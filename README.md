@@ -46,21 +46,21 @@ This shared repository supports multiple publications and analyses. Publication-
 
 | Research output | Status | Documentation |
 | --- | --- | --- |
-| *From Translation to Transmogrification: Exploring Multilingual Metadata and the Limits of AI-Augmented Translation in Digital Humanities* | Forthcoming article | [Translation to Transmogrification](docs/papers/translation-to-transmogrification/README.md) |
-| Comparative analysis of multilingual translation and rationale embeddings | In development | [Multilingual translation embeddings](docs/papers/multilingual-translation-embeddings/README.md) |
+| *From Translation to Transmogrification: Exploring Multilingual Metadata and the Limits of AI-Augmented Translation in Digital Humanities* | Forthcoming article | [Translation to Transmogrification](public_docs/papers/translation-to-transmogrification/README.md) |
+| Comparative analysis of multilingual translation and rationale embeddings | In development | [Multilingual translation embeddings](public_docs/papers/multilingual-translation-embeddings/README.md) |
 
 ## Documentation
 
 | Resource | Contents |
 | --- | --- |
-| [Project documentation](docs/README.md) | Shared methods, publication materials, and documentation boundaries |
+| [Project documentation](public_docs/README.md) | Shared methods, publication materials, and documentation boundaries |
 | [Datasets](datasets/README.md) | Data layers, canonical files, provenance, missing values, and regeneration boundaries |
 | [Language metadata](datasets/metadata_files/README.md) | Language codes, scripts, families, population evidence, and service support |
 | [Term datasets](datasets/translated_terms/README.md) | Completed and developing source-term corpora |
 | [Digital Humanities dataset](datasets/translated_terms/digital_humanities/README.md) | The first complete direct-service, LLM, evaluation, and search-term corpus |
 | [Scripts](scripts/README.md) | Metadata construction, candidate generation, review, analysis, and search preparation |
 | [HTML review interfaces](html_files/README.md) | Browser interfaces and the files each one reads and writes |
-| [Exclusion strategy](docs/exclusion_strategy.md) | Automated signals, manual decisions, and analysis-specific exclusions |
+| [Exclusion strategy](public_docs/exclusion_strategy.md) | Automated signals, manual decisions, and analysis-specific exclusions |
 
 ## Repository Structure
 
@@ -85,7 +85,7 @@ multilingual-search-term-transmogrifier/
 ├── historic_materials/ # Dated precursor datasets for the initial case study
 ├── html_files/         # Browser-based review interfaces
 ├── figures/            # Shared and publication-specific figures
-└── docs/               # Project methods and publication documentation
+└── public_docs/        # Project methods and publication documentation
 ```
 
 ## Installation

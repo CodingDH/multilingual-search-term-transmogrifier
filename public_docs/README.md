@@ -1,4 +1,4 @@
-# Documentation
+# Public Documentation
 
 The Multilingual Search Term Transmogrifier is a shared research project and pipeline. The documentation is divided between project-wide methods and publication-specific artifact guides so that the repository can support more than one paper without making the main README reproduce each article's argument.
 
@@ -16,6 +16,6 @@ The Multilingual Search Term Transmogrifier is a shared research project and pip
 
 ## Publication Guides
 
-- [Translation to Transmogrification](papers/translation-to-transmogrification/README.md) documents the artifact subset used by the forthcoming article.
+- [Translation to Transmogrification](papers/translation-to-transmogrification/README.md) documents the artifact subset used by the forthcoming article, including an [appendix of LLM prompts and generation settings](papers/translation-to-transmogrification/appendix_llm_prompts_and_settings.md).
 - [Multilingual translation embeddings](papers/multilingual-translation-embeddings/README.md) records the planned scope of the follow-up comparative study.
 

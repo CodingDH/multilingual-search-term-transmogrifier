@@ -41,6 +41,10 @@ Notebooks 07 and 08 preserve additional interpretive and disagreement experiment
 
 The article's numerical claims should be checked against these committed reviewed artifacts rather than regenerated API responses.
 
+## Methods Appendix
+
+The [LLM prompts and generation settings appendix](appendix_llm_prompts_and_settings.md) records the exact prompt templates, model identifiers, temperature and sampling settings, output limits, and provider-specific configuration used for candidate generation.
+
 ## Figures
 
 Article-specific visual materials are stored with this guide:

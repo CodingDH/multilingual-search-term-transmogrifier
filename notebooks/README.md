@@ -2,7 +2,7 @@
 
 The numbered notebooks document the analytical sequence used to inspect the language metadata, generated candidate terms, review decisions, model rationales, and GitHub retrieval results. They analyze committed artifacts; they are not the entry point for generating new translations or issuing new GitHub searches.
 
-For the article-specific subset, figures, and reported claims, see the [*Translation to Transmogrification* artifact guide](../docs/papers/translation-to-transmogrification/README.md).
+For the article-specific subset, figures, and reported claims, see the [*Translation to Transmogrification* artifact guide](../public_docs/papers/translation-to-transmogrification/README.md).
 
 ## Notebook Sequence
 
@@ -30,6 +30,6 @@ Install the repository dependencies from `requirements.txt` and use a Python ker
 
 Most cells read committed CSV, JSON, cache, and model-output artifacts. They do not need API credentials unless a cell explicitly invokes a generation or retrieval script. New candidate generation and GitHub collection belong to the scripts documented in [`scripts/`](../scripts/README.md), where environment variables and external-service requirements are described.
 
-Executed notebooks can be large because they retain tables and interactive chart specifications. When a notebook renderer cannot display one of these files, the source remains available here and its article-facing visual outputs can be inspected in the paper's [`figures/publication/`](../docs/papers/translation-to-transmogrification/figures/publication/) directory.
+Executed notebooks can be large because they retain tables and interactive chart specifications. When a notebook renderer cannot display one of these files, the source remains available here and its article-facing visual outputs can be inspected in the paper's [`figures/publication/`](../public_docs/papers/translation-to-transmogrification/figures/publication/) directory.
 
 
