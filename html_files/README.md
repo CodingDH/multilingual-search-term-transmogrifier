@@ -172,9 +172,18 @@ python scripts/review/build_search_relevance_review.py
 
 The reviewer keeps three decisions separate:
 
-- whether the term itself is credible, ambiguous, or suspect;
 - whether its retrieved results are mostly relevant, mixed, or mostly irrelevant;
-- a derived downstream status: retain, retain while tracking relevance, or exclude.
+- whether review exposed a possible translation error or warrants exclusion
+  from translation analysis;
+- a downstream status: retain, retain while tracking relevance, or exclude.
+
+Downstream search status is derived from retrieval assessment by default. A
+reviewer may override it without changing the retrieval or translation fields.
+Translation review is exception-based rather than an attempt to classify every
+term as a credible or non-credible definition of DH. The export preserves
+translation exceptions in `translation_review`, analysis exclusions in
+`exclude_from_translation_analysis`, any search override in
+`decision_override`, and its effective result in `review_decision`.
 
 Save the download as:
 

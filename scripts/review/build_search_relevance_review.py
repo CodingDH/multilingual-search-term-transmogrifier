@@ -25,32 +25,20 @@ from scripts.utils import get_data_directory_path, get_search_data_directory_pat
 
 
 REVIEW_COLUMNS = {
-    'term_assessment': 'unreviewed',
+    'term_assessment': 'not_assessed',
+    'translation_review': 'no_issue_identified',
+    'exclude_from_translation_analysis': False,
     'retrieval_assessment': 'unreviewed',
+    'decision_override': 'auto',
     'review_decision': 'unreviewed',
     'reviewer_notes': '',
     'review_status': 'unreviewed',
 }
 
-# Reviewed starting assessments for the Digital Humanities search. Anything not
-# listed remains ambiguous or mixed and is retained with downstream relevance
-# tracking. A saved reviewed CSV always overrides these defaults.
-CREDIBLE_DH_TERMS = {
-    'digital humanities', 'humanidades digitales', 'humanités numériques',
-    'humanités numeriques', 'informatica umanistica', 'humanidades digitais',
-    '數字人文', '數位人文', '數位人文學', '數字人文學', '数字人文', '数字人文学',
-    '数字人文学科', 'digihumanitaaria', 'digital humaniora', 'humaniora digital',
-    'digitale geisteswissenschaften', 'umanistica digitale', '디지털 인문학',
-    'デジタル・ヒューマニティーズ', 'デジタルヒューマニティーズ', 'デジタル人文学',
-    'デジタル人文科学', 'digitalna humanistika', 'digitalne humanistike',
-    'digitalne humanističke nauke', 'digitális bölcsészet',
-    'цифровые гуманитарные науки', 'цифровая гуманитаристика',
-    'dijital beşeri bilimler', 'digitaaliset ihmistieteet',
-    'digitale geesteswetenschappen', 'digitální humanitní vědy',
-    'dijital insani bilimler', 'humanidades dixitais', 'humanitats digitals',
-    'ডিজিটাল মানবিক',
-}
-
+# Starting assessments for the Digital Humanities retrievals. These values are
+# review suggestions, not completed reviews. A saved reviewed CSV overrides the
+# defaults. Translation flags are limited to suspected errors rather than
+# classifying every term's disciplinary status.
 MOSTLY_RELEVANT_TERMS = {
     'digital humanities', 'humanidades digitales', 'humanités numériques',
     'humanités numeriques', 'informatica umanistica', 'humanidades digitais',
@@ -90,18 +78,17 @@ MOSTLY_IRRELEVANT_TERMS = SUSPECT_TERMS | {
 
 
 def _seed_reviewed_assessments(review: pd.DataFrame) -> pd.DataFrame:
-    """Populate the reviewed Digital Humanities term and retrieval assessments."""
+    """Populate suggested Digital Humanities retrieval assessments."""
     if review.empty:
         return review
     review = review.copy()
     for index, row in review.iterrows():
         key = str(row['search_term_key']).strip().lower()
-        if key in CREDIBLE_DH_TERMS:
-            term_assessment = 'credible_dh_term'
-        elif key in SUSPECT_TERMS:
-            term_assessment = 'suspect_translation'
-        else:
-            term_assessment = 'ambiguous_or_broad'
+        translation_review = (
+            'possible_translation_error'
+            if key in SUSPECT_TERMS
+            else 'no_issue_identified'
+        )
 
         if key in MOSTLY_RELEVANT_TERMS:
             retrieval_assessment = 'mostly_relevant'
@@ -110,21 +97,58 @@ def _seed_reviewed_assessments(review: pd.DataFrame) -> pd.DataFrame:
         else:
             retrieval_assessment = 'mixed'
 
-        if term_assessment == 'credible_dh_term' and retrieval_assessment == 'mostly_relevant':
+        if retrieval_assessment == 'mostly_relevant':
             decision = 'retain'
-            reason = 'Established or credible DH terminology with substantively relevant sampled results.'
-        elif term_assessment == 'suspect_translation' and retrieval_assessment == 'mostly_irrelevant':
+            sample_finding = 'Stored samples are predominantly related to digital humanities.'
+        elif retrieval_assessment == 'mostly_irrelevant':
             decision = 'exclude'
-            reason = 'Likely mistranslation, neighboring concept, placeholder, or noise with irrelevant sampled retrieval.'
+            sample_finding = 'Stored samples are predominantly unrelated to digital humanities.'
         else:
             decision = 'retain_track'
-            reason = 'Retained for expansive discovery; downstream analysis should track its mixed term or retrieval relevance.'
+            sample_finding = 'Stored samples mix potentially relevant, ambiguous, and unrelated material.'
 
-        review.at[index, 'term_assessment'] = term_assessment
+        audited = int(pd.to_numeric(row.get('audited_unique_result_count', 0), errors='coerce') or 0)
+        coverage = float(pd.to_numeric(row.get('match_evidence_coverage_pct', 0), errors='coerce') or 0)
+        observable = round(audited * coverage)
+        documented = int(pd.to_numeric(row.get('documented_field_match_count', 0), errors='coerce') or 0)
+        surface = int(pd.to_numeric(row.get('visible_surface_match_count', 0), errors='coerce') or 0)
+        token_only = int(pd.to_numeric(row.get('token_only_match_count', 0), errors='coerce') or 0)
+        unresolved = int(pd.to_numeric(row.get('unresolved_platform_match_count', 0), errors='coerce') or 0)
+        if bool(row.get('match_evidence_available', False)):
+            unresolved_label = 'match remained' if unresolved == 1 else 'matches remained'
+            audit_finding = (
+                f'The match audit found observable evidence for {observable:,} of '
+                f'{audited:,} retrieved objects ({coverage:.1%}); overlapping indicators '
+                f'included {documented:,} documented-field reproductions, {surface:,} '
+                f'visible phrase matches, and {token_only:,} token-only matches. '
+                f'{unresolved:,} {unresolved_label} unresolved.'
+            )
+            if bool(row.get('match_evidence_any_route_truncated', False)):
+                audit_finding += ' At least one qualified route reached GitHub\'s retrieval ceiling.'
+        else:
+            audit_finding = 'Field-qualified match evidence was not available for this initial assessment.'
+        translation_finding = (
+            ' The proposed term is also flagged as a possible translation error.'
+            if translation_review == 'possible_translation_error'
+            else ''
+        )
+        action = {
+            'retain': 'Initial suggestion: retain.',
+            'retain_track': 'Initial suggestion: retain while tracking relevance.',
+            'exclude': 'Initial suggestion: exclude these retrieved results.',
+        }[decision]
+        reason = ' '.join(
+            [sample_finding, audit_finding, action]
+        ) + translation_finding
+
+        review.at[index, 'term_assessment'] = 'not_assessed'
+        review.at[index, 'translation_review'] = translation_review
+        review.at[index, 'exclude_from_translation_analysis'] = False
         review.at[index, 'retrieval_assessment'] = retrieval_assessment
+        review.at[index, 'decision_override'] = 'auto'
         review.at[index, 'review_decision'] = decision
         review.at[index, 'reviewer_notes'] = reason
-        review.at[index, 'review_status'] = 'reviewed'
+        review.at[index, 'review_status'] = 'unreviewed'
     return review
 
 
@@ -195,6 +219,18 @@ def _sample_records(frame: pd.DataFrame, result_type: str, sample_size: int) -> 
     return json.dumps(records, ensure_ascii=False)
 
 
+def _filter_exclusive_records(
+    frame: pd.DataFrame,
+    result_type: str,
+    exclusive_items: set[str],
+) -> pd.DataFrame:
+    """Return rows whose endpoint-qualified IDs occur for only one term."""
+    if frame.empty:
+        return frame
+    qualified_ids = result_type + ':' + frame['id'].astype(str)
+    return frame[qualified_ids.isin(exclusive_items)].copy()
+
+
 def _join_unique(series: pd.Series) -> str:
     values = []
     for value in series.dropna().astype(str):
@@ -203,6 +239,75 @@ def _join_unique(series: pd.Series) -> str:
             if part and part.lower() != 'nan' and part not in values:
                 values.append(part)
     return ', '.join(values)
+
+
+def _load_match_evidence(search_dir: str, term_slug: str) -> pd.DataFrame:
+    """Summarize the optional field-qualified audit for relevance review."""
+    path = (
+        Path(search_dir) / 'search_match_evidence' / term_slug / 'derived'
+        / 'broad_search_match_evidence.csv'
+    )
+    columns = [
+        'search_term_key', 'match_evidence_available',
+        'audited_unique_result_count', 'documented_field_match_count',
+        'visible_surface_match_count', 'token_only_match_count',
+        'unresolved_platform_match_count', 'match_evidence_coverage_pct',
+        'match_evidence_any_route_truncated',
+    ]
+    if not path.is_file():
+        return pd.DataFrame(columns=columns)
+    evidence = pd.read_csv(path, low_memory=False)
+    required = {'search_term_key', 'result_key', 'match_evidence_class', 'visible_match_class'}
+    if evidence.empty or not required.issubset(evidence.columns):
+        return pd.DataFrame(columns=columns)
+
+    # One object may occur through multiple broad routes. Collapse those rows
+    # before counting evidence so repository topic and phrase retrieval do not
+    # inflate the term-level totals.
+    evidence['_documented_field'] = (
+        evidence['qualified_routes'].fillna('').astype(str).ne('')
+        | evidence['broad_search_route'].eq('repository_topic')
+    )
+    evidence['_visible_surface'] = evidence['visible_match_class'].isin(
+        ['normalized_surface', 'folded_surface']
+    )
+    evidence['_token_match'] = evidence['visible_match_class'].isin(
+        ['all_tokens', 'partial_tokens']
+    )
+    evidence['_unresolved'] = evidence['match_evidence_class'].eq(
+        'unresolved_platform_match'
+    )
+    collapsed = evidence.groupby(
+        ['search_term_key', 'result_key'], as_index=False
+    ).agg(
+        documented_field=('_documented_field', 'max'),
+        visible_surface=('_visible_surface', 'max'),
+        token_match=('_token_match', 'max'),
+        unresolved=('_unresolved', 'min'),
+        route_truncated=('any_route_truncated', 'max'),
+    )
+    summary = collapsed.groupby('search_term_key', as_index=False).agg(
+        audited_unique_result_count=('result_key', 'nunique'),
+        documented_field_match_count=('documented_field', 'sum'),
+        visible_surface_match_count=('visible_surface', 'sum'),
+        token_only_match_count=('token_match', 'sum'),
+        unresolved_platform_match_count=('unresolved', 'sum'),
+        match_evidence_any_route_truncated=('route_truncated', 'max'),
+    )
+    explained = (
+        collapsed['documented_field']
+        | collapsed['visible_surface']
+        | collapsed['token_match']
+    )
+    coverage = (
+        collapsed.assign(_explained=explained)
+        .groupby('search_term_key')['_explained'].mean()
+        .rename('match_evidence_coverage_pct')
+        .reset_index()
+    )
+    summary = summary.merge(coverage, on='search_term_key', how='left')
+    summary['match_evidence_available'] = True
+    return summary[columns]
 
 
 def build_review(
@@ -346,6 +451,24 @@ def build_review(
             continue
         items = term_item_sets.get(key, set())
         exclusive_items = {item for item in items if item_frequency[item] == 1}
+        exclusive_repo_phrase = _filter_exclusive_records(
+            repo_phrase, 'repository', exclusive_items
+        )
+        exclusive_repo_topic = _filter_exclusive_records(
+            repo_topic, 'repository', exclusive_items
+        )
+        exclusive_issues = _filter_exclusive_records(
+            issues, 'issue', exclusive_items
+        )
+        exclusive_pull_requests = _filter_exclusive_records(
+            pull_requests, 'issue', exclusive_items
+        )
+        exclusive_users = _filter_exclusive_records(
+            users, 'user', exclusive_items
+        )
+        exclusive_organizations = _filter_exclusive_records(
+            organizations, 'user', exclusive_items
+        )
         alternatives = []
         for other_key, other_items in term_item_sets.items():
             if other_key == key or not other_items:
@@ -385,21 +508,64 @@ def build_review(
             'pull_request_samples': _sample_records(pull_requests, 'pull_request', sample_size),
             'user_samples': _sample_records(users, 'user', sample_size),
             'organization_samples': _sample_records(organizations, 'user', sample_size),
+            'exclusive_repository_phrase_samples': _sample_records(
+                exclusive_repo_phrase, 'repository', sample_size
+            ),
+            'exclusive_repository_topic_samples': _sample_records(
+                exclusive_repo_topic, 'repository', sample_size
+            ),
+            'exclusive_issue_samples': _sample_records(
+                exclusive_issues, 'issue', sample_size
+            ),
+            'exclusive_pull_request_samples': _sample_records(
+                exclusive_pull_requests, 'pull_request', sample_size
+            ),
+            'exclusive_user_samples': _sample_records(
+                exclusive_users, 'user', sample_size
+            ),
+            'exclusive_organization_samples': _sample_records(
+                exclusive_organizations, 'user', sample_size
+            ),
             **REVIEW_COLUMNS,
         })
 
     review = pd.DataFrame(rows).sort_values(
         ['total_unique_results', 'search_term'], ascending=[False, True]
     )
+    evidence_summary = _load_match_evidence(search_dir, term_slug)
+    if not evidence_summary.empty:
+        review = review.merge(evidence_summary, on='search_term_key', how='left')
+    evidence_defaults = {
+        'match_evidence_available': False,
+        'audited_unique_result_count': 0,
+        'documented_field_match_count': 0,
+        'visible_surface_match_count': 0,
+        'token_only_match_count': 0,
+        'unresolved_platform_match_count': 0,
+        'match_evidence_coverage_pct': 0.0,
+        'match_evidence_any_route_truncated': False,
+    }
+    for column, default in evidence_defaults.items():
+        if column not in review.columns:
+            review[column] = default
+        review[column] = review[column].fillna(default)
     review = _seed_reviewed_assessments(review)
     if reviewed_path.exists() and not review.empty:
         prior = pd.read_csv(reviewed_path, keep_default_na=False)
         if 'search_term_key' in prior.columns:
             available_review_columns = [column for column in REVIEW_COLUMNS if column in prior.columns]
             decisions = prior[['search_term_key', *available_review_columns]].drop_duplicates('search_term_key')
-            review = review.drop(columns=list(REVIEW_COLUMNS)).merge(
-                decisions, on='search_term_key', how='left'
+            review = review.merge(
+                decisions, on='search_term_key', how='left', suffixes=('', '_prior')
             )
+            prior_status = review.get(
+                'review_status_prior', pd.Series('', index=review.index)
+            ).eq('reviewed')
+            for column in available_review_columns:
+                prior_column = f'{column}_prior'
+                if prior_column in review.columns:
+                    review.loc[prior_status, column] = review.loc[prior_status, prior_column]
+                    review = review.drop(columns=prior_column)
             for column, default in REVIEW_COLUMNS.items():
                 if column not in review.columns:
                     review[column] = default
@@ -408,6 +574,24 @@ def build_review(
                 'keep': 'retain',
                 'inspect': 'retain_track',
             })
+            legacy_suspect = review['term_assessment'].eq('suspect_translation')
+            no_translation_review = review['translation_review'].eq('no_issue_identified')
+            review.loc[
+                legacy_suspect & no_translation_review, 'translation_review'
+            ] = 'possible_translation_error'
+            review['term_assessment'] = 'not_assessed'
+            review['exclude_from_translation_analysis'] = (
+                review['translation_review'].eq('exclude_from_translation_analysis')
+            )
+            automatic = review['decision_override'].eq('auto')
+            review.loc[automatic, 'review_decision'] = review.loc[
+                automatic, 'retrieval_assessment'
+            ].map({
+                'mostly_relevant': 'retain',
+                'mixed': 'retain_track',
+                'mostly_irrelevant': 'exclude',
+                'unreviewed': 'retain_track',
+            }).fillna('retain_track')
 
     search_terms_dir.mkdir(parents=True, exist_ok=True)
     review.to_csv(output_path, index=False)

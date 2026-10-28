@@ -66,7 +66,7 @@ The reviewed file can contain more rows than a newly generated queue when a revi
 
 ### Samples and review
 
-`*_samples` columns contain serialized representative GitHub records for phrase repositories, topic repositories, issues, pull requests, users, and organizations. They make sample-based review possible without embedding every retrieved object in the queue.
+`*_samples` columns contain serialized representative GitHub records for phrase repositories, topic repositories, issues, pull requests, users, and organizations. The corresponding `exclusive_*_samples` columns contain up to five examples per group that were retrieved by this term and no other productive query. These fields make sample-based review possible without embedding every retrieved object in the queue.
 
 | Column | Allowed values / meaning |
 | --- | --- |

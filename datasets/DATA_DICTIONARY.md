@@ -193,7 +193,7 @@ for the complete evaluation inventory and normalization assumptions.
 | `*_count`, `total_unique_results` | Unique GitHub objects by result type and in total. |
 | `exclusive_result_count`, `shared_with_other_terms_*` | Retrieval overlap among queries. |
 | `covered_by_english_count`, `new_beyond_english_count` | Novelty relative to the English query, not relevance. |
-| `*_samples` | Serialized representative records for browser review. |
+| `*_samples` | Serialized representative records for browser review. The `exclusive_*_samples` fields contain examples retrieved by only one productive term. |
 | `term_assessment` | Credibility of the proposed DH term. |
 | `retrieval_assessment` | Relevance of sampled GitHub results. |
 | `review_decision` | `retain`, `retain_track`, or `exclude`. |
