@@ -36,8 +36,8 @@ The HTML files do not write directly back into the repository. Each reviewer dow
    - Finish running `searching_for_DH/data_generation_scripts/generate_search_data.py`
    - Run `python scripts/review/build_search_relevance_review.py`
    - Open `search_relevance_reviewer.html`
-   - Load `datasets/translated_terms/digital_humanities/search_terms/search_result_relevance_review.csv`
-   - Download and save as `datasets/translated_terms/digital_humanities/search_terms/search_result_relevance_reviewed.csv`
+   - Load the private external `search_terms/digital_humanities/search_result_relevance_review.csv`
+   - Download and save beside it as `search_terms/digital_humanities/search_result_relevance_reviewed.csv`
 
 ## File Reference
 
@@ -47,7 +47,7 @@ The HTML files do not write directly back into the repository. Each reviewer dow
 | `family_reconciliation_reviewer.html` | You need to review specific language-to-family assignments, ISO/Glottolog disagreement pairs, or JSON-fallback language rows. | `datasets/metadata_files/family_reconciliation_review.csv` | `family_reconciliation_reviewed.csv` | `datasets/metadata_files/family_reconciliation_reviewed.csv` |
 | `review_explorer.html` | You need to review translation outputs, mark structural exclusions, add term corrections, or exclude terms from search. | `datasets/translated_terms/digital_humanities/evaluation/review_explorer_data.csv` | `manual_exclusions.csv`; optionally `reviewed_terms.csv` | `datasets/translated_terms/digital_humanities/evaluation/manual_exclusions.csv` |
 | `search_term_reviewer.html` | You need to review the final grouped search-term list, resolve directionality conflicts, and set `keep_term` before GitHub search. | `datasets/translated_terms/digital_humanities/search_terms/grouped_translated_terms.csv` | `reviewed_grouped_translated_terms.csv` | `datasets/translated_terms/digital_humanities/search_terms/reviewed_grouped_translated_terms.csv` |
-| `search_relevance_reviewer.html` | GitHub search has finished and you need to distinguish credible terms from noisy or irrelevant retrieval. | `datasets/translated_terms/digital_humanities/search_terms/search_result_relevance_review.csv` | `search_result_relevance_reviewed.csv` | `datasets/translated_terms/digital_humanities/search_terms/search_result_relevance_reviewed.csv` |
+| `search_relevance_reviewer.html` | GitHub search has finished and you need to record translation exceptions and retrieval relevance. | Private external `search_terms/digital_humanities/search_result_relevance_review.csv` | `search_result_relevance_reviewed.csv` | Private external `search_terms/digital_humanities/search_result_relevance_reviewed.csv` |
 
 ## Tool Details
 
@@ -188,7 +188,7 @@ translation exceptions in `translation_review`, analysis exclusions in
 Save the download as:
 
 ```text
-datasets/translated_terms/digital_humanities/search_terms/search_result_relevance_reviewed.csv
+<external search-data directory>/search_terms/digital_humanities/search_result_relevance_reviewed.csv
 ```
 
 Rebuilding the queue preserves decisions from that reviewed file by normalized search term.
