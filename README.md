@@ -151,7 +151,7 @@ Local generation requires Ollama and the model versions documented in [scripts/c
 
 ## GitHub Collection Access and Privacy
 
-The `searching_for_DH` repository and the full GitHub data-collection pipeline are not public. Although the workflow queries publicly accessible GitHub records, releasing a reusable bulk collector and complete raw exports could facilitate additional aggregation, monitoring, or mass surveillance of users and scholarly communities. This repository therefore documents the search methodology and provides the reviewed, derived artifacts needed to understand the reported analysis without distributing the complete collection infrastructure or raw corpus.
+The `searching_for_DH` repository and the full GitHub data-collection pipeline are not public. Although the workflow queries publicly accessible GitHub records, releasing a reusable bulk collector and complete raw exports could facilitate additional aggregation, monitoring, or mass surveillance of users and scholarly communities. This repository therefore documents the search methodology and provides non-identifying aggregate artifacts needed to understand the reported analysis without distributing the complete collection infrastructure, raw corpus, or object-level retrieval-review files.
 
 This restriction marks a deliberate limit on end-to-end reproducibility rather than an accidental omission. Researchers interested in responsible reuse, methodological comparison, or collaboration may contact the principal investigator through the contact information associated with this repository. Requests will be considered in relation to research purpose, privacy, data minimization, and GitHub's terms of service.
 

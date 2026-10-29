@@ -318,11 +318,12 @@ def build_review(
 ) -> pd.DataFrame:
     term_slug = term.lower().replace(' ', '_')
     search_terms_dir = Path(data_dir) / 'translated_terms' / term_slug / 'search_terms'
+    private_review_dir = Path(search_dir) / 'search_terms' / term_slug
     terms_path = search_terms_dir / 'reviewed_grouped_translated_terms.csv'
-    output_path = search_terms_dir / 'search_result_relevance_review.csv'
+    output_path = private_review_dir / 'search_result_relevance_review.csv'
     overlap_path = search_terms_dir / 'search_result_term_overlap_edges.csv'
     overlap_summary_path = search_terms_dir / 'search_result_overlap_summary.csv'
-    reviewed_path = search_terms_dir / 'search_result_relevance_reviewed.csv'
+    reviewed_path = private_review_dir / 'search_result_relevance_reviewed.csv'
 
     terms = pd.read_csv(terms_path, keep_default_na=False)
     if 'keep_term' in terms.columns:
@@ -594,6 +595,7 @@ def build_review(
             }).fillna('retain_track')
 
     search_terms_dir.mkdir(parents=True, exist_ok=True)
+    private_review_dir.mkdir(parents=True, exist_ok=True)
     review.to_csv(output_path, index=False)
     print(f'Saved {len(review):,} productive search terms -> {output_path}')
     print(f'Saved {len(overlap_edges):,} term-overlap edges -> {overlap_path}')

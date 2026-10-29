@@ -43,4 +43,4 @@ python -m scripts.review.build_search_relevance_review
 
 ## Post-Search Review
 
-Run `build_search_relevance_review.py` only after the private GitHub collection pipeline has finished and its data directory is configured. Load the resulting queue into `html_files/search_relevance_reviewer.html`, save the reviewed CSV, and then rerun notebook 09. This stage evaluates both term credibility and retrieval relevance; it does not alter the original candidate-generation files.
+Run `build_search_relevance_review.py` only after the private GitHub collection pipeline has finished and its data directory is configured. The script writes the object-level queue to `search_terms/digital_humanities/` inside that external directory while retaining only aggregate overlap files in the repository. Load the private queue into `html_files/search_relevance_reviewer.html`, save the reviewed CSV beside it, and then rerun notebook 09. This stage records translation exceptions and retrieval relevance; it does not alter the original candidate-generation files.

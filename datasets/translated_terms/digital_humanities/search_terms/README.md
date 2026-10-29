@@ -1,10 +1,10 @@
 # Search-Term Data
 
-This directory records the transition from reviewed translations to GitHub queries and then to term-level retrieval assessment.
+This directory records the transition from reviewed translations to GitHub queries and preserves non-identifying aggregate retrieval summaries.
 
-The complete raw GitHub endpoint exports were produced by the private companion `searching_for_DH` collection workflow and are not distributed in this repository. `build_search_relevance_review.py` reads those repository, issue, and account exports, deduplicates their objects, and writes the compact review and overlap files documented here. The `*_samples` columns are representative records for review; they are not the complete raw result corpus.
+The complete raw GitHub endpoint exports were produced by the private companion `searching_for_DH` collection workflow and are not distributed in this repository. `build_search_relevance_review.py` reads those repository, issue, and account exports, deduplicates their objects, and writes non-identifying overlap summaries here. The object-level review queue and reviewed decisions are written to the configured external search-data directory under `search_terms/digital_humanities/` because their representative samples contain repository and account metadata.
 
-The collector and complete exports are intentionally withheld to avoid releasing reusable infrastructure for further bulk aggregation or surveillance of GitHub users and scholarly communities. This creates a documented limit on end-to-end reproduction. The repository instead preserves reviewed search terms, derived counts, overlap summaries, representative samples, and the analytical code that consumes those artifacts. Researchers interested in responsible methodological comparison or collaboration may contact the principal investigator through the repository's contact information.
+The collector and complete exports are intentionally withheld to avoid releasing reusable infrastructure for further bulk aggregation or surveillance of GitHub users and scholarly communities. This creates a documented limit on end-to-end reproduction. The repository instead preserves reviewed search terms, aggregate overlap summaries, and the analytical code that consumes those artifacts. Researchers interested in responsible methodological comparison or collaboration may contact the principal investigator through the repository's contact information.
 
 ## Canonical Sequence
 
@@ -12,8 +12,8 @@ The collector and complete exports are intentionally withheld to avoid releasing
 | --- | --- | --- | --- |
 | `grouped_translated_terms.csv` | Generated intermediate | One normalized query grouped across language/source rows | Output of `scripts/generate_search_terms.py` before final browser review. |
 | `reviewed_grouped_translated_terms.csv` | Reviewed artifact | One retained query and its provenance | Canonical input to GitHub search. |
-| `search_result_relevance_review.csv` | Generated review queue | One productive query | Representative retrieval samples and provisional assessments. |
-| `search_result_relevance_reviewed.csv` | Reviewed artifact | One productive query | Canonical downstream relevance decisions. |
+| `search_result_relevance_review.csv` | Private generated review queue | One productive query | Stored externally with representative retrieval samples and provisional assessments. |
+| `search_result_relevance_reviewed.csv` | Private reviewed artifact | One productive query | Stored externally as the canonical downstream relevance decisions. |
 | `search_result_term_overlap_edges.csv` | Generated intermediate | One term-to-term overlap edge | Shared GitHub objects and overlap measures. |
 | `search_result_overlap_summary.csv` | Generated summary | One corpus-level row | Global retrieval multiplicity totals. |
 
@@ -35,7 +35,9 @@ Files under `older_datasets/` are superseded review snapshots and are not read b
 
 The reviewed file can contain more rows than a newly generated queue when a review reconciles or carries forward terms from earlier reviewed snapshots. Treat the reviewed file as the canonical search input and document any future merge rather than assuming row counts must match.
 
-## Relevance-Review Columns
+## Private Relevance-Review Columns
+
+The following schema documents the private files used by the analysis; those files are not distributed in this repository.
 
 ### Query identity and provenance
 

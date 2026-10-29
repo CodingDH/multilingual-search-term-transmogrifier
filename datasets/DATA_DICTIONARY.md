@@ -184,7 +184,9 @@ for the complete evaluation inventory and normalization assumptions.
 | `comparison_status` | Upstream translation-comparison category. |
 | `keep_term` | Reviewed inclusion decision. |
 
-### `search_result_relevance_reviewed.csv`
+### Private external `search_result_relevance_reviewed.csv`
+
+This object-level review artifact is stored under the configured external search-data directory at `search_terms/digital_humanities/` and is not distributed in the repository.
 
 | Column group | Meaning |
 | --- | --- |

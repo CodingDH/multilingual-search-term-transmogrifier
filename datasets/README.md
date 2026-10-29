@@ -54,7 +54,7 @@ For article reproduction, preserve these layers:
 1. `metadata_files/language_codes_comprehensive.csv` and `language_codes_comprehensive_family_reviewed.csv`.
 2. The current direct-service and four current prompt-condition files under `translated_terms/digital_humanities/`.
 3. `evaluation/manual_exclusions.csv` and the generated review-signal tables.
-4. `search_terms/reviewed_grouped_translated_terms.csv` and `search_result_relevance_reviewed.csv`.
+4. `search_terms/reviewed_grouped_translated_terms.csv` and the private external retrieval-review decisions.
 5. Frozen analytical results explicitly identified in the evaluation README.
 
 Large explorer tables, chart summaries, and embedding metrics are derived and can be rebuilt, but they are committed where they support inspection without rerunning paid APIs or expensive models.
@@ -66,7 +66,7 @@ Large explorer tables, chart summaries, and embedding metrics are derived and ca
 - Rationales are generated texts. They are analyzed as model outputs and do not provide transparent access to model reasoning.
 - Automated review signals identify outputs requiring attention; they do not establish correctness.
 - GitHub result counts describe retrieval from a particular platform and search workflow. They are not measures of a language community's total digital or scholarly activity.
-- Public GitHub records can contain account names and repository metadata. They are retained as public retrieval evidence but should not be interpreted as endorsements by those users or communities.
+- Public GitHub records can contain account names and repository metadata. Object-level retrieval samples and review decisions remain in the private external data directory and are not distributed through this repository.
 
 ## Regeneration Overview
 

@@ -20,7 +20,7 @@ Use the following files when tracing the current pipeline:
 3. Translation review: `evaluation/automated_review_signals.csv`, `evaluation/review_explorer_data.csv`, and `evaluation/manual_exclusions.csv`.
 4. Disagreement analysis: `evaluation/disagreement_analysis.csv` and `evaluation/disagreement_patterns.csv`.
 5. Search-term review: `search_terms/reviewed_grouped_translated_terms.csv`.
-6. Retrieval review: `search_terms/search_result_relevance_reviewed.csv`.
+6. Retrieval review: private external `search_terms/digital_humanities/search_result_relevance_reviewed.csv`.
 
 The `expert_persona` prompt files and `evaluation/older_manual_exclusions.csv` are legacy artifacts. They are preserved for provenance but are not part of the current four-condition analysis.
 
