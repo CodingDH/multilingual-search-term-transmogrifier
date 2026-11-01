@@ -5,7 +5,7 @@ This directory is one layer of the repository's broader data model. See
 generated translations, reviewed artifacts, derived analysis tables, caches,
 and legacy files.
 
-Project-level metadata about the languages, scripts, families, and service-support manifests the Multilingual Search Term Transmogrifier operates over. **Nothing in this folder is per-term candidate data** — those live under `datasets/translated_terms/{term_slug}/`. This folder is the *registry layer* that defines what counts as a language for the project, what each row's institutional provenance is, and what external services can do with each code.
+Project-level metadata about the languages, scripts, families, and service-support manifests the Multilingual Search Term Transmogrifier operates over. **Nothing in this folder is per-term candidate data** — those live under `datasets/candidate_terms/{term_slug}/`. This folder is the *registry layer* that defines what counts as a language for the project, what each row's institutional provenance is, and what external services can do with each code.
 
 ## Quick map
 
@@ -28,6 +28,12 @@ The build script is `scripts/language_metadata/generate_language_codes.py`; see 
 ## `language_codes_comprehensive.csv` — the primary dataset (881 rows × 39 columns)
 
 The one row per language code that everything else in this folder either derives from or annotates. Built by merging five registries (CLDR 48.2, LOC ISO 639-2, Wikimedia, CLDR v45 supplement, ISO 639-5 family hierarchy) and enriched with SIL names, Glottolog family reconciliation, BCP 47 canonicalization, and Google service support manifests. The `language_code` column is the project's stable row identifier; it never changes between regenerations and is what every other notebook joins on.
+
+Language metadata does not use `transmogrifier_id`. That identifier belongs to
+dated translation observations. This registry instead uses `language_code` and
+its explicit copy `project_language_code` as stable entity keys, with
+`coding_dh_date_added`, `coding_dh_date_last_seen`, source versions, and review
+provenance recording the currently implemented temporal evidence.
 
 ### Identity and naming (3 columns)
 

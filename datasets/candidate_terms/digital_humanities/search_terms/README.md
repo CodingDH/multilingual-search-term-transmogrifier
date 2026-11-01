@@ -28,6 +28,10 @@ Files under `older_datasets/` are superseded review snapshots and are not read b
 | `counts` | Number of contributing translation records before grouping. |
 | `directionality` | Display/search direction selected for the grouped term (`ltr` or `rtl`). |
 | `search_term_source` | Services and prompt conditions that supplied the term. |
+| `transmogrifier_ids` | Source candidate observations supporting the grouped query, or an explicitly prefixed legacy reviewed-row identifier. |
+| `selection_mode` | Historical candidate view used for the export. |
+| `selection_as_of` | Inclusive cutoff for an `as_of` export; blank otherwise. |
+| `candidate_provenance_status` | Whether IDs resolve to candidate observations or identify a legacy reviewed-export row that cannot be reconstructed from preserved selected outputs. |
 | `comparison_status` | Upstream translation-comparison status carried into the grouped record. |
 | `keep_term` | Final search-term review decision. Read as a boolean. |
 | `directionality_conflict` | Whether contributing language rows disagreed on directionality; present in the generated queue. |
@@ -44,10 +48,12 @@ The following schema documents the private files used by the analysis; those fil
 | Column | Meaning |
 | --- | --- |
 | `search_term_key` | Normalized key used to join search results and preserve reviews. |
+| `coding_dh_date` | Date of the retrieval-review snapshot. Downstream processing uses the latest completed row for each normalized term key. |
 | `search_term` | Display form of the query. |
 | `natural_language` | Language rows associated with the query. |
 | `language_mapping_rows` | Number of language-to-term mappings represented. |
 | `source_translation_count` | Number of translation records contributing the term. |
+| `transmogrifier_ids`, `selection_mode` | Translation snapshot provenance carried from the reviewed query file. |
 | `directionality`, `comparison_status` | Upstream metadata retained for interpretation. |
 
 ### Retrieval counts
@@ -72,13 +78,25 @@ The following schema documents the private files used by the analysis; those fil
 
 | Column | Allowed values / meaning |
 | --- | --- |
-| `term_assessment` | `credible_dh_term`, `ambiguous_or_broad`, or `suspect_translation`. |
+| `term_assessment` | Legacy compatibility field. Current reviews use `not_assessed` rather than deciding whether a term is an authoritative translation. |
+| `translation_review` | `no_issue_identified` or `possible_translation_error`; a review signal rather than a definitive linguistic judgment. |
+| `exclude_from_translation_analysis` | Whether the generated form should also be omitted from translation-level analysis. This is separate from retrieval handling. |
 | `retrieval_assessment` | `mostly_relevant`, `mixed`, or `mostly_irrelevant`. |
 | `review_decision` | `retain`, `retain_track`, or `exclude`. |
 | `reviewer_notes` | Free-text evidence and rationale. |
 | `review_status` | Whether the assessment is `reviewed` or `unreviewed`; reviewer type is not encoded. |
 
 The current file contains a sample-based audit produced through AI-assisted classification and subsequent human confirmation. It is not a manual reading of every retrieved GitHub object. `retain_track` means the term remains in downstream counts while its relevance remains analytically visible.
+
+## Temporal Selection
+
+Translation generation is append-preserving. Each source observation has a
+`transmogrifier_id`, and grouped queries carry the IDs that supplied their
+selected forms. Routine exports use the `latest` observation for each
+term-language-service-prompt identity. Historical exports can instead use an
+`as_of` cutoff, all observations, or a separately reviewed set of IDs. The
+private relevance-review CSV remains the binding decision layer for downstream
+GitHub expansion and preserves its own `coding_dh_date` when decisions change.
 
 ## Overlap Edge Columns
 

@@ -12,29 +12,29 @@ import pandas as pd
 # Two sources feed filter_for_analysis():
 #
 # 1. automated_review_signals.csv (automated)
-#    Produced by notebook 02.  Signals with an unambiguous interpretation are
-#    applied automatically — you don't need to Xall every repetition loop.
+# Produced by notebook 02. Signals with an unambiguous interpretation are
+# applied automatically; you do not need to Xall every repetition loop.
 #
-#    likely_error (nulled in 'quality' and 'search_ready'):
-#      has_repetition_loop, has_mixed_script, has_placeholder_term,
-#      has_unicode_escape, has_extreme_term_length
+# likely_error (nulled in 'quality' and 'search_ready'):
+# has_repetition_loop, has_mixed_script, has_placeholder_term,
+# has_unicode_escape, has_extreme_term_length
 #
-#    likely_search_complication (nulled in 'search_ready' only):
-#      has_romanization, has_source_term (non-English), has_short_translation
+# likely_search_complication (nulled in 'search_ready' only):
+# has_romanization, has_source_term (non-English), has_short_translation
 #
-#    NOT auto-excluded (analytical signal, not errors):
-#      has_script_disagreement, has_any_mixing, has_missing_rationale
+# Not auto-excluded (analytical signals, not errors):
+# has_script_disagreement, has_any_mixing, has_missing_rationale
 #
 # 2. manual_exclusions.csv (human review via review_explorer.html)
-#    Supplements and overrides the automated flags for edge cases.
-#    Xall  → likely_error               (exclude_translation = True)
-#    Xsrch → likely_search_complication (per-variant boolean flags only)
+# Supplements and overrides the automated flags for edge cases.
+# Xall: likely_error (exclude_translation = True)
+# Xsrch: likely_search_complication (per-variant boolean flags only)
 #
 # Analysis modes
 # --------------
-#   'full'         – no filtering  (error rates, coverage stats)
-#   'quality'      – null likely_error cells  (model quality comparison)
-#   'search_ready' – null both tiers  (building the translation resource)
+# 'full': no filtering (error rates and coverage statistics)
+# 'quality': null likely_error cells (model quality comparison)
+# 'search_ready': null both tiers (building the candidate-term resource)
 
 _SVC_TO_PREFIX = {
     "Claude":           "claude",
@@ -67,7 +67,7 @@ def load_exclusion_tiers(term: str, data_dir: str) -> pd.DataFrame:
 	DataFrame if the file does not exist yet.
 	"""
 	path = os.path.join(
-		data_dir, "translated_terms",
+		data_dir, "candidate_terms",
 		term.lower().replace(" ", "_"),
 		"evaluation", "manual_exclusions.csv",
 	)

@@ -211,8 +211,8 @@ NON_LANGUAGE_CODES = {
 _SIL_URL = 'https://iso639-3.sil.org/sites/iso639-3/files/downloads/iso-639-3.tab'
 
 # Hardcoded names for codes not covered by SIL's ISO 639-3 registry:
-#   kro      — CLDR group code for Kru languages (ISO 639-5); no SIL ISO 639-3 entry
-#   tokipona — constructed language (Toki Pona); never received an ISO 639-3 code
+# kro: CLDR group code for Kru languages (ISO 639-5); no SIL ISO 639-3 entry
+# tokipona: constructed language (Toki Pona); never received an ISO 639-3 code
 
 # Heuristic keywords for LOC group/collective codes in ISO 639-2
 GROUP_KEYWORDS = [

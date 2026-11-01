@@ -895,7 +895,7 @@ def main():
 
     # ------------------------------------------------------------------
     # 2. Build new entries from ASSIGNMENTS
-    #    (skip codes already in existing JSON)
+    # Skip codes already in the existing JSON.
     # ------------------------------------------------------------------
     new_entries = []
     seen_in_new = set()

@@ -22,9 +22,9 @@ The point is that 'no system prompt' should be an actual absence, not an empty s
 
 # ── Source categorisation for the judge prompt ───────────────────────────────
 # Three epistemic stances on "what is a translation":
-#   1. LLM prompt variants — generative model output under different framings
-#   2. Machine translation services — algorithmic baselines (statistical/neural MT)
-#   3. Community resources — human-curated reference translations (extensible)
+# 1. LLM prompt variants: generative model output under different framings
+# 2. Machine translation services: algorithmic baselines (statistical/neural MT)
+# 3. Community resources: human-curated reference translations (extensible)
 
 # Descriptions for the LLM prompt variants only.
 PROMPT_VARIANT_DESCRIPTIONS = {

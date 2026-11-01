@@ -1,5 +1,4 @@
 # Standard library imports
-import csv
 import html
 import json
 import os
@@ -16,10 +15,44 @@ from tqdm import tqdm
 import sys
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 from scripts.utils import get_data_directory_path, read_csv_file
-from scripts.candidate_generation.log_errors import clean_write_error_file, log_error_to_file
+from scripts.candidate_generation.log_errors import prepare_error_log, log_error_to_file
+from scripts.candidate_generation.translation_versions import (
+	load_translation_versions,
+	save_translation_history,
+	select_translation_versions,
+)
 warnings.filterwarnings('ignore')
 
 MAX_CONSECUTIVE_TIMEOUTS = 5  # Stop after 5 consecutive timeouts
+
+
+def utc_observed_at() -> str:
+	"""Return the timestamp for a newly observed pipeline response."""
+	return datetime.datetime.now(datetime.timezone.utc).isoformat().replace("+00:00", "Z")
+
+
+def generation_settings_for_service(service_name: str) -> dict:
+	"""Return request settings that must remain visible in longitudinal output."""
+	normalized = service_name.strip().lower()
+	settings = {
+		"openai": (0, 1, 2048),
+		"claude": (0, None, 2048),
+		"gemini": (0, 1, 2048),
+		"deepseek": (0, 1, 2048),
+		"llama": (0, 1, 2048),
+		"gemma": (0, 1, 2048),
+		"qwen": (0, 1, 2048),
+		"mistral": (0, 1, 2048),
+	}
+	if normalized not in settings:
+		return {}
+	temperature, top_p, max_output_tokens = settings[normalized]
+	return {
+		"generation_temperature": temperature,
+		"generation_top_p": top_p,
+		"generation_max_output_tokens": max_output_tokens,
+		"generation_settings_source": "pipeline_request",
+	}
 
 
 # Import from new modules
@@ -150,6 +183,7 @@ def read_existing_translations_for_service(
 	subfolder: str = "historic_translations_data",
 	file_suffix: str = "_translated_terms.csv",
 	timestamp_column: str = "coding_dh_date",
+	version_mode: str = "latest",
 ) -> pd.DataFrame:
 	"""
 	Reads all existing translation files for a specific service and returns the most recent entries per language and term_source.
@@ -181,20 +215,15 @@ def read_existing_translations_for_service(
 		service_file = os.path.join(
 			data_directory_path,
 			"metadata_files",
-			"translated_terms",
+			"candidate_terms",
 			term_slug,
 			subfolder,
 			f"{translation_column}{file_suffix}"
 		)
 
 		if os.path.exists(service_file):
-			df = read_csv_file(service_file)
+			df = load_translation_versions(service_file, mode=version_mode)
 			df["term_source"] = term_source
-			if timestamp_column in df.columns:
-				df[timestamp_column] = pd.to_datetime(df[timestamp_column], errors='coerce')
-				df = df.sort_values(timestamp_column, ascending=False).drop_duplicates(
-					subset=["language_code", "term_source"], keep="first"
-				)
 			dfs.append(df)
 
 	if dfs:
@@ -231,6 +260,7 @@ def load_existing_translations_by_term_sources(
 	timestamp_column: str = "coding_dh_date",
 	use_cached_translations: bool = True,
 	subfolder: str = "direct_services",
+	version_mode: str = "latest",
 ) -> pd.DataFrame:
 	"""
 	Loads existing translations from CSV files for specified term sources.
@@ -262,16 +292,11 @@ def load_existing_translations_by_term_sources(
 	for term in term_sources:
 		file_path = os.path.join(base_path, term.lower().replace(" ", "_"), subfolder, translate_file_name)
 		if os.path.exists(file_path) and use_cached_translations:
-			df = pd.read_csv(file_path, on_bad_lines='warn', converters={'language_code': str})
+			df = load_translation_versions(file_path, mode=version_mode)
 			df["term_source"] = term
-			if timestamp_column in df.columns:
-				df[timestamp_column] = pd.to_datetime(df[timestamp_column], errors="coerce")
-				df = df.sort_values(timestamp_column, ascending=False).drop_duplicates(
-					subset=["language_code", "term_source"], keep="first"
-				)
-				translation_col = next((c for c in translation_columns if c.endswith('_translated_term')), None)
-				filled = df[translation_col].notna().sum() if translation_col and translation_col in df.columns else '?'
-				console.print(f"Loaded {len(df)} rows for {term} ({filled} with translations) from {file_path}", style="bold green")
+			translation_col = next((c for c in translation_columns if c.endswith('_translated_term')), None)
+			filled = df[translation_col].notna().sum() if translation_col and translation_col in df.columns else '?'
+			console.print(f"Loaded {len(df)} rows for {term} ({filled} with translations) from {file_path}", style="bold green")
 			all_dfs.append(df)
 
 	return pd.concat(all_dfs, ignore_index=True) if all_dfs else pd.DataFrame(columns=["language_code", "language_name", "term_source"] + translation_columns)
@@ -415,7 +440,9 @@ def process_individual_terms(
 					translated_row = row_df.iloc[0]
 
 				# Stamp the translation date before saving
-				translated_row['coding_dh_date'] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+				translated_row['coding_dh_date'] = utc_observed_at()
+				for setting, value in generation_settings_for_service(service_name).items():
+					translated_row[setting] = value
 
 				# Append translated row to the per-term file immediately
 				term_slug = str(translated_row.get('term_source', '')).lower().replace(' ', '_')
@@ -429,21 +456,9 @@ def process_individual_terms(
 					[c for c in save_df.columns if c in ('coding_dh_date_x', 'coding_dh_date_y')]
 				)
 				save_df = save_df.drop(columns=_cols_to_drop, errors='ignore')
-				# If the file already exists, align to its header column order so that
-				# rows from different runs never land in the wrong columns.
-				if os.path.exists(save_path):
-					existing_header = pd.read_csv(save_path, nrows=0).columns.tolist()
-					new_cols = [c for c in save_df.columns if c not in existing_header]
-					for c in new_cols:
-						# add any brand-new columns to the file before appending
-						existing_full = pd.read_csv(save_path, on_bad_lines='warn', converters={'language_code': str})
-						existing_full[c] = None
-						existing_full.to_csv(save_path, index=False, quoting=csv.QUOTE_ALL)
-						existing_header.append(c)
-					save_df = save_df.reindex(columns=existing_header)
-				save_df.to_csv(
-					save_path, mode='a', header=not os.path.exists(save_path), index=False,
-					quoting=csv.QUOTE_ALL,
+				save_translation_history(
+					save_path,
+					save_df,
 				)
 
 				translated_rows.append(translated_row)
@@ -501,26 +516,12 @@ def process_individual_terms(
 
 		console.print(f"Finalized translations have {len(finalized_translations)} rows", style="bold green")
 
-		if 'coding_dh_date' in finalized_translations.columns:
-			finalized_translations['coding_dh_date'] = pd.to_datetime(finalized_translations['coding_dh_date'], errors='coerce')
-			finalized_translations = finalized_translations.sort_values('coding_dh_date', ascending=False)
-		finalized_translations = finalized_translations.drop_duplicates(
-			subset=['language_code', 'term_source'], keep='first'
+		finalized_translations = select_translation_versions(
+			finalized_translations,
+			mode="latest",
+			identity_columns=["language_code", "term_source"],
 		)
-
-		console.print(f"After dropping duplicates: {len(finalized_translations)} rows", style="bold green")
-
-		# Save each term's translations separately
-		for term_source in finalized_translations.term_source.unique():
-			single_df = finalized_translations[finalized_translations.term_source == term_source]
-			single_path = os.path.join(
-				translate_file_path,
-				term_source.lower().replace(" ", "_"),
-				"prompt_services",
-				translate_file_name
-			)
-			os.makedirs(os.path.dirname(single_path), exist_ok=True)
-			single_df.to_csv(single_path, index=False, quoting=csv.QUOTE_ALL)
+		console.print(f"Latest translation view has {len(finalized_translations)} rows", style="bold green")
 
 	else:
 		finalized_translations = existing_translations
@@ -635,7 +636,21 @@ def process_grouped_terms(
 
 		# Explode into one row per term
 		exploded_grouped_terms = grouped_terms.explode(['term_source', translation_column])
-		exploded_grouped_terms['coding_dh_date'] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+		exploded_grouped_terms['coding_dh_date'] = utc_observed_at()
+		for term_source in exploded_grouped_terms.term_source.unique():
+			single_df = exploded_grouped_terms[
+				exploded_grouped_terms.term_source == term_source
+			]
+			single_path = os.path.join(
+				translate_file_path,
+				term_source.lower().replace(" ", "_"),
+				"direct_services",
+				translate_file_name,
+			)
+			save_translation_history(
+				single_path,
+				single_df,
+			)
 
 		# Filter excluded terms not already in existing translations
 		if not excluded_terms_df.empty and {'language_code', 'language_name', 'term_source'}.issubset(excluded_terms_df.columns):
@@ -654,25 +669,12 @@ def process_grouped_terms(
 			ignore_index=True
 		)
 		console.print(f"Finalized translations have {len(finalized_translations)} rows", style="bold green")
-		if 'coding_dh_date' in finalized_translations.columns:
-			finalized_translations['coding_dh_date'] = pd.to_datetime(finalized_translations['coding_dh_date'], errors='coerce')
-			finalized_translations = finalized_translations.sort_values('coding_dh_date', ascending=False)
-		finalized_translations = finalized_translations.drop_duplicates(
-			subset=['language_code', 'term_source'], keep='first'
+		finalized_translations = select_translation_versions(
+			finalized_translations,
+			mode="latest",
+			identity_columns=["language_code", "term_source"],
 		)
-
-		console.print(f"Finalized translations after dropping duplicates have {len(finalized_translations)} rows", style="bold green")
-		# Save each term's translations separately
-		for term_source in finalized_translations.term_source.unique():
-			single_df = finalized_translations[finalized_translations.term_source == term_source]
-			single_path = os.path.join(
-				translate_file_path,
-				term_source.lower().replace(" ", "_"),
-				"direct_services",
-				translate_file_name
-			)
-			os.makedirs(os.path.dirname(single_path), exist_ok=True)
-			single_df.to_csv(single_path, index=False, quoting=csv.QUOTE_ALL)
+		console.print(f"Latest translation view has {len(finalized_translations)} rows", style="bold green")
 	else:
 		finalized_translations = existing_translations
 
@@ -719,7 +721,7 @@ def get_variant_output_path(base_path: str, filename: str, variant: str = 'minim
 	os.makedirs(variant_dir, exist_ok=True)
 	return os.path.join(variant_dir, f"{variant}_{filename}")
 
-def generate_initial_terms(target_terms: list, data_directory_path: str, process_dh: bool, use_gt_translate: bool, use_enmt_translate: bool, use_openai_translate: bool, use_claude_translate: bool, use_ollama_translate: bool, use_wikipedia: bool, override_wikipedia: bool, use_cached_translations: bool, return_all_data: bool = False, exclude_previous_errors: bool = False, use_gemini_translate: bool = False, use_lingvanex_translate: bool = False, use_deepseek_translate: bool = False, use_gemma_translate: bool = False, use_qwen_translate: bool = False, use_mistral_translate: bool = False, prompt_variant: str = 'minimal', term_contexts: dict = None) -> pd.DataFrame:
+def generate_initial_terms(target_terms: list, data_directory_path: str, process_dh: bool, use_gt_translate: bool, use_enmt_translate: bool, use_openai_translate: bool, use_claude_translate: bool, use_ollama_translate: bool, use_wikipedia: bool, override_wikipedia: bool, use_cached_translations: bool, return_all_data: bool = False, exclude_previous_errors: bool = False, use_gemini_translate: bool = False, use_lingvanex_translate: bool = False, use_deepseek_translate: bool = False, use_gemma_translate: bool = False, use_qwen_translate: bool = False, use_mistral_translate: bool = False, prompt_variant: str = 'minimal', term_contexts: dict = None, use_cached_direct_translations: Optional[bool] = None) -> pd.DataFrame:
 	"""
 	Generate a dataframe with translated terms. This function assumes you want to at the very least translate Digital Humanities.
 
@@ -753,6 +755,9 @@ def generate_initial_terms(target_terms: list, data_directory_path: str, process
 	pd.DataFrame
 		A dataframe with translated terms.
 	"""
+	if use_cached_direct_translations is None:
+		use_cached_direct_translations = use_cached_translations
+
 	error_dir = os.path.join(data_directory_path, "error_logs")
 	os.makedirs(error_dir, exist_ok=True)
 
@@ -770,7 +775,7 @@ def generate_initial_terms(target_terms: list, data_directory_path: str, process
 	for error_file in [gt_error_file, enmt_error_file, openai_error_file, claude_error_file,
 	                   llama_error_file, gemini_error_file, lingvanex_error_file,
 	                   deepseek_error_file, gemma_error_file, qwen_error_file, mistral_error_file]:
-		clean_write_error_file(error_file, drop_fields=["term_source", "language_code", "error_url", "variant"])
+		prepare_error_log(error_file)
 	# Make temp dir wherever running the code
 	if not os.path.exists("temp"):
 		os.makedirs("temp", exist_ok=True)
@@ -814,9 +819,9 @@ def generate_initial_terms(target_terms: list, data_directory_path: str, process
 		translations_dfs = []
 		# Create a file to store errors
 		wikipedia_error_file = os.path.join(error_dir, "wikipedia_translation_errors.csv")
-		clean_write_error_file(wikipedia_error_file, drop_fields=["term_source", "language_code", "error_url"])
+		prepare_error_log(wikipedia_error_file)
 		# Load any previous errors
-		if os.path.exists(wikipedia_error_file):
+		if exclude_previous_errors and os.path.exists(wikipedia_error_file):
 			existing_errors_df = read_csv_file(wikipedia_error_file)
 			errored_terms = set(existing_errors_df['term_source'].dropna().unique())
 		else:
@@ -826,26 +831,42 @@ def generate_initial_terms(target_terms: list, data_directory_path: str, process
 				console.print(f"Skipping {term_source} due to previous errors", style="bold red")
 				continue
 			folder_term_source = term_source.replace(" ", "_").lower()
-			translation_file_path = os.path.join(data_directory_path, "translated_terms", folder_term_source, "direct_services", "wikipedia_translations.csv")
-			if os.path.exists(translation_file_path) and use_cached_translations:
-				translations_df = read_csv_file(translation_file_path)
+			translation_file_path = os.path.join(data_directory_path, "candidate_terms", folder_term_source, "direct_services", "wikipedia_translations.csv")
+			if os.path.exists(translation_file_path) and use_cached_direct_translations:
+				translations_df = load_translation_versions(translation_file_path, mode="latest")
 				console.print(f"Loaded Wikipedia translations for {term_source} from file", style="bold green")
-				if 'coding_dh_date' in translations_df.columns:
-					translations_df['coding_dh_date'] = pd.to_datetime(translations_df['coding_dh_date'])
-					# Keep only the most recent translations
-					translations_df = translations_df.sort_values(by='coding_dh_date').drop_duplicates(subset=['language_code'], keep='last')
 				translations_dfs.append(translations_df)
 			else:
-				translations = check_if_wikipedia_page_exists(term_source, error_file_path=wikipedia_error_file, console=console)
-				if translations:
-					translations_df = pd.DataFrame([translations])
-					translations_df = translations_df.T.reset_index().rename(columns={"index": "language_code", 0: "wikipedia_translated_term"})
-					translations_df['term_source'] = term_source
-					translations_df['coding_dh_date'] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-					# write translations to a file
-					os.makedirs(os.path.dirname(translation_file_path), exist_ok=True)
-					translations_df.to_csv(translation_file_path, index=False)
-					console.print(f"Added Wikipedia translations for {term_source}", style="bold green")
+				translations = check_if_wikipedia_page_exists(
+					term_source,
+					error_file_path=wikipedia_error_file,
+					console=console,
+				)
+				if translations is not None:
+					# Store a complete dated snapshot so a later removal is observable as
+					# a blank candidate rather than disappearing from the history.
+					translations_df = (
+						final_df.loc[
+							final_df['term_source'].eq(term_source),
+							['language_code', 'term_source'],
+						]
+						.drop_duplicates()
+						.reset_index(drop=True)
+					)
+					translations_df['wikipedia_translated_term'] = translations_df[
+						'language_code'
+					].map(translations)
+					translations_df['coding_dh_date'] = utc_observed_at()
+					save_translation_history(
+						translation_file_path,
+						translations_df,
+						service="wikipedia",
+						prompt_variant="direct",
+					)
+					console.print(
+						f"Added dated Wikipedia label snapshot for {term_source}",
+						style="bold green",
+					)
 					translations_dfs.append(translations_df)
 		if translations_dfs:
 			final_translations_df = pd.concat(translations_dfs).reset_index(drop=True)
@@ -861,7 +882,7 @@ def generate_initial_terms(target_terms: list, data_directory_path: str, process
 			console.print("No Wikipedia translations found", style="bold red")
 
 	# Translate the terms using Google Cloud Translate
-	terms_file_path = os.path.join(data_directory_path, "translated_terms")
+	terms_file_path = os.path.join(data_directory_path, "candidate_terms")
 	if use_gt_translate:
 		exploded_grouped_gt_terms = process_grouped_terms(
 			translate_file_path=terms_file_path,
@@ -870,7 +891,7 @@ def generate_initial_terms(target_terms: list, data_directory_path: str, process
 			final_df=final_df,
 			translation_function=lambda row: get_gt_translation(row, gt_error_file, console),
 			service_name="Google Cloud Translate",
-			should_use_cached_translations=use_cached_translations,
+			should_use_cached_translations=use_cached_direct_translations,
 			should_override_wikipedia=override_wikipedia,
 			exclude_errors_file=gt_error_file if exclude_previous_errors else None
 		)
@@ -895,7 +916,7 @@ def generate_initial_terms(target_terms: list, data_directory_path: str, process
 			final_df=final_df,
 			translation_function=lambda row: get_enmt_translation(row, enmt_error_file, console),
 			service_name="EasyNMT",
-			should_use_cached_translations=use_cached_translations,
+			should_use_cached_translations=use_cached_direct_translations,
 			should_override_wikipedia=override_wikipedia,
 			exclude_errors_file=enmt_error_file if exclude_previous_errors else None
 		)
@@ -920,7 +941,7 @@ def generate_initial_terms(target_terms: list, data_directory_path: str, process
 			final_df=final_df,
 			translation_function=lambda row: get_lingvanex_translation(row, lingvanex_error_file, console),
 			service_name="Lingvanex",
-			should_use_cached_translations=use_cached_translations,
+			should_use_cached_translations=use_cached_direct_translations,
 			should_override_wikipedia=override_wikipedia,
 			exclude_errors_file=lingvanex_error_file if exclude_previous_errors else None
 		)
@@ -1200,7 +1221,7 @@ def load_existing_data(file_paths: List[str], skip_existing_files: bool) -> Tupl
 		return True, [read_csv_file(path) for path in file_paths]
 	return False, []
 
-def generate_translated_terms(data_directory_path: str, target_terms: List[str], directionality_df: pd.DataFrame, gt_translate: bool, enmt_translate: bool, openai_translate: bool, claude_translate: bool, ollama_translate: bool, wikipedia_translate: bool, override_wikipedia: bool, cached_translations: bool, return_full_terms_data: bool, excluding_previous_errors: bool, prompt_variant: str = 'minimal', gemini_translate: bool = False, lingvanex_translate: bool = False, deepseek_translate: bool = False, gemma_translate: bool = False, qwen_translate: bool = False, mistral_translate: bool = False, term_contexts: dict = None) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+def generate_translated_terms(data_directory_path: str, target_terms: List[str], directionality_df: pd.DataFrame, gt_translate: bool, enmt_translate: bool, openai_translate: bool, claude_translate: bool, ollama_translate: bool, wikipedia_translate: bool, override_wikipedia: bool, cached_translations: bool, return_full_terms_data: bool, excluding_previous_errors: bool, prompt_variant: str = 'minimal', gemini_translate: bool = False, lingvanex_translate: bool = False, deepseek_translate: bool = False, gemma_translate: bool = False, qwen_translate: bool = False, mistral_translate: bool = False, term_contexts: dict = None, cached_direct_translations: Optional[bool] = None) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
 	"""
 	Generate translated terms for a list of target terms across all configured services.
 
@@ -1263,6 +1284,7 @@ def generate_translated_terms(data_directory_path: str, target_terms: List[str],
 		use_deepseek_translate=deepseek_translate, use_gemma_translate=gemma_translate,
 		use_qwen_translate=qwen_translate, use_mistral_translate=mistral_translate,
 		prompt_variant=prompt_variant, term_contexts=term_contexts,
+		use_cached_direct_translations=cached_direct_translations,
 	)
 	if not translated_terms_df.empty:
 		combined_processed_df, combined_grouped_df = combine_language_data(directionality_df, translated_terms_df)
@@ -1319,6 +1341,20 @@ if __name__ == '__main__':
 	_parser.add_argument('--no-gemma',     action='store_true', help='Skip Gemma (local Ollama)')
 	_parser.add_argument('--no-qwen',      action='store_true', help='Skip Qwen (local Ollama)')
 	_parser.add_argument('--no-mistral',   action='store_true', help='Skip Mistral (local Ollama)')
+	_parser.add_argument(
+		'--refresh-existing',
+		action='store_true',
+		help=(
+			'Re-query every enabled service-prompt-language cell and append a new '
+			'historical observation, even when a cached output already exists. '
+			'This can incur substantial API cost.'
+		),
+	)
+	_parser.add_argument(
+		'--retry-errors',
+		action='store_true',
+		help='Retry cells recorded in prior deterministic error logs.',
+	)
 	_args = _parser.parse_args()
 
 	local_data_directory_path = get_data_directory_path()
@@ -1343,13 +1379,23 @@ if __name__ == '__main__':
 	should_use_qwen_translate      = not (_args.no_qwen      or _skip_local_llms)
 	should_use_mistral_translate   = not (_args.no_mistral   or _skip_local_llms)
 	should_override_wikipedia      = True
-	should_use_cached_translations = True
+	should_use_cached_translations = not _args.refresh_existing
 	should_return_all_terms        = False
-	should_exclude_previous_errors = True
+	should_exclude_previous_errors = not _args.retry_errors
+	console.print(
+		"Observation policy: "
+		+ ("refresh all enabled cells" if _args.refresh_existing else "query missing cells only"),
+		style="bold yellow" if _args.refresh_existing else "cyan",
+	)
+	if _args.refresh_existing:
+		console.print(
+			"Existing observations will remain in history; successful repeated outputs receive a new coding_dh_date.",
+			style="yellow",
+		)
 
 	_judge_contexts: dict = {}
 
-	for _variant in _args.variant:
+	for _variant_index, _variant in enumerate(_args.variant):
 		if _variant == 'judge':
 			if not _judge_contexts:
 				print("Aggregating translations from all prior variants and services for judge...")
@@ -1368,4 +1414,8 @@ if __name__ == '__main__':
 			deepseek_translate=should_use_deepseek_translate, gemma_translate=should_use_gemma_translate,
 			qwen_translate=should_use_qwen_translate, mistral_translate=should_use_mistral_translate,
 			term_contexts=_judge_contexts if _variant == 'judge' else {},
+			cached_direct_translations=(
+				should_use_cached_translations
+				or (_args.refresh_existing and _variant_index > 0)
+			),
 		)

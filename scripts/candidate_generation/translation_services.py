@@ -3,9 +3,10 @@ Translation service wrappers for multiple translation APIs. Includes Google Tran
 """
 
 import json
+import os
 import time
 import threading
-from typing import Tuple
+from typing import Optional, Tuple
 
 
 class OllamaUnresponsiveError(BaseException):
@@ -32,6 +33,9 @@ from scripts.candidate_generation.data_processing import parse_translation_respo
 from scripts.candidate_generation.log_errors import log_error_to_file
 from scripts.candidate_generation.translation_prompts import get_prompt, get_system_prompt
 import google.genai.types as google_genai_types
+
+# Prevent the translators package from performing a geolocation request at import time.
+os.environ.setdefault("translators_default_region", "EN")
 import translators as ts_lib
 
 def _display_text(text: str) -> str:
@@ -126,9 +130,13 @@ model = EasyNMT('opus-mt')
 # ── Wikipedia Availability Checker ────────────────────────────────────────────────────
 # Note: Wikipedia is different from other services — it checks for page existence rather than performing translations. Grouped separately.
 
-def check_if_wikipedia_page_exists(term_source: str, error_file_path: str, console: Console) -> dict:
+def check_if_wikipedia_page_exists(
+	term_source: str,
+	error_file_path: str,
+	console: Console,
+) -> Optional[dict]:
 	"""
-	Check if a Wikipedia page exists for a given term. We use Wikipedia as a source of ground truth translations where available, and also to test the ability of LLMs to match Wikipedia's translations.
+	Check whether an English Wikipedia page exists and return its current interlanguage labels.
 
 	Parameters
 	----------
@@ -141,8 +149,9 @@ def check_if_wikipedia_page_exists(term_source: str, error_file_path: str, conso
 
 	Returns
 	-------
-	dict
-		A dictionary with translations of the term.
+	dict or None
+		A dictionary of current interlanguage labels when the page is accepted;
+		otherwise None. An empty result is not treated as a successful observation.
 	"""
 	# Currently hardcoding for english wikipedia
 	wiki_wiki = wikipediaapi.Wikipedia(
@@ -167,7 +176,7 @@ def check_if_wikipedia_page_exists(term_source: str, error_file_path: str, conso
 			status_code=404,
 			error_url=f"wikipediaapi.Wikipedia.page({term_source})"
 		)
-		return {}
+		return None
 
 	console.print(f"Page '{term_source}' exists in English Wikipedia.", style="bold green")
 	# Get available translations in other languages
@@ -188,7 +197,7 @@ def check_if_wikipedia_page_exists(term_source: str, error_file_path: str, conso
 			status_code=404,
 			error_url=f"wikipediaapi.Wikipedia.page({term_source})"
 		)
-		return {}
+		return None
 	else:
 		translation_dict = {lang: translations[lang].title for lang in translations}
 		translation_dict['en'] = term_source

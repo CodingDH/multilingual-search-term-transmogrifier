@@ -9,14 +9,90 @@ This package generates multilingual candidate terms and rationales from direct t
 | `translation_prompts.py` | Prompt templates, service labels, and judge evidence formatting |
 | `translation_services.py` | Direct-service and model clients |
 | `data_processing.py` | Parse and normalize service responses |
-| `log_errors.py` | Record and clean service error logs |
+| `log_errors.py` | Append service error observations without erasing earlier failures |
+| `translation_versions.py` | Assign `transmogrifier_id` values and select historical views |
 
 ```bash
 python -m scripts.candidate_generation.generate_translations
 python -m scripts.candidate_generation.generate_translation_prompts
 ```
 
-The first three prompt conditions generate candidates independently. The judge runs afterward with distinct candidates from those prompts, direct services, and Wikipedia. Outputs are written under `datasets/translated_terms/{term}/`. Regeneration can differ as models, APIs, and upstream services change, so preserve prompt, model, date, and repository-commit provenance.
+The first three prompt conditions generate candidates independently. The judge runs afterward with distinct candidates from those prompts, direct services, and Wikipedia. Outputs are written under `datasets/candidate_terms/{term}/`. Regeneration can differ as models, APIs, and upstream services change, so preserve prompt, model, date, and repository-commit provenance.
+
+Candidate-output CSVs preserve successive observations. `translation_versions.py`
+adds a deterministic `transmogrifier_id` and exposes four explicit read modes:
+`latest` for routine analysis, `selected` for a reviewed list of IDs, `as_of`
+for a historical cutoff, and `all_history` for longitudinal work. Generation
+scripts append observations and return a latest-only view to existing callers.
+This domain-specific loader belongs in `translation_versions.py`, rather than
+the general `scripts/utils.py`, because its identity and selection rules apply
+only to candidate observations.
+
+```python
+from scripts.candidate_generation.translation_versions import load_translation_versions
+
+current = load_translation_versions(path, mode="latest")
+historical = load_translation_versions(path, mode="all_history")
+as_of_submission = load_translation_versions(
+    path,
+    mode="as_of",
+    as_of="2026-11-01",
+)
+```
+
+`selected` mode accepts a separate DataFrame containing `transmogrifier_id`
+and, optionally, a boolean `selected` column. The loader never overwrites the
+historical source file.
+
+## Observation Policies
+
+The default command queries only service-prompt-language cells that do not
+already have a usable cached output. Loading a cached response is not a new
+observation and does not establish that the service would return the same value
+today.
+
+Use `--refresh-existing` only when the purpose is to observe the enabled
+services again. The pipeline re-queries every enabled cell and appends each
+successful response with a new UTC `coding_dh_date`, even when the visible term
+and rationale are unchanged:
+
+```bash
+python -m scripts.candidate_generation.generate_translations \
+  --terms "Digital Humanities" \
+  --variant minimal fluent_speaker github_searcher judge \
+  --refresh-existing
+```
+
+Prior deterministic failures remain excluded unless `--retry-errors` is also
+supplied. A complete longitudinal refresh normally uses both flags:
+
+```bash
+python -m scripts.candidate_generation.generate_translations \
+  --terms "Digital Humanities" \
+  --variant minimal fluent_speaker github_searcher judge \
+  --refresh-existing --retry-errors
+```
+
+Refreshes can incur substantial API cost. Error logs are historical observation
+tables as well: a repeated failure receives a new timestamp and identifier
+rather than replacing the earlier record.
+
+Errors remain physically separate from successful model-output CSVs.
+`error_observation_id` names one dated failure event; no stored
+`latest_error_observation_id` is maintained. Historical failure analyses can
+read all error events. A future recovery analysis would compare dated success
+and error histories on demand.
+
+During a command that runs several prompt variants, prompt-invariant services
+(Wikipedia and direct translation services) are refreshed once and then reused
+as evidence for the remaining prompt conditions. Each selected LLM prompt
+condition is refreshed independently.
+
+Wikipedia refreshes append a complete dated language snapshot rather than only
+the productive interlanguage labels. Blank rows record that no label was
+present at that observation time, allowing later additions, edits, and removals
+to be reconstructed. Without `--refresh-existing`, the pipeline reuses the
+latest stored Wikipedia snapshot.
 
 ## Before Running
 
@@ -51,6 +127,6 @@ python -m scripts.candidate_generation.generate_translations \
 
 ## Output Order
 
-Direct-service and Wikipedia files are prompt invariant and live under `direct_services/`. LLM outputs live under `prompt_services/{variant}/`. Error logs are written separately so explicit failures remain distinguishable from populated but questionable candidates.
+Direct-service and Wikipedia files are prompt invariant and live under `direct_services/`. LLM outputs live under `prompt_services/`, with service and prompt condition encoded in each filename. Error logs are written separately so explicit failures remain distinguishable from populated but questionable candidates.
 
 After generation, run notebook 02 before building the browser review dataset. Notebook 02 creates the automated review signals consumed by `scripts.review.build_review_explorer_data`.

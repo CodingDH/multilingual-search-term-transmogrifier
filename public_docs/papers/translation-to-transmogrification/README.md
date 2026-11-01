@@ -33,11 +33,11 @@ Notebooks 07 and 08 preserve additional interpretive and disagreement experiment
 ## Canonical Data
 
 - `datasets/metadata_files/language_codes_comprehensive_family_reviewed.csv`
-- `datasets/translated_terms/digital_humanities/direct_services/`
-- `datasets/translated_terms/digital_humanities/prompt_services/`
-- `datasets/translated_terms/digital_humanities/evaluation/`
-- `datasets/translated_terms/digital_humanities/search_terms/reviewed_grouped_translated_terms.csv`
-- reviewed retrieval artifacts documented by `datasets/translated_terms/digital_humanities/search_terms/README.md`
+- `datasets/candidate_terms/digital_humanities/direct_services/`
+- `datasets/candidate_terms/digital_humanities/prompt_services/`
+- `datasets/candidate_terms/digital_humanities/evaluation/`
+- `datasets/candidate_terms/digital_humanities/search_terms/reviewed_grouped_translated_terms.csv`
+- reviewed retrieval artifacts documented by `datasets/candidate_terms/digital_humanities/search_terms/README.md`
 
 The article's numerical claims should be checked against these committed reviewed artifacts rather than regenerated API responses.
 

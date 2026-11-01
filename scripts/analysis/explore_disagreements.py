@@ -35,14 +35,14 @@ Both cases are treated as missing rationales:
 
 Input
 -----
-  - translated_terms/{term}/evaluation/across_variant_detail.csv
+  - candidate_terms/{term}/evaluation/across_variant_detail.csv
     (produced by explore_confidence_across_variants.py)
-  - translated_terms/{term}/{direct,prompt}_services/*.csv
+  - candidate_terms/{term}/{direct,prompt}_services/*.csv
     loaded via load_variant_df for a single reference variant's rationales
 
 Output
 ------
-  translated_terms/{term}/evaluation/disagreement_analysis.csv
+  candidate_terms/{term}/evaluation/disagreement_analysis.csv
     One row per (language_code × term_source) with:
       - comparison_status, comparison_basis
       - classifier feature columns (unique counts, edit distance, script info,
@@ -556,7 +556,7 @@ def run_disagreement_analysis(
         Translation clusters manually excluded from analysis. Matching strings
         are removed without dropping other translations for the language.
     output_dir : str, optional
-        Defaults to translated_terms/{first_term}/evaluation/.
+        Defaults to candidate_terms/{first_term}/evaluation/.
 
     Returns
     -------
@@ -603,7 +603,7 @@ def run_disagreement_analysis(
         console.print(f"  source_tokens: {list(term_tokens)}")
 
         eval_dir = os.path.join(
-            data_directory_path, 'translated_terms', term_slug, 'evaluation',
+            data_directory_path, 'candidate_terms', term_slug, 'evaluation',
         )
         detail_path = os.path.join(eval_dir, 'across_variant_detail.csv')
         if not os.path.exists(detail_path):
@@ -765,7 +765,7 @@ def run_disagreement_analysis(
     _print_summary(result_df)
 
     _dir = output_dir or os.path.join(
-        data_directory_path, 'translated_terms',
+        data_directory_path, 'candidate_terms',
         target_terms[0].lower().replace(' ', '_'), 'evaluation',
     )
     os.makedirs(_dir, exist_ok=True)

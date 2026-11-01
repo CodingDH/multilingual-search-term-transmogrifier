@@ -2,7 +2,7 @@
 
 **Status:** In development.
 
-This planned follow-up study uses the Multilingual Search Term Transmogrifier's shared corpus to examine the geometric structure of candidate translations and rationales. 
+This planned follow-up study uses the Multilingual Search Term Transmogrifier's shared corpus to examine the geometric structure of candidate translations and rationales.
 
 ## Planned Scope
 
@@ -22,5 +22,5 @@ This planned follow-up study uses the Multilingual Search Term Transmogrifier's 
 | `notebooks/06_rationale_classification.ipynb` | Rationale representations and service/prompt signatures |
 | `notebooks/07_definitional_patterns.ipynb` | Exploratory semantic and definitional patterns |
 | `notebooks/08_disagreement_patterns.ipynb` | Multidimensional disagreement synthesis and close-reading cases |
-| `datasets/translated_terms/` | Completed and pilot term corpora |
+| `datasets/candidate_terms/` | Completed and pilot term corpora |
 

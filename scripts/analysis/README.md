@@ -7,7 +7,7 @@ These scripts compare reviewed candidates and rationales without treating agreem
 | `compare_translations.py` | Shared normalized-string comparison helpers |
 | `explore_confidence_within_variant.py` | Agreement among services within a prompt |
 | `explore_confidence_across_variants.py` | Prompt sensitivity within services |
-| `explore_disagreements.py` | Reviewed translation-comparison records |
+| `explore_disagreements.py` | Reviewed candidate-comparison records |
 | `build_disagreement_explorer_data.py` | Browser disagreement matrix |
 | `build_disagreement_patterns.py` | Multidimensional disagreement summaries |
 | `rationale_classifier.py` | Rationale service and prompt classifiers |

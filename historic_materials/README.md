@@ -1,7 +1,7 @@
 # Historic Translation Materials
 
 This folder preserves early translation artifacts that predate the current
-`datasets/translated_terms/digital_humanities/` pipeline. I keep them here as
+`datasets/candidate_terms/digital_humanities/` pipeline. I keep them here as
 historical evidence for how the project's translation workflow changed over
 time, not as active source files for the current translation run.
 
@@ -81,7 +81,7 @@ python scripts/analysis/build_historic_reference_convergence.py --term "Digital 
 ```
 
 That script writes separate outputs for the two artifacts into
-`datasets/translated_terms/digital_humanities/evaluation/`:
+`datasets/candidate_terms/digital_humanities/evaluation/`:
 
 - `historic_2022_*.csv`
 - `historic_2024_*.csv`

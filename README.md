@@ -28,7 +28,7 @@ The current implementation uses Wikipedia, Google Translate, EasyNMT, Lingvanex,
 
 ## Terms and Data
 
-Term-specific data live under `datasets/translated_terms/{term_slug}/`. A complete term directory can contain:
+Term-specific data live under `datasets/candidate_terms/{term_slug}/`. A complete term directory can contain:
 
 ```text
 {term_slug}/
@@ -38,7 +38,15 @@ Term-specific data live under `datasets/translated_terms/{term_slug}/`. A comple
 └── search_terms/      # Grouped and reviewed terms prepared for retrieval
 ```
 
-*Digital Humanities* is currently the complete reference corpus. Other disciplinary terms are present at earlier stages of generation and will adopt the same structure as their translation, review, and retrieval stages are completed. See [Term datasets](datasets/translated_terms/README.md) for current status.
+*Digital Humanities* is currently the complete reference corpus. Other disciplinary terms are present at earlier stages of generation and will adopt the same structure as their candidate-generation, review, and retrieval stages are completed. See [Term datasets](datasets/candidate_terms/README.md) for current status.
+
+### Recording Transmogrifications Over Time
+
+In the future, we might rerun existing experiments to capture changes in generated terminology or model behavior over time. Therefore, candidate-term files are append-preserving historical sources. Each row contains a dated observation with a unique `transmogrifier_id` derived from its source term, language code, service, prompt condition, model identifier, observation timestamp, and named service output. Two identical visible responses observed at different times therefore remain separate evidence.
+
+To ensure that we can identify the latest observation for a given source term, language, service, and prompt condition, we provide a helper function
+`scripts.candidate_generation.translation_versions.load_translation_versions` with `mode="latest"`; `selected`, `as_of`, and `all_history` support reviewed or longitudinal analysis. The identifier applies to generated candidate
+observations, not to the language registry. Language metadata continues to use `language_code` and `project_language_code` as stable entity keys.
 
 ## Research Outputs
 
@@ -56,8 +64,8 @@ This shared repository supports multiple publications and analyses. Publication-
 | [Project documentation](public_docs/README.md) | Shared methods, publication materials, and documentation boundaries |
 | [Datasets](datasets/README.md) | Data layers, canonical files, provenance, missing values, and regeneration boundaries |
 | [Language metadata](datasets/metadata_files/README.md) | Language codes, scripts, families, population evidence, and service support |
-| [Term datasets](datasets/translated_terms/README.md) | Completed and developing source-term corpora |
-| [Digital Humanities dataset](datasets/translated_terms/digital_humanities/README.md) | The first complete direct-service, LLM, evaluation, and search-term corpus |
+| [Candidate-term datasets](datasets/candidate_terms/README.md) | Completed and developing source-term corpora |
+| [Digital Humanities dataset](datasets/candidate_terms/digital_humanities/README.md) | The first complete direct-service, LLM, evaluation, and search-term corpus |
 | [Scripts](scripts/README.md) | Metadata construction, candidate generation, review, analysis, and search preparation |
 | [HTML review interfaces](html_files/README.md) | Browser interfaces and the files each one reads and writes |
 | [Exclusion strategy](public_docs/exclusion_strategy.md) | Automated signals, manual decisions, and analysis-specific exclusions |
@@ -76,7 +84,7 @@ multilingual-search-term-transmogrifier/
 │   └── utils.py        # Shared loading, normalization, script, and family helpers
 ├── datasets/
 │   ├── metadata_files/ # Shared language, family, population, and support metadata
-│   └── translated_terms/
+│   └── candidate_terms/
 │       └── {term_slug}/
 │           ├── direct_services/
 │           ├── prompt_services/

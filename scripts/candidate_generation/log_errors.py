@@ -3,15 +3,15 @@
 from __future__ import annotations
 
 import os
-from datetime import datetime
+import hashlib
+import json
+from datetime import datetime, timezone
+from pathlib import Path
 from typing import List, Optional
 
 import pandas as pd
-from rich.console import Console
 
 from scripts.utils import read_csv_file
-
-console = Console()
 
 def log_error_to_file(
 	error_file_path: str,
@@ -34,8 +34,24 @@ def log_error_to_file(
 	error_message : str
 		The full error message from the service or exception.
 	"""
+	observed_at = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+	error_service = Path(error_file_path).stem.removesuffix("_translation_errors")
+	payload = {
+		"error_service": error_service,
+		"coding_dh_date": observed_at,
+		"error_url": error_url,
+		"status_code": status_code,
+		"error_message": error_message,
+		**additional_data,
+	}
+	error_observation_id = "err_" + hashlib.sha256(
+		json.dumps(payload, ensure_ascii=False, sort_keys=True, default=str).encode("utf-8")
+	).hexdigest()[:20]
 	error_df = pd.DataFrame([{
-		"error_date": datetime.now().strftime("%Y-%m-%d"),
+		"error_observation_id": error_observation_id,
+		"error_service": error_service,
+		"coding_dh_date": observed_at,
+		"error_date": observed_at[:10],
 		"error_url": error_url,
 		"status_code": status_code,
 		"error_message": error_message,
@@ -65,68 +81,21 @@ def log_error_to_file(
 		error_df.to_csv(error_file_path, index=False)
 
 
-def clean_write_error_file(
-	error_file_path: str,
-	drop_fields: Optional[List[str]] = None,
-) -> None:
+def prepare_error_log(error_file_path: str) -> None:
 	"""
-	Deduplicate an error log file in place.
+	Validate an existing error log without collapsing historical observations.
 
 	Parameters
 	----------
 	error_file_path : str
-	drop_fields : list of str, optional
-		Column subset used for deduplication.
 	"""
 	if os.path.exists(error_file_path):
-		error_df = read_csv_file(error_file_path, error_bad_lines=False)
-		# Filter drop_fields to columns that actually exist so callers can include "variant" in the list without KeyErrors on legacy CSVs that lack the column.
-		_dedup_fields = [f for f in (drop_fields or []) if f in error_df.columns] or None
-		if 'error_date' in error_df.columns:
-			error_df['error_date'] = pd.to_datetime(error_df['error_date'])
-			error_df = error_df.sort_values('error_date').drop_duplicates(
-				subset=_dedup_fields, keep='last'
-			)
-		elif _dedup_fields:
-			error_df = error_df.drop_duplicates(subset=_dedup_fields, keep='last')
-		# Promote permanent failures: drop any transient (500/408) entry for a (term, language[, variant]) tuple that already has a deterministic (400/404) entry. This prevents a stale 500 from hiding a 400 in mark_errored_terms.
-		_TRANSIENT = {500, 408}
-		if 'status_code' in error_df.columns:
-			_has_variant = 'variant' in error_df.columns
-			_perm = error_df[~error_df['status_code'].isin(_TRANSIENT)]
-			if _has_variant:
-				permanent_pairs = set(
-					zip(
-						_perm['term_source'].astype(str),
-						_perm['language_code'].astype(str),
-						_perm['variant'].astype(str),
-					)
-				)
-				if permanent_pairs:
-					redundant = (
-						error_df['status_code'].isin(_TRANSIENT) &
-						error_df.apply(
-							lambda r: (str(r['term_source']), str(r['language_code']), str(r['variant'])) in permanent_pairs,
-							axis=1,
-						)
-					)
-					error_df = error_df[~redundant]
-			else:
-				permanent_pairs = set(
-					zip(
-						_perm['term_source'].astype(str),
-						_perm['language_code'].astype(str),
-					)
-				)
-				if permanent_pairs:
-					redundant = (
-						error_df['status_code'].isin(_TRANSIENT) &
-						error_df.apply(
-							lambda r: (str(r['term_source']), str(r['language_code'])) in permanent_pairs,
-							axis=1,
-						)
-					)
-					error_df = error_df[~redundant]
-		error_df.to_csv(error_file_path, index=False)
-	else:
-		console.print('No error file to clean', style='bold blue')
+		read_csv_file(error_file_path, error_bad_lines=False)
+
+
+def clean_write_error_file(
+	error_file_path: str,
+	drop_fields: Optional[List[str]] = None,
+) -> None:
+	"""Backward-compatible alias that no longer removes historical errors."""
+	prepare_error_log(error_file_path)

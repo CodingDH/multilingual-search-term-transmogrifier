@@ -15,7 +15,7 @@ This script keeps two historic artifacts separate:
    ``Digital Humanities`` term.
 
 Outputs are written to:
-    datasets/translated_terms/digital_humanities/evaluation/
+    datasets/candidate_terms/digital_humanities/evaluation/
 
 Usage:
     python scripts/analysis/build_historic_reference_convergence.py
@@ -305,7 +305,7 @@ def build_historic_reference_convergence(
 ) -> dict[str, dict[str, pd.DataFrame]]:
     data_dir = Path(data_dir)
     project_root = data_dir.parent
-    source_dir = data_dir / 'translated_terms' / source_slug
+    source_dir = data_dir / 'candidate_terms' / source_slug
     eval_dir = Path(output_dir) if output_dir else source_dir / 'evaluation'
     eval_dir.mkdir(parents=True, exist_ok=True)
     directionality = _load_directionality(data_dir)
@@ -364,7 +364,7 @@ def main() -> None:
     args = parser.parse_args()
 
     data_dir = Path(args.data_dir or get_data_directory_path())
-    source_dir = data_dir / 'translated_terms' / args.source_slug
+    source_dir = data_dir / 'candidate_terms' / args.source_slug
     output_dir = Path(args.output_dir) if args.output_dir else source_dir / 'evaluation'
 
     outputs = build_historic_reference_convergence(

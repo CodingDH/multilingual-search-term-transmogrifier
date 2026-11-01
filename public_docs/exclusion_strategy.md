@@ -1,6 +1,6 @@
 # Data Quality & Exclusion Strategy
 
-This document describes the pipeline's automated review signal system, the manual review process, and the three-tier exclusion policy that governs which translations enter each stage of downstream analysis.
+This document describes the pipeline's automated review signal system, the manual review process, and the three-tier exclusion policy that governs which candidate terms enter each stage of downstream analysis.
 
 The core principle is that even the category of **error** is intrinsically difficult to define in this case. A model producing gibberish for a low-resource language tells us something meaningful about AI coverage gaps, even if that term should never end up as a search term. Different analysis questions therefore warrant different exclusion thresholds.
 
@@ -8,18 +8,18 @@ The core principle is that even the category of **error** is intrinsically diffi
 
 ## The Automated Review Signal System
 
-Translation data passes through two quality-control stages before any analysis runs.
+Candidate-term data passes through two quality-control stages before any analysis runs.
 
 ### Stage 1 — Automated review signals (`automated_review_signals.csv`)
 
-Notebook `02_translation_overview.ipynb` (§1.9) produces one row per language with automated review flags. Counts below are from the committed Digital Humanities run (881 languages total) and cover the core flags used in the exclusion policy; the CSV also includes additional rationale-language and short-translation annotations used for review.
+Notebook `02_translation_overview.ipynb` (§1.9) produces one row per language with automated review flags. Counts below are from the committed Digital Humanities run (881 languages total) and cover the core flags used in the exclusion policy; the CSV also includes additional rationale-language and short-candidate annotations used for review.
 
 #### Term content errors — the output is broken or absent
 
 | Flag | Languages | % | Top offending services | What it detects |
 |---|---|---|---|---|
 | `has_mixed_script` | 94 | 10.7% | Qwen (40), Gemma (38), Llama (19) | Scripts interleaved mid-word with no structural delimiter (Pattern B in `translation_classifier.py`). The term is not salvageable. |
-| `has_placeholder_term` | 28 | 3.2% | OpenAI (12), Gemini (11), Claude/Mistral (5 each) | Model returned a refusal string instead of a translation: `"untranslatable"`, `"no direct translation"`, `"Note: ..."`, `"cannot be reliably translated"`, etc. |
+| `has_placeholder_term` | 28 | 3.2% | OpenAI (12), Gemini (11), Claude/Mistral (5 each) | Model returned a refusal string instead of a usable candidate: `"untranslatable"`, `"no direct translation"`, `"Note: ..."`, `"cannot be reliably translated"`, etc. |
 | `has_repetition_loop` | 14 | 1.6% | Gemma (7), DeepSeek (3), Mistral (2) | A single whitespace token repeats ≥4 times and represents ≥30% of all tokens. Catches hallucination loops and repeated-token failures. |
 | `has_extreme_term_length` | 21 | 2.4% | Mistral (9), Gemini (7), Gemma (5) | Term exceeds 100 characters. Catches two distinct failure modes: (a) hallucination loops long enough to escape word-count detection, and (b) LLM disclaimer text that slipped past placeholder detection. |
 | `has_unicode_escape` | 10 | 1.1% | Llama (9), Qwen (1) | Term contains literal `\uXXXX` escape sequences instead of rendered Unicode characters. The model emitted raw JSON encoding rather than text. |
@@ -32,15 +32,15 @@ Notebook `02_translation_overview.ipynb` (§1.9) produces one row per language w
 
 | Flag | Languages | % | Top offending services | What it detects |
 |---|---|---|---|---|
-| `has_source_term` | 420 | 47.7% | OpenAI (275), Claude (187), DeepSeek (144) | Any non-English translation contains the untranslated English source term (`"Digital Humanities"`) or its abbreviation (`"DH"`) as a standalone token. **This is the most ambiguous flag**: borrowing is a genuine finding (e.g. `"Sahtu Digital Humanities"` is a legitimate Dene nativisation), but many cases are simply failures to translate. |
+| `has_source_term` | 420 | 47.7% | OpenAI (275), Claude (187), DeepSeek (144) | Any candidate associated with a non-English language contains the English source term (`"Digital Humanities"`) or its abbreviation (`"DH"`) as a standalone token. **This is the most ambiguous flag**: borrowing or nativization may be meaningful (e.g. `"Sahtu Digital Humanities"`), while other cases may reflect source-term pass-through. |
 | `has_romanization` | 89 | 10.1% | Gemma (62), Mistral (24), Llama (17) | Model appended an unrequested Latin romanization or source-term prefix alongside the native-script term. The classifier strips it and proposes the curated form in `{svc}_term_clean_{variant}` columns. Despite the name, this flag fires for all four stripping patterns (A, C, D, E) — not only romanization parentheticals (A) but also colon-separated (C), whitespace-separated (D), and equals-separated (E) source prefixes. |
-| `has_any_mixing` | 236 | 26.8% | Gemma (123), Qwen (95), Llama (50) | Any secondary-script characters are present in the translation, **regardless of whether they cross the exclusion threshold**. This is a strict superset of `has_mixed_script` + `has_romanization`; it additionally captures sub-threshold cases where the minority script is too sparse to trigger exclusion. Never an exclusion flag — intended purely as a data signal for downstream mixing analysis. See `script_mix_detail()` in `translation_classifier.py` for the raw metrics. |
+| `has_any_mixing` | 236 | 26.8% | Gemma (123), Qwen (95), Llama (50) | Any secondary-script characters are present in the candidate, **regardless of whether they cross the exclusion threshold**. This is a strict superset of `has_mixed_script` + `has_romanization`; it additionally captures sub-threshold cases where the minority script is too sparse to trigger exclusion. Never an exclusion flag; it is a data signal for downstream mixing analysis. See `script_mix_detail()` in `translation_classifier.py` for the raw metrics. |
 
 #### Rationale quality issues
 
 | Flag | Languages | % | Top offending services | What it detects |
 |---|---|---|---|---|
-| `has_missing_rationale` | 407 | 46.2% | Gemma (221), OpenAI (134), DeepSeek (121) | Raw CSV had a translation with no rationale (or a rationale with no translation). **Already handled automatically**: `enforce_translation_rationale_pairing` nulls the unpaired side at load time, so mismatched cells never enter confidence or disagreement scoring. The flag documents that the original data had a mismatch; it does not mean the language is missing data in downstream analysis. |
+| `has_missing_rationale` | 407 | 46.2% | Gemma (221), OpenAI (134), DeepSeek (121) | Raw CSV had a candidate with no rationale (or a rationale with no candidate). **Already handled automatically**: `enforce_translation_rationale_pairing` nulls the unpaired side at load time, so mismatched cells never enter confidence or disagreement scoring. The flag documents that the original data had a mismatch; it does not mean the language is missing data in downstream analysis. |
 
 #### Cross-service structural disagreements
 
@@ -58,7 +58,7 @@ This file has one row per *(language × service)* pair and records exclusions at
 
 | Column | Meaning |
 |---|---|
-| `exclude_translation = true` | The service's output for this language is a **model failure**, not a translation |
+| `exclude_translation = true` | The service's output for this language is a **model failure** and is not usable as a candidate. The column name is retained as an established schema field. |
 | `exclude_term_{variant} = true` | This service's output for one specific prompt variant is problematic for search or quality comparison, but the service can translate the language |
 
 #### Analysis tiers and the `filter_for_analysis` function
@@ -67,11 +67,11 @@ The two exclusion levels correspond to two conceptually distinct problems, and t
 
 | CSV column | Conceptual tier | `mode="full"` | `mode="quality"` | `mode="search_ready"` |
 |---|---|---|---|---|
-| `exclude_translation = true` | **`likely_error`** — output is not a translation (loop, structured tokens, garbage) | retained | **nulled** | **nulled** |
-| `exclude_term_{variant} = true` only | **`likely_search_complication`** — output is a valid translation but problematic for search (wrong script, romanisation, too short) | retained | retained | **nulled** |
+| `exclude_translation = true` | **`likely_error`** — output is not usable as a candidate (loop, structured tokens, garbage) | retained | **nulled** | **nulled** |
+| `exclude_term_{variant} = true` only | **`likely_search_complication`** — output remains analytically useful but is problematic for search (wrong script, romanisation, too short) | retained | retained | **nulled** |
 | neither | `keep` | retained | retained | retained |
 
-The key principle: **errors are data**. A model that produces `[MAN-MADE OBJECT] [BOOK] [COMPUTER]` for Blissymbols is telling you something real about AI coverage gaps. That record should appear in error-rate and coverage analysis (`mode="full"`) but should not skew quality comparisons (`mode="quality"`) or contaminate a search index (`mode="search_ready"`). Nothing is ever dropped from the dataset — only specific service-translation cells are nulled.
+The key principle: **errors are data**. A model that produces `[MAN-MADE OBJECT] [BOOK] [COMPUTER]` for Blissymbols is telling you something real about AI coverage gaps. That record should appear in error-rate and coverage analysis (`mode="full"`) but should not skew quality comparisons (`mode="quality"`) or contaminate a search index (`mode="search_ready"`). Nothing is ever dropped from the dataset; only specific service-candidate cells are nulled.
 
 ```python
 from scripts.utils import filter_for_analysis
@@ -90,7 +90,7 @@ df_search  = filter_for_analysis(all_dfs[term], term, DATA_DIR, mode="search_rea
 
 When working in `review_explorer.html`, use the following heuristics to decide between **Xall** and **Xsrch**:
 
-**Click Xall (→ `likely_error`) when the output is not a translation:**
+**Click Xall (→ `likely_error`) when the output is not usable as a candidate:**
 
 - Repetition loop: `[MAN-MADE OBJECT] [BOOK] [COMPUTER]`, `digital_(class)+knowledge_(class)`, `kàlā kàlā kàlā…`
 - Structured knowledge-graph tokens instead of natural language
@@ -99,16 +99,16 @@ When working in `review_explorer.html`, use the following heuristics to decide b
 - A refusal string (`"untranslatable"`, `"no direct equivalent"`) paired with nothing else
 - You genuinely cannot tell what language the output is in
 
-**Click Xsrch (→ `likely_search_complication`) when the output is a real translation but has a specific problem:**
+**Click Xsrch (→ `likely_search_complication`) when the output remains useful for analysis but has a specific search problem:**
 
 - Correct target-language term but appended with English parenthetical or source-language prefix
 - Right language, wrong script (e.g. Cyrillic when Arabic expected) — keep for quality analysis, not for search
 - Technically valid but you have a better alternative from another service for this variant
-- Translation includes the English source term as a component but the rest is a genuine attempt
+- Candidate includes the English source term as a component but otherwise represents a substantive generation attempt
 
 **Leave both unchecked when:**
 
-- The translation looks reasonable, even if imperfect
+- The candidate remains plausible or analytically informative, even if imperfect
 - You are uncertain — conservative exclusion is correct for search_ready but not for quality analysis, and the automated flags already handle the clearest cases
 
 From the Digital Humanities review: **42 `likely_error` records** and **113 `likely_search_complication` records** across 352 total review rows.
@@ -154,21 +154,21 @@ These categories emerged from review and have no automated detector:
 
 ---
 
-### Tier 2 — Translation & Rationale Analysis (Notebooks 05–07)
+### Tier 2 — Candidate & Rationale Analysis (Notebooks 05–07)
 
-**Goal:** Understand the translation landscape — what terms exist, where services agree, what the disagreement typology is. **Validity of individual translations matters.**
+**Goal:** Understand the candidate landscape: what terms exist, where services agree, and what forms disagreement takes. **Analytical usability of individual candidates matters.**
 
-**Philosophy:** A mixed-script garbage term should not count as evidence of a translation. But before excluding, it is worth showing the *differential* — how the distribution changes with and without flagged rows — to demonstrate that exclusions are principled rather than cherry-picked.
+**Philosophy:** A mixed-script malformed term should not count as usable candidate evidence. Before excluding it, however, the analysis shows the *differential*: how the distribution changes with and without flagged rows. This makes the exclusion policy inspectable rather than treating review decisions as invisible preprocessing.
 
 | Flag / Exclusion | Policy | Rationale |
 |---|---|---|
 | `has_missing_rationale` | Already excluded by pairing | No action needed |
-| `has_mixed_script` | Exclude term | Unsalvageable; counts as no translation for this service |
-| `has_placeholder_term` | Exclude term | Not a translation |
-| `has_repetition_loop` | Exclude term | Not a translation |
-| `has_extreme_term_length` | Exclude term | Likely a disclaimer or loop, not a translation |
+| `has_mixed_script` | Exclude term | Unusable; counts as no candidate for this service |
+| `has_placeholder_term` | Exclude term | Not a candidate term |
+| `has_repetition_loop` | Exclude term | Not a candidate term |
+| `has_extreme_term_length` | Exclude term | Likely a disclaimer or loop rather than a candidate term |
 | `has_unicode_escape` | Exclude term | Unrenderable; not usable |
-| `has_source_term` | Keep, but flag | Borrowing is a genuine translation strategy; retain it as independent source-retention evidence rather than a causal category |
+| `has_source_term` | Keep, but flag | Borrowing and source-term retention are meaningful generation strategies; retain this as independent evidence rather than a causal category |
 | `has_romanization` | Use curated form | Strip and use `{svc}_term_clean_{variant}` |
 | `has_any_mixing` | Retain as data | Sub-threshold mixing is a signal worth analysing (script contact, orthographic variation); use `script_mix_detail()` for mixing degree and minority-script identity |
 | `has_script_disagreement` | Keep, flag | Independent evidence for interpreting string variation |
@@ -182,7 +182,7 @@ These categories emerged from review and have no automated detector:
 
 ### Tier 3 — Search Term Generation (downstream pipeline)
 
-**Goal:** Produce a clean list of translation strings for querying corpora. **Any noise here propagates into search results.**
+**Goal:** Produce a reviewed list of candidate strings for querying corpora. **Any noise here propagates into search results.**
 
 **Philosophy:** The cost of a false positive (a bad term matching irrelevant documents) is higher than the cost of a false negative (missing a valid term). When in doubt, exclude.
 
@@ -204,7 +204,7 @@ These categories emerged from review and have no automated detector:
 | Search-unsafe characters (manual) | Exclude | ASL gloss notation, Linear A codepoints, Blissymbol codes will break regex search |
 | Constructed scripts (`zbl`, `lab`, `elx`, `xmr`) | Exclude entirely | No real-world corpus to search |
 | **Uncorroborated singleton** | Exclude | Term produced only once, in an LLM cell with missing/placeholder rationale, and no other source agrees. Treats unexplained singletons as low-confidence and likely junk. |
-| Analysis-excluded translation clusters (manual `analysis_exclusion`) | Exclude matching `(language_code, term)` cells | The review decision applies to the selected term, not every translation for that language |
+| Analysis-excluded candidate clusters (manual `analysis_exclusion`) | Exclude matching `(language_code, term)` cells | The review decision applies to the selected term, not every candidate for that language |
 
 **Implementing:** Build the search term list from `disagreement_analysis.csv`. Apply all manual exclusions (`analysis_exclusion`, `search_exclusion`, `term_correction` from `manual_exclusions.csv`). Apply the automated-review-signal based `(language, service)` exclusions (`has_repetition_loop`, `has_unicode_escape`, `has_source_term` non-English, `has_mixed_script`, `has_placeholder_term`, `has_extreme_term_length`). Apply `curate_translation()` to strip parenthetical romanizations. Drop terms with source-term leakage, control characters, or constructed-script languages. **Final pass: apply the corroboration check** — drop any term that lacks both rationale and cross-source agreement (see next subsection).
 
@@ -217,7 +217,7 @@ A search term is kept only if it satisfies **at least one** of two corroboration
 
 A term that fails *both* conditions is an **uncorroborated singleton**: produced once anywhere in the pipeline, by a source that gave no explanation. These are auto-excluded from search.
 
-**Note on scope**: corroboration is at the *term level*, not per-(language, term). A term that appears in multiple languages or multiple services anywhere in the pipeline is considered corroborated, even if each individual (language, term) pair on its own is a singleton. This is the more expansive policy: the cost asymmetry of dropping a real translation (missing relevant content from a language community) is higher than including some questionable terms (whose search results can be filtered downstream).
+**Note on scope**: corroboration is at the *term level*, not per-(language, term). A term that appears in multiple languages or multiple services anywhere in the pipeline is considered corroborated, even if each individual (language, term) pair on its own is a singleton. This is the more expansive policy: the cost asymmetry of dropping a potentially useful candidate (missing relevant content from a language community) is higher than including some questionable terms whose search results can be filtered downstream.
 
 **Worked examples:**
 
@@ -230,7 +230,7 @@ A term that fails *both* conditions is an **uncorroborated singleton**: produced
 | Only Wikipedia produces `"Foo"` (no LLM or other source agrees) | **Drop** — single occurrence, no corroborating second source |
 | Claude/github_searcher produces `"Foo"` with a valid rationale | **Keep** — rationale alone is sufficient |
 
-**Trade-off**: this rule preserves cross-language dialect convergence at the cost of preserving cross-language template-stamping failures (the Gemma Himalayan-template pattern). The methodological argument: it's better to let questionable terms flow into search and be filtered downstream by hit-count or manual review than to drop legitimate dialect-cluster translations.
+**Trade-off**: this rule preserves cross-language dialect convergence at the cost of preserving cross-language template-stamping failures (the Gemma Himalayan-template pattern). The methodological argument is that questionable terms can flow into search and be filtered downstream by hit count or manual review rather than prematurely dropping potentially useful dialect-cluster candidates.
 
 **Normalisation**: terms are passed through `curate_translation()` (so parenthetical romanizations don't prevent corroboration: `"Foo (rendering)"` and `"Foo"` agree) and lowercased for the corroboration check (matching GitHub case-insensitive search semantics). Lowercasing was verified to only collapse already-qualifying duplicates — it does not promote any term from "drop" to "keep."
 
@@ -240,7 +240,7 @@ A term that fails *both* conditions is an **uncorroborated singleton**: produced
 
 ## Summary Table
 
-| Flag | Tier 1 (Service exploration) | Tier 2 (Translation analysis) | Tier 3 (Search terms) |
+| Flag | Tier 1 (Service exploration) | Tier 2 (Candidate analysis) | Tier 3 (Search terms) |
 |---|---|---|---|
 | `has_missing_rationale` | Annotate | Auto-handled by pairing | Auto-handled by pairing |
 | `has_mixed_script` | Annotate | Exclude term | Exclude |
@@ -279,8 +279,8 @@ notebooks/05_translation_projection.ipynb   [Tier 2 — strict]
 notebooks/06_rationale_classification.ipynb [Tier 2 — strict]
 notebooks/07_definitional_patterns.ipynb    [Tier 2 — strict]
 notebooks/08_disagreement_patterns.ipynb    [Tier 2 — strict]
-    05 applies full translation exclusions before distance and pattern analysis
-    06–07 apply translation/rationale exclusions for rationale analysis
+    05 applies full candidate exclusions before distance and pattern analysis
+    06–07 apply candidate/rationale exclusions for rationale analysis
     08 reads the reviewed pattern and rationale evidence for close reading
     source retention and script disagreement remain independent evidence
 
@@ -319,7 +319,7 @@ The `curate_translation()` action → flag routing lives in the automated-review
 
 ### Pairing enforcement (handles `has_missing_rationale` at the data level)
 
-`enforce_translation_rationale_pairing()` in `scripts/review/apply_review_filters.py` is called automatically by `load_variant_df()` in `scripts/analysis/explore_confidence_within_variant.py` and by `scripts/review/build_review_explorer_data.py`. This function nulls the unpaired side of any translation-rationale mismatch before data reaches any analysis script. The `has_missing_rationale` flag documents what was corrected; it does not mean those languages are missing from downstream analysis.
+`enforce_translation_rationale_pairing()` in `scripts/review/apply_review_filters.py` is called automatically by `load_variant_df()` in `scripts/analysis/explore_confidence_within_variant.py` and by `scripts/review/build_review_explorer_data.py`. The established function name reflects the requested task. The function nulls the unpaired side of any candidate-rationale mismatch before data reaches an analysis script. The `has_missing_rationale` flag documents what was corrected; it does not mean those languages are missing from downstream analysis.
 
 ### Manual exclusions — where they are generated and consumed
 

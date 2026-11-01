@@ -80,7 +80,7 @@ def check_detect_language(row: pd.Series, is_repo:bool=False) -> pd.Series:
 def get_directionality(directionality_path: str) -> pd.DataFrame:
 	"""
 	Function to get language directionality from Wikimedia
-	
+
 	Parameters
 	----------
 	directionality_path : str
@@ -127,7 +127,7 @@ def get_gt_translation(row: pd.Series) -> pd.Series:
 	----------
 	row : pd.Series
 		A row of a dataframe with terms and a language
-	
+
 	Returns
 	-------
 	pd.Series
@@ -138,17 +138,17 @@ def get_gt_translation(row: pd.Series) -> pd.Series:
 		dh_terms = row.term_source
 		target_language = row.language
 		console.print(f"Translating {dh_terms} to {target_language}", style="bold green")
-		
+
 		# Translate terms in bulk
 		text_results = translate_client.translate(dh_terms, target_language=target_language)
-		
+
 		# Match translations explicitly with the original terms
 		translated_terms = [result['translatedText'] for result in text_results]
 		row['gt_translated_term'] = list(zip(dh_terms, translated_terms))
 	except Exception as e:
 		console.print(f"Error translating {dh_terms} to {target_language}: {e}", style="bold red")
 		row['gt_translated_term'] = list(zip(dh_terms, [None] * len(dh_terms)))  # Handle error by returning a list of None
-	
+
 	return row
 
 def get_enmt_translation(row: pd.Series) -> pd.Series:
@@ -159,7 +159,7 @@ def get_enmt_translation(row: pd.Series) -> pd.Series:
 	----------
 	row : pd.Series
 		A row of a dataframe with terms and a language
-	
+
 	Returns
 	-------
 	pd.Series
@@ -170,7 +170,7 @@ def get_enmt_translation(row: pd.Series) -> pd.Series:
 		dh_terms = row.term_source
 		target_language = row.language
 		console.print(f"Translating {dh_terms} to {target_language}", style="bold green")
-		
+
 		# Check if the model is available for the target language
 		if is_enmt_model_available(target_language):
 			# Translate terms in bulk
@@ -182,7 +182,7 @@ def get_enmt_translation(row: pd.Series) -> pd.Series:
 	except Exception as e:
 		console.print(f"Error translating {dh_terms} to {target_language}: {e}", style="bold red")
 		row['enmt_translated_term'] = list(zip(dh_terms, [None] * len(dh_terms)))  # Handle error by returning a list of None
-	
+
 	return row
 
 def get_openai_translation(row: pd.Series) -> pd.Series:
@@ -261,7 +261,7 @@ def check_if_wikipedia_page_exists(term_source: str) -> dict:
 	"""
 	# Currently hardcoding for english wikipedia
 	wiki_wiki = wikipediaapi.Wikipedia(
-		language='en', 
+		language='en',
 		user_agent='MyProject/1.0 (https://example.org/myproject/; myemail@example.org)'
 	)
 	# Fetch the Wikipedia page
@@ -388,13 +388,13 @@ def generate_initial_terms(target_terms: list, data_directory_path: str, process
 
 	if use_wikipedia:
 		cleaned_df.loc[(cleaned_df.wikipedia_translated_term.notna()) & (cleaned_df.term.isna()), 'term'] = cleaned_df.wikipedia_translated_term
-	
+
 	if use_openai_translate:
 		cleaned_df.loc[(cleaned_df.openai_translated_term.notna()) & (cleaned_df.term.isna()), 'term'] = cleaned_df.openai_translated_term
 	# Use Google Cloud Translate terms if both translations are the same or for German language
 	if use_gt_translate:
 		cleaned_df.loc[(cleaned_df.gt_translated_term.notna()) & (cleaned_df.term.isna()), 'term'] = cleaned_df.gt_translated_term
-		
+
 	if use_enmt_translate:
 		cleaned_df.loc[(cleaned_df.term.isna()), 'term'] = cleaned_df.enmt_translated_term
 
@@ -435,8 +435,8 @@ def verify_directionality(grouped_terms_df: pd.DataFrame, grouped_terms_output_p
 	# Get terms that need directionality specifications
 	needs_directional_specifications = grouped_terms_df[(grouped_terms_df.directionality_counts > 1)]
 	# Reset the index
-	needs_directional_specifications = needs_directional_specifications.reset_index(drop=True)   
-	# Loop through the terms that need directionality specifications    
+	needs_directional_specifications = needs_directional_specifications.reset_index(drop=True)
+	# Loop through the terms that need directionality specifications
 	for index, row in needs_directional_specifications.iterrows():
 		console.print(f"Need to specify directionality for {row.term} in {row['English language name']}. Number {index} out of {len(needs_directional_specifications)}", style="bold blue")
 		languages = row['English language name'].split(', ')
@@ -508,7 +508,7 @@ def verify_terms(merged_lang_terms_df: pd.DataFrame, processed_translated_terms_
 			display_openai_term = original_openai_term
 
 		console.print(f"Current Term: {display_term}. It is {index} out of {len(needs_checking_df)}", style="bold magenta")
-		
+
 		if display_openai_term:
 			console.print(f"OpenAI Term: {display_openai_term}", style="bold yellow")
 		if display_gt_term:
@@ -560,7 +560,7 @@ def combine_language_data(directionality_df: pd.DataFrame, translated_terms_df: 
 		console.print(f"Processing term: {term_source}", style="bold green")
 		lower_term = term_source.lower().replace(" ", "_")
 		subset_merged_lang_terms_df = merged_lang_terms_df[merged_lang_terms_df.term_source == term_source]
-		processed_translated_terms_output_path = os.path.join(data_directory_path, "metadata_files", "translated_terms", lower_term, "processed_translated_terms.csv")
+		processed_translated_terms_output_path = os.path.join(data_directory_path, "metadata_files", "candidate_terms", lower_term, "processed_translated_terms.csv")
 		if os.path.exists(processed_translated_terms_output_path):
 			existing_subset_merged_lang_terms_df = read_csv_file(processed_translated_terms_output_path)
 			subset_merged_lang_terms_df = pd.concat([subset_merged_lang_terms_df, existing_subset_merged_lang_terms_df])
@@ -581,7 +581,7 @@ def combine_language_data(directionality_df: pd.DataFrame, translated_terms_df: 
 		grouped_terms_df = grouped_terms_df.rename(columns={'term': 'counts'})
 		grouped_terms_df['term'] = grouped_terms_df.index
 		grouped_terms_df = grouped_terms_df.reset_index(drop=True)
-		grouped_terms_output_path = os.path.join(data_directory_path, "metadata_files", "translated_terms", lower_term, "grouped_translated_terms.csv")
+		grouped_terms_output_path = os.path.join(data_directory_path, "metadata_files", "candidate_terms", lower_term, "grouped_translated_terms.csv")
 		if os.path.exists(grouped_terms_output_path):
 			existing_grouped_terms_df = read_csv_file(grouped_terms_output_path)
 			grouped_terms_df = pd.concat([grouped_terms_df, existing_grouped_terms_df])
@@ -607,7 +607,7 @@ def save_translated_terms(translated_terms_df: pd.DataFrame, updated_target_term
 	"""
 	for term in updated_target_terms:
 		lower_term = term.lower().replace(" ", "_")
-		translated_terms_output_path = os.path.join(data_directory_path, "metadata_files", "translated_terms", lower_term, "initial_translated_terms.csv")
+		translated_terms_output_path = os.path.join(data_directory_path, "metadata_files", "candidate_terms", lower_term, "initial_translated_terms.csv")
 		subset_translated_terms_df = translated_terms_df[translated_terms_df.term_source == term]
 		subset_translated_terms_df.to_csv(translated_terms_output_path, index=False)
 
@@ -630,7 +630,7 @@ def generate_translated_terms(data_directory_path: str, should_rerun_code: bool,
 		A boolean indicating whether to use Google Cloud Translate.
 	enmt_translate : bool
 		A boolean indicating whether to use EasyNMT.
-	
+
 	Returns
 	-------
 	Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]
@@ -645,9 +645,9 @@ def generate_translated_terms(data_directory_path: str, should_rerun_code: bool,
 	for term in target_terms:
 		console.print(f"Processing term: {term}", style="bold green")
 		lower_term = term.lower().replace(" ", "_")
-		translated_terms_output_path = os.path.join(data_directory_path, "metadata_files", "translated_terms", lower_term, "initial_translated_terms.csv")
-		process_translated_terms_output_path = os.path.join(data_directory_path, "metadata_files", "translated_terms", lower_term, "processed_translated_terms.csv")
-		grouped_translated_terms_output_path = os.path.join(data_directory_path, "metadata_files", "translated_terms", lower_term, "grouped_translated_terms.csv")
+		translated_terms_output_path = os.path.join(data_directory_path, "metadata_files", "candidate_terms", lower_term, "initial_translated_terms.csv")
+		process_translated_terms_output_path = os.path.join(data_directory_path, "metadata_files", "candidate_terms", lower_term, "processed_translated_terms.csv")
+		grouped_translated_terms_output_path = os.path.join(data_directory_path, "metadata_files", "candidate_terms", lower_term, "grouped_translated_terms.csv")
 		# Load the existing datasets if they exist and rerun_code is False
 		if (os.path.exists(translated_terms_output_path)) and (os.path.exists(grouped_translated_terms_output_path)) and (not should_rerun_code) and (os.path.exists(process_translated_terms_output_path)):
 			translated_terms_df = read_csv_file(translated_terms_output_path)
@@ -665,7 +665,7 @@ def generate_translated_terms(data_directory_path: str, should_rerun_code: bool,
 			else:
 				# If no existing translations, all target terms are considered "missing"
 				updated_target_terms.append(term)
-	
+
 	if not should_rerun_code:
 		process_dh = 'Digital Humanities' in updated_target_terms
 
@@ -677,8 +677,8 @@ def generate_translated_terms(data_directory_path: str, should_rerun_code: bool,
 				concat_translated_df = pd.concat(combined_translated_dfs)
 				if 'code' not in concat_translated_df.columns and not concat_translated_df.empty:
 					concat_translated_df = concat_translated_df.rename(columns={'language': 'code'})
-				combined_translated_df = pd.concat([concat_translated_df, new_translated_terms_df]) 
-			else: 
+				combined_translated_df = pd.concat([concat_translated_df, new_translated_terms_df])
+			else:
 				combined_translated_df = new_translated_terms_df
 
 		combined_processed_df, combined_grouped_df = combine_language_data(directionality_df, combined_translated_dfs, data_directory_path)

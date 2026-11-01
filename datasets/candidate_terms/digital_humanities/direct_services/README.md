@@ -23,13 +23,21 @@ Wikipedia is treated as community-edited terminology evidence, not as a machine 
 | `{service}_translated_term` | Output returned by the named service. Blank means no stored usable output. |
 | `term` | Pipeline-selected term present in some cumulative files. It is not an independently generated service output. |
 | `coding_dh_date` | Collection or write timestamp. |
+| `transmogrifier_id` | Deterministic identifier for one dated term-language-service observation. A repeated output at a later timestamp receives a different ID. |
+| `service`, `prompt_variant`, `model_identifier` | Explicit observation context. Direct sources use `prompt_variant=direct`; a model identifier is blank where it does not apply or was not supplied. |
 | `family_name` | Family label attached at generation time. For analysis, prefer the reviewed family metadata joined through `language_code`. |
 | `exclude_*` | Historical generation-time flags carried through cumulative merges. Current exclusions are stored in `../evaluation/manual_exclusions.csv`. |
 | other service term columns | Earlier direct-service evidence merged into a later service file. Use the file named for a service as the provenance source for that service's primary output. |
 
 ## Row and Coverage Semantics
 
-Google Translate, EasyNMT, and Lingvanex files retain all 881 target rows so unsupported or failed cases remain visible as blanks. The Wikipedia file stores only productive interlanguage-label rows. Coverage comparisons must therefore count nonblank output fields rather than compare file lengths.
+Google Translate, EasyNMT, and Lingvanex files retain all 881 target rows so unsupported or failed cases remain visible as blanks. The initial Wikipedia observation stores only productive interlanguage-label rows, while future refreshes append complete dated snapshots with blanks for absent labels. Coverage comparisons must therefore count nonblank output fields in an explicit version view rather than compare file lengths.
+
+Reruns, including Wikipedia refreshes, append observations rather than replacing prior rows. Use the default
+`latest` version view to recreate the current language grid; use `as_of`,
+`selected`, or `all_history` for historical comparison and audit.
+These views are provided by
+`scripts.candidate_generation.translation_versions.load_translation_versions`.
 
 ## Provenance
 

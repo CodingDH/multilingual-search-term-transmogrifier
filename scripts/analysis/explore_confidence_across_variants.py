@@ -24,7 +24,7 @@ community reference — are prompt-invariant by design and should always score
 Compare with: explore_confidence_within_variant.py (which measures if different
 services agree *within* a single prompt variant).
 
-Output files are written to data_directory/translated_terms/{term}/evaluation/:
+Output files are written to data_directory/candidate_terms/{term}/evaluation/:
   - `across_variant_detail.csv`: one row per language × service
   - `across_variant_service_summary.csv`: aggregate stats per service
 
@@ -237,7 +237,7 @@ def run_across_variant_evaluation(
         service_summary['std_agreement'] / service_summary['mean_agreement']
     ).round(4)
 
-    _dir = output_dir or os.path.join(data_directory_path, 'translated_terms', target_terms[0].lower().replace(' ', '_'), 'evaluation')
+    _dir = output_dir or os.path.join(data_directory_path, 'candidate_terms', target_terms[0].lower().replace(' ', '_'), 'evaluation')
     os.makedirs(_dir, exist_ok=True)
 
     detail_df.to_csv(os.path.join(_dir, 'across_variant_detail.csv'), index=False)

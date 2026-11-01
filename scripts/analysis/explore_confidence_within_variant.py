@@ -21,7 +21,7 @@ Compare with: explore_confidence_across_variants.py (which measures if different
 
 Adapts the FrequencyConfidenceCalculator approach from Kraus et al. (2025, WOKIE) but preserves the full candidate distribution, so disagreements are logged as research data.
 
-Output files are written to data_directory/translated_terms/{term}/evaluation/:
+Output files are written to data_directory/candidate_terms/{term}/evaluation/:
   - `confidence_scores.csv`: all rows with confidence scores
   - `confidence_summary.csv`: aggregate stats per term/variant
 
@@ -46,6 +46,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..",
 from scripts.utils import get_data_directory_path, get_language_family, read_csv_file
 from scripts.review.apply_review_filters import enforce_translation_rationale_pairing
 from scripts.analysis.compare_translations import analyze_differences
+from scripts.candidate_generation.translation_versions import load_translation_versions
 
 console = Console()
 
@@ -183,14 +184,14 @@ def load_variant_df(
     term/variant, or None if no data found.
     """
     term_dir = os.path.join(
-        data_directory_path, 'translated_terms', term_slug
+        data_directory_path, 'candidate_terms', term_slug
     )
     # Stable join key — present in every per-service file including Wikipedia
     join_cols = ['language_code', 'term_source']
 
     def _load(path: str) -> Optional[pd.DataFrame]:
         try:
-            return read_csv_file(path)
+            return load_translation_versions(path, mode="latest")
         except Exception as e:
             console.print(f"  ⚠ Could not load {path}: {e}", style="dim yellow")
             return None
@@ -356,13 +357,13 @@ def run_confidence_evaluation(
     Parameters
     ----------
     data_directory_path : str
-		Base path to the data directory containing translated_terms/
+		Base path to the data directory containing candidate_terms/
     target_terms : list of str
 		Terms to evaluate (e.g. ['Digital Humanities'])
     variants : list of str
 		Prompt variants to include (e.g. ['github_searcher', 'minimal', etc.])
 	output_dir : str, optional
-		Optional output directory. If not provided, defaults to data_directory_path/translated_terms/{term}/evaluation/
+		Optional output directory. If not provided, defaults to data_directory_path/candidate_terms/{term}/evaluation/
 
     Returns
     -------
@@ -399,7 +400,7 @@ def run_confidence_evaluation(
 
     # Save outputs
     _dir = output_dir or os.path.join(
-        data_directory_path, 'translated_terms', target_terms[0].lower().replace(' ', '_'), 'evaluation'
+        data_directory_path, 'candidate_terms', target_terms[0].lower().replace(' ', '_'), 'evaluation'
     )
     os.makedirs(_dir, exist_ok=True)
 
@@ -448,7 +449,7 @@ def main():
     )
     parser.add_argument(
         '--output-dir', default=None,
-        help='Output directory (default: data_dir/translated_terms/{term}/evaluation/)'
+        help='Output directory (default: data_dir/candidate_terms/{term}/evaluation/)'
     )
     args = parser.parse_args()
 

@@ -1,21 +1,23 @@
 # Dataset Guide
 
 See [`DATA_DICTIONARY.md`](DATA_DICTIONARY.md) for the canonical column-level
-schemas used across metadata, translation, evaluation, and search-term files.
+schemas used across metadata, candidate-generation, evaluation, and search-term files.
 
 This directory contains the source metadata, generated candidate terms, review artifacts, and derived analysis tables used by the Multilingual Search Term Transmogrifier. The files do not all have the same evidentiary status. Some are upstream source snapshots, some are generated model outputs, some record human or assistant review decisions, and others can be regenerated from those files.
+
+Repository prose uses **candidate term** or **candidate output** for stored responses unless linguistic validity has been established independently. Existing paths, columns, and helper names containing `translation` remain stable implementation vocabulary and describe the requested task rather than certifying an output as a translation.
 
 ## Dataset Layers
 
 | Directory | Role | Canonical status | Documentation |
 | --- | --- | --- | --- |
 | `metadata_files/` | Language identifiers, scripts, families, service support, and population evidence | Canonical source and reviewed metadata | [`metadata_files/README.md`](metadata_files/README.md) |
-| `error_logs/` | Visible service, parsing, refusal, and generation failures | Canonical run evidence; append/update with translation runs | [`error_logs/README.md`](error_logs/README.md) |
-| `translated_terms/` | Direct-service and LLM outputs organized by source term | Mixed: completed Digital Humanities corpus plus pilot terms | [`translated_terms/README.md`](translated_terms/README.md) |
+| `error_logs/` | Visible service, parsing, refusal, and generation failures | Canonical generation evidence; append with candidate-generation runs | [`error_logs/README.md`](error_logs/README.md) |
+| `candidate_terms/` | Direct-service and LLM outputs organized by source term | Mixed: completed Digital Humanities corpus plus pilot terms | [`candidate_terms/README.md`](candidate_terms/README.md) |
 
 ## Canonical Digital Humanities Path
 
-The completed article dataset is under `translated_terms/digital_humanities/`:
+The completed article dataset is under `candidate_terms/digital_humanities/`:
 
 ```text
 digital_humanities/
@@ -25,7 +27,7 @@ digital_humanities/
 └── search_terms/      # generated, reviewed, and retrieval-audited query terms
 ```
 
-See [`translated_terms/digital_humanities/README.md`](translated_terms/digital_humanities/README.md) for the canonical files and execution order.
+See [`candidate_terms/digital_humanities/README.md`](candidate_terms/digital_humanities/README.md) for the canonical files and execution order.
 
 ## Evidence Status
 
@@ -43,16 +45,23 @@ The following labels are used throughout the documentation:
 
 `language_code` is the project row identifier. It is deliberately broader than a single ISO standard and may preserve Wikimedia identifiers or historical source identifiers. Join language-level files to `metadata_files/language_codes_comprehensive_family_reviewed.csv` when reviewed family labels are required.
 
+`transmogrifier_id` has a narrower role: it identifies one dated candidate
+observation for a source term, language, service, prompt, and model context. It
+does not replace `language_code`. Candidate-output files can therefore contain
+several IDs for the same language when a service is intentionally observed at
+different times. Routine code must use the candidate version loader's
+`latest` view rather than assuming one physical row per language-service cell.
+
 Read language-code columns as strings. In particular, `nan` is the valid ISO 639-3 code for Min Nan Chinese and must not be interpreted as a missing value. The project loaders use explicit string converters for this reason.
 
-Blank translation fields mean that the source produced no usable parsed output for that row. They do not by themselves distinguish unsupported languages, request failures, refusals, parsing failures, or manual exclusions. Use the error logs and evaluation tables for that distinction.
+Blank candidate fields mean that the source produced no usable parsed output for that row. They do not by themselves distinguish unsupported languages, request failures, refusals, parsing failures, or manual exclusions. Use the error logs and evaluation tables for that distinction.
 
 ## Primary, Reviewed, and Derived Data
 
 For article reproduction, preserve these layers:
 
 1. `metadata_files/language_codes_comprehensive.csv` and `language_codes_comprehensive_family_reviewed.csv`.
-2. The current direct-service and four current prompt-condition files under `translated_terms/digital_humanities/`.
+2. The direct-service and four current prompt-condition histories under `candidate_terms/digital_humanities/`, selecting the documented `latest`, `as_of`, or reviewed observation view required by the analysis.
 3. `evaluation/manual_exclusions.csv` and the generated review-signal tables.
 4. `search_terms/reviewed_grouped_translated_terms.csv` and the private external retrieval-review decisions.
 5. Frozen analytical results explicitly identified in the evaluation README.
@@ -62,7 +71,7 @@ Large explorer tables, chart summaries, and embedding metrics are derived and ca
 ## Provenance and Limitations
 
 - Language metadata combines CLDR, ISO/LOC, Wikimedia, SIL, Glottolog, IANA context supplied through `langcodes`, and reviewed project mappings. The metadata README records the role of each source.
-- Direct translation and LLM files record service outputs, not validated linguistic ground truth.
+- Direct-service and LLM files record candidate outputs, not validated linguistic ground truth.
 - Rationales are generated texts. They are analyzed as model outputs and do not provide transparent access to model reasoning.
 - Automated review signals identify outputs requiring attention; they do not establish correctness.
 - GitHub result counts describe retrieval from a particular platform and search workflow. They are not measures of a language community's total digital or scholarly activity.

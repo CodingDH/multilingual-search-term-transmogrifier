@@ -35,6 +35,7 @@ from scripts.utils import get_data_directory_path, get_language_family
 from scripts.review.apply_review_filters import enforce_translation_rationale_pairing
 from scripts.analysis.explore_confidence_within_variant import load_variant_df
 from scripts.review.translation_classifier import curate_translation
+from scripts.candidate_generation.translation_versions import load_translation_versions
 
 VARIANTS = ['minimal', 'fluent_speaker', 'github_searcher', 'judge']
 
@@ -82,7 +83,7 @@ def build_review_data(
     output_dir: str | None = None,
 ) -> pd.DataFrame:
     term_slug = term.lower().replace(' ', '_')
-    eval_dir = os.path.join(data_directory_path, 'translated_terms', term_slug, 'evaluation')
+    eval_dir = os.path.join(data_directory_path, 'candidate_terms', term_slug, 'evaluation')
     flags_path = os.path.join(eval_dir, 'automated_review_signals.csv')
 
     if not os.path.exists(flags_path):
@@ -180,7 +181,7 @@ def build_review_data(
     # When a service produced a term but no rationale, enforce_translation_rationale_pairing
     # nulls the term. We store the original here so the HTML explorer can show it
     # when it matches another service's paired term (convergence signal without exclusion).
-    prompt_dir = os.path.join(data_directory_path, 'translated_terms', term_slug, 'prompt_services')
+    prompt_dir = os.path.join(data_directory_path, 'candidate_terms', term_slug, 'prompt_services')
     for variant in VARIANTS:
         for svc, term_col in LLM_TERM_COLS.items():
             paired_col   = f'{svc}_term_{variant}'
@@ -189,7 +190,9 @@ def build_review_data(
             if not os.path.exists(raw_path) or paired_col not in export.columns:
                 continue
             try:
-                raw_df = pd.read_csv(raw_path, usecols=['language_code', term_col], converters={'language_code': str})
+                raw_df = load_translation_versions(raw_path, mode="latest")[
+                    ['language_code', term_col]
+                ]
             except (ValueError, KeyError):
                 continue
             raw_df = raw_df.drop_duplicates('language_code')

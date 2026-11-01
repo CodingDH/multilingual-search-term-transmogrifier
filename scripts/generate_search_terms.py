@@ -6,7 +6,7 @@ Read the translation pipeline's disagreement_analysis.csv and produce
 grouped_translated_terms.csv for use by searching_for_DH/generate_search_data.py.
 
 Output is written to:
-  datasets/translated_terms/{term_slug}/search_terms/grouped_translated_terms.csv
+  datasets/candidate_terms/{term_slug}/search_terms/grouped_translated_terms.csv
 
 Directionality conflicts are embedded in the output CSV as extra columns
 (directionality_conflict, ltr_languages, rtl_languages) rather than a
@@ -45,6 +45,7 @@ Usage
 
 import argparse
 import ast
+import hashlib
 import os
 import re
 import sys
@@ -53,6 +54,7 @@ from collections import Counter
 import pandas as pd
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from scripts.candidate_generation.translation_versions import load_translation_versions
 
 try:
     from scripts.utils import get_data_directory_path
@@ -93,7 +95,7 @@ def _load_term_corrections(data_dir: str, term_slug: str) -> dict[tuple[str, str
 
     Reads rows from manual_exclusions.csv where service == 'term_correction'.
     """
-    me_path = os.path.join(data_dir, "translated_terms", term_slug, "evaluation", "manual_exclusions.csv")
+    me_path = os.path.join(data_dir, "candidate_terms", term_slug, "evaluation", "manual_exclusions.csv")
     corrections: dict[tuple[str, str], str] = {}
     if not os.path.exists(me_path):
         return corrections
@@ -123,8 +125,8 @@ def _build_tier3_drops(data_dir: str, term_slug: str) -> set[tuple[str, str]]:
     """
     drops: set[tuple[str, str]] = set()
 
-    qf_path = os.path.join(data_dir, "translated_terms", term_slug, "evaluation", "automated_review_signals.csv")
-    me_path = os.path.join(data_dir, "translated_terms", term_slug, "evaluation", "manual_exclusions.csv")
+    qf_path = os.path.join(data_dir, "candidate_terms", term_slug, "evaluation", "automated_review_signals.csv")
+    me_path = os.path.join(data_dir, "candidate_terms", term_slug, "evaluation", "manual_exclusions.csv")
 
     if os.path.exists(qf_path):
         qf = pd.read_csv(qf_path, converters={'language_code': str})
@@ -218,7 +220,7 @@ def _build_corroborated_terms(data_dir: str, term_slug: str) -> set[str]:
         return t.lower()
 
     # LLM cells — count occurrences AND track rationale validity
-    prompt_dir = os.path.join(data_dir, "translated_terms", term_slug, "prompt_services")
+    prompt_dir = os.path.join(data_dir, "candidate_terms", term_slug, "prompt_services")
     for svc in _LLM_SERVICES_FOR_PAIRING:
         for variant in _VARIANTS_FOR_PAIRING:
             path = os.path.join(prompt_dir, f"{svc}_{variant}_translations.csv")
@@ -227,10 +229,8 @@ def _build_corroborated_terms(data_dir: str, term_slug: str) -> set[str]:
             term_col = f"{svc}_translated_term"
             rat_col  = f"{svc}_translation_rationale"
             try:
-                df = pd.read_csv(
-                    path, converters={'language_code': str},
-                    usecols=['language_code', term_col, rat_col],
-                )
+                df = load_translation_versions(path, mode="latest")
+                df = df[['language_code', term_col, rat_col]]
             except (ValueError, KeyError):
                 continue
             for _, row in df.iterrows():
@@ -242,7 +242,7 @@ def _build_corroborated_terms(data_dir: str, term_slug: str) -> set[str]:
                     has_valid_rat.add(key)
 
     # Direct service cells — count occurrences; no rationales to track
-    direct_dir = os.path.join(data_dir, "translated_terms", term_slug, "direct_services")
+    direct_dir = os.path.join(data_dir, "candidate_terms", term_slug, "direct_services")
     for fname, col in [
         ('gt_translations.csv',        'gt_translated_term'),
         ('enmt_translations.csv',      'enmt_translated_term'),
@@ -253,10 +253,8 @@ def _build_corroborated_terms(data_dir: str, term_slug: str) -> set[str]:
         if not os.path.exists(path):
             continue
         try:
-            df = pd.read_csv(
-                path, converters={'language_code': str},
-                usecols=['language_code', col],
-            )
+            df = load_translation_versions(path, mode="latest")
+            df = df[['language_code', col]]
         except (ValueError, KeyError):
             continue
         for _, row in df.iterrows():
@@ -269,6 +267,54 @@ def _build_corroborated_terms(data_dir: str, term_slug: str) -> set[str]:
     return {t for t, n in cell_count.items() if n >= 2 or t in has_valid_rat}
 
 
+def _build_term_version_ids(
+    data_dir: str,
+    term_slug: str,
+    mode: str = "latest",
+) -> dict[tuple[str, str], set[str]]:
+    """Map each selected language-term pair to its source observations."""
+    version_ids: dict[tuple[str, str], set[str]] = {}
+    prompt_dir = os.path.join(data_dir, "candidate_terms", term_slug, "prompt_services")
+    direct_dir = os.path.join(data_dir, "candidate_terms", term_slug, "direct_services")
+    sources = [
+        *(
+            (
+                os.path.join(prompt_dir, f"{service}_{variant}_translations.csv"),
+                f"{service}_translated_term",
+            )
+            for service in _LLM_SERVICES_FOR_PAIRING
+            for variant in _VARIANTS_FOR_PAIRING
+        ),
+        (os.path.join(direct_dir, "gt_translations.csv"), "gt_translated_term"),
+        (os.path.join(direct_dir, "enmt_translations.csv"), "enmt_translated_term"),
+        (os.path.join(direct_dir, "lingvanex_translations.csv"), "lingvanex_translated_term"),
+        (os.path.join(direct_dir, "wikipedia_translations.csv"), "wikipedia_translated_term"),
+    ]
+    for path, term_column in sources:
+        if not os.path.exists(path):
+            continue
+        try:
+            frame = load_translation_versions(path, mode=mode)
+        except (KeyError, ValueError, pd.errors.ParserError):
+            continue
+        if term_column not in frame.columns:
+            continue
+        for _, row in frame.iterrows():
+            value = row.get(term_column)
+            version_id = row.get("transmogrifier_id")
+            language_code = str(row.get("language_code", "")).strip()
+            if not isinstance(value, str) or not value.strip() or not version_id or not language_code:
+                continue
+            curated = value.strip()
+            if _CLASSIFIER_AVAILABLE:
+                curated, _ = curate_translation(curated)
+                if curated is None:
+                    continue
+            key = (language_code, curated.lower())
+            version_ids.setdefault(key, set()).add(str(version_id))
+    return version_ids
+
+
 def _build_search_term_drops(data_dir: str, term_slug: str) -> set[tuple[str, str]]:
     """Return a set of (language_code, term_lower) pairs to suppress from search output.
 
@@ -278,7 +324,7 @@ def _build_search_term_drops(data_dir: str, term_slug: str) -> set[tuple[str, st
     removing the (language, service) pair from disagreement analysis.
     """
     drops: set[tuple[str, str]] = set()
-    me_path = os.path.join(data_dir, "translated_terms", term_slug, "evaluation", "manual_exclusions.csv")
+    me_path = os.path.join(data_dir, "candidate_terms", term_slug, "evaluation", "manual_exclusions.csv")
     if not os.path.exists(me_path):
         return drops
     me = pd.read_csv(me_path, converters={'language_code': str})
@@ -333,7 +379,7 @@ def build_search_terms(
         )
 
     term_slug = term.lower().replace(" ", "_")
-    disagr_path = os.path.join(root, "translated_terms", term_slug, "evaluation", "disagreement_analysis.csv")
+    disagr_path = os.path.join(root, "candidate_terms", term_slug, "evaluation", "disagreement_analysis.csv")
     lang_path = os.path.join(root, "metadata_files", "language_codes_comprehensive.csv")
 
     if not os.path.exists(disagr_path):
@@ -353,8 +399,9 @@ def build_search_terms(
     search_term_drops = _build_search_term_drops(root, term_slug)
     term_corrections = _load_term_corrections(root, term_slug)
     corroborated_terms = _build_corroborated_terms(root, term_slug)
+    term_version_ids = _build_term_version_ids(root, term_slug)
 
-    eval_dir = os.path.join(root, "translated_terms", term_slug, "evaluation")
+    eval_dir = os.path.join(root, "candidate_terms", term_slug, "evaluation")
     if load_manual_exclusions is not None:
         analysis_terms, _, _ = load_manual_exclusions(eval_dir)
     else:
@@ -451,6 +498,10 @@ def build_search_terms(
                     "search_term_source": term,
                     "comparison_status": comparison_status,
                     "keep_term": True,
+                    "transmogrifier_ids": ", ".join(
+                        sorted(term_version_ids.get((lang_code, term_value.lower()), set()))
+                    ),
+                    "selection_mode": "latest",
                 }
             )
 
@@ -485,6 +536,15 @@ def build_search_terms(
     def _join_categories(s):
         return ", ".join(sorted(s.unique()))
 
+    def _join_version_ids(s):
+        values = {
+            value.strip()
+            for cell in s.dropna().astype(str)
+            for value in cell.split(",")
+            if value.strip()
+        }
+        return ", ".join(sorted(values))
+
     def _ltr_langs(group):
         return ", ".join(sorted(group.loc[group["directionality"] == "ltr", "natural_language"].unique()))
 
@@ -501,6 +561,8 @@ def build_search_terms(
             search_term_source=("search_term_source", "first"),
             comparison_status=("comparison_status", _join_categories),
             keep_term=("keep_term", "first"),
+            transmogrifier_ids=("transmogrifier_ids", _join_version_ids),
+            selection_mode=("selection_mode", "first"),
         )
         .reset_index()
         .sort_values("counts", ascending=False)
@@ -532,7 +594,7 @@ def build_search_terms(
     deduped["ltr_languages"] = deduped["ltr_languages"].fillna("")
     deduped["rtl_languages"] = deduped["rtl_languages"].fillna("")
 
-    out_dir = os.path.join(root, "translated_terms", term_slug, "search_terms")
+    out_dir = os.path.join(root, "candidate_terms", term_slug, "search_terms")
     os.makedirs(out_dir, exist_ok=True)
     out_path = os.path.join(out_dir, "grouped_translated_terms.csv")
     deduped.to_csv(out_path, index=False)
@@ -559,6 +621,69 @@ def build_search_terms(
     return deduped
 
 
+def enrich_reviewed_search_term_provenance(
+    data_dir: str | None = None,
+    term: str = "Digital Humanities",
+) -> pd.DataFrame:
+    """Attach candidate-observation provenance to an existing reviewed export."""
+    root = data_dir or _DATA_DIR
+    if not root:
+        raise ValueError("Cannot locate the pipeline datasets directory.")
+    term_slug = term.lower().replace(" ", "_")
+    path = os.path.join(
+        root,
+        "candidate_terms",
+        term_slug,
+        "search_terms",
+        "reviewed_grouped_translated_terms.csv",
+    )
+    reviewed = pd.read_csv(path, converters={"natural_language": str})
+    version_ids = _build_term_version_ids(root, term_slug, mode="all_history")
+
+    ids: list[str] = []
+    statuses: list[str] = []
+    for row in reviewed.itertuples(index=False):
+        languages = [code.strip() for code in str(row.natural_language).split(",")]
+        matched = {
+            version_id
+            for code in languages
+            for version_id in version_ids.get(
+                (code, str(row.search_term).strip().lower()), set()
+            )
+        }
+        if matched:
+            ids.append(", ".join(sorted(matched)))
+            statuses.append("candidate_observations")
+            continue
+
+        payload = "\x1f".join(
+            [
+                str(row.search_term_source),
+                str(row.search_term),
+                str(row.natural_language),
+                str(row.directionality),
+            ]
+        )
+        legacy_id = hashlib.sha256(payload.encode("utf-8")).hexdigest()[:24]
+        ids.append(f"legacy_reviewed_{legacy_id}")
+        statuses.append("legacy_reviewed_export")
+
+    reviewed["transmogrifier_ids"] = ids
+    reviewed["selection_mode"] = "selected"
+    reviewed["selection_as_of"] = ""
+    reviewed["candidate_provenance_status"] = statuses
+
+    temporary_path = f"{path}.tmp"
+    reviewed.to_csv(temporary_path, index=False)
+    os.replace(temporary_path, path)
+    print(
+        f"Enriched {len(reviewed)} reviewed queries: "
+        f"{statuses.count('candidate_observations')} linked to candidate observations; "
+        f"{statuses.count('legacy_reviewed_export')} assigned explicit legacy IDs."
+    )
+    return reviewed
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
         description="Build grouped_translated_terms.csv from the translation pipeline evaluation outputs."
@@ -573,8 +698,18 @@ def main() -> None:
         default="Digital Humanities",
         help="Source term to process (default: 'Digital Humanities')",
     )
+    parser.add_argument(
+        "--enrich-reviewed",
+        action="store_true",
+        help="Attach candidate provenance to the existing reviewed search-term export",
+    )
     args = parser.parse_args()
-    build_search_terms(data_dir=args.data_dir, term=args.term)
+    if args.enrich_reviewed:
+        enrich_reviewed_search_term_provenance(
+            data_dir=args.data_dir, term=args.term
+        )
+    else:
+        build_search_terms(data_dir=args.data_dir, term=args.term)
 
 
 if __name__ == "__main__":

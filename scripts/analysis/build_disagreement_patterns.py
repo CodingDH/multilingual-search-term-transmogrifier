@@ -126,7 +126,7 @@ def _shape(clusters: dict[str, list[str]], n_services: int) -> str:
 
 
 def _load_rationale_signal_detail(data_dir: str, term_slug: str) -> pd.DataFrame:
-    eval_dir = os.path.join(data_dir, 'translated_terms', term_slug, 'evaluation')
+    eval_dir = os.path.join(data_dir, 'candidate_terms', term_slug, 'evaluation')
     explorer = read_csv_file(os.path.join(eval_dir, 'disagreement_explorer_data.csv'))
     exclusions_path = os.path.join(eval_dir, 'manual_exclusions.csv')
     exclusion_lookup = {}
@@ -187,7 +187,7 @@ def _load_rationale_signals(data_dir: str, term_slug: str) -> tuple[pd.DataFrame
 
 def build_patterns(data_dir: str, term: str = 'Digital Humanities') -> pd.DataFrame:
     term_slug = term.lower().replace(' ', '_')
-    eval_dir = os.path.join(data_dir, 'translated_terms', term_slug, 'evaluation')
+    eval_dir = os.path.join(data_dir, 'candidate_terms', term_slug, 'evaluation')
     analysis = read_csv_file(os.path.join(eval_dir, 'disagreement_analysis.csv'))
     explorer = read_csv_file(os.path.join(eval_dir, 'disagreement_explorer_data.csv'))
 

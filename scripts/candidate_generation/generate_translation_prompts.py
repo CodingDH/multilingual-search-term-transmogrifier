@@ -40,6 +40,7 @@ from scripts.candidate_generation.translation_prompts import (
 	LLM_SERVICE_LABELS,
 )
 from scripts.utils import get_data_directory_path
+from scripts.candidate_generation.translation_versions import load_translation_versions
 
 console = Console()
 
@@ -67,8 +68,8 @@ def aggregate_variant_translations(
 
 	for term in target_terms:
 		term_slug = term.lower().replace(' ', '_')
-		prompt_dir  = os.path.join(data_directory_path, 'translated_terms', term_slug, 'prompt_services')
-		direct_dir  = os.path.join(data_directory_path, 'translated_terms', term_slug, 'direct_services')
+		prompt_dir  = os.path.join(data_directory_path, 'candidate_terms', term_slug, 'prompt_services')
+		direct_dir  = os.path.join(data_directory_path, 'candidate_terms', term_slug, 'direct_services')
 
 		# LLM variant outputs
 		for variant in NON_JUDGE_VARIANTS:
@@ -78,7 +79,7 @@ def aggregate_variant_translations(
 					continue
 				col = f"{svc_key}_translated_term"
 				try:
-					df = pd.read_csv(fpath)
+					df = load_translation_versions(fpath, mode="latest")
 				except Exception:
 					continue
 				if col not in df.columns:
@@ -104,7 +105,7 @@ def aggregate_variant_translations(
 			if not os.path.exists(fpath):
 				continue
 			try:
-				df = pd.read_csv(fpath)
+				df = load_translation_versions(fpath, mode="latest")
 			except Exception:
 				continue
 			if col not in df.columns:
@@ -143,6 +144,7 @@ def run_prompt_variant_pipeline(
 	data_directory_path: str,
 	directionality_df,
 	use_cached_translations: bool = True,
+	use_cached_direct_translations: Optional[bool] = None,
 	exclude_previous_errors: bool = True,
 	gemini_translate: bool = True,
 	lingvanex_translate: bool = True,
@@ -176,6 +178,7 @@ def run_prompt_variant_pipeline(
 			wikipedia_translate=True,
 			override_wikipedia=True,
 			cached_translations=use_cached_translations,
+			cached_direct_translations=use_cached_direct_translations,
 			return_full_terms_data=False,
 			excluding_previous_errors=exclude_previous_errors,
 			prompt_variant=variant,
@@ -197,12 +200,16 @@ def run_prompt_variant_pipeline(
 
 # ── Orchestrator ─────────────────────────────────────────────────────────────
 
-def run_translation_prompt_variants(target_terms: List[str]):
+def run_translation_prompt_variants(
+	target_terms: List[str],
+	refresh_existing: bool = False,
+	retry_errors: bool = False,
+):
 	"""Orchestrate all prompt variant runs, ensuring judge always runs last."""
 
 	local_data_directory_path = get_data_directory_path()
-	should_use_cached_translations  = True
-	should_exclude_previous_errors  = True
+	should_use_cached_translations  = not refresh_existing
+	should_exclude_previous_errors  = not retry_errors
 	should_use_gemini_translate     = True
 	should_use_lingvanex_translate  = True
 	should_use_deepseek_translate   = True
@@ -255,6 +262,7 @@ def run_translation_prompt_variants(target_terms: List[str]):
 	run_judge        = 'judge' in variants_to_run
 
 	# Run non-judge variants
+	direct_services_refreshed = False
 	for variant in non_judge_to_run:
 		run_prompt_variant_pipeline(
 			variant=variant,
@@ -262,6 +270,9 @@ def run_translation_prompt_variants(target_terms: List[str]):
 			data_directory_path=local_data_directory_path,
 			directionality_df=existing_directionality_df,
 			use_cached_translations=should_use_cached_translations,
+			use_cached_direct_translations=(
+				should_use_cached_translations or direct_services_refreshed
+			),
 			exclude_previous_errors=should_exclude_previous_errors,
 			gemini_translate=should_use_gemini_translate,
 			lingvanex_translate=should_use_lingvanex_translate,
@@ -270,6 +281,8 @@ def run_translation_prompt_variants(target_terms: List[str]):
 			qwen_translate=should_use_qwen_translate,
 			mistral_translate=should_use_mistral_translate,
 		)
+		if refresh_existing:
+			direct_services_refreshed = True
 
 	# Run judge last, after aggregating all prior outputs
 	if run_judge:
@@ -287,6 +300,9 @@ def run_translation_prompt_variants(target_terms: List[str]):
 				data_directory_path=local_data_directory_path,
 				directionality_df=existing_directionality_df,
 				use_cached_translations=should_use_cached_translations,
+				use_cached_direct_translations=(
+					should_use_cached_translations or direct_services_refreshed
+				),
 				exclude_previous_errors=should_exclude_previous_errors,
 				gemini_translate=should_use_gemini_translate,
 				lingvanex_translate=should_use_lingvanex_translate,
@@ -305,7 +321,7 @@ def run_translation_prompt_variants(target_terms: List[str]):
 	for term in target_terms:
 		term_slug = term.lower().replace(" ", "_")
 		console.print(
-			f"  {os.path.join(local_data_directory_path, 'translated_terms', term_slug, 'prompt_services')}",
+			f"  {os.path.join(local_data_directory_path, 'candidate_terms', term_slug, 'prompt_services')}",
 			style="cyan",
 		)
 	console.print(
@@ -318,4 +334,16 @@ if __name__ == "__main__":
 	target_terms = [
 		"Digital Humanities",
 	]
-	run_translation_prompt_variants(target_terms)
+	refresh_existing = input(
+		"Refresh every existing service-prompt-language observation? This can incur substantial API cost. [y/N]: "
+	).strip().lower() in {"y", "yes"}
+	retry_errors = False
+	if refresh_existing:
+		retry_errors = input(
+			"Retry cells with prior deterministic errors during this refresh? [y/N]: "
+		).strip().lower() in {"y", "yes"}
+	run_translation_prompt_variants(
+		target_terms,
+		refresh_existing=refresh_existing,
+		retry_errors=retry_errors,
+	)

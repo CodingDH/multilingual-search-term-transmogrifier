@@ -90,7 +90,7 @@ def build_explorer_data(
     rationale_variant: str = RATIONALE_VARIANT,
 ) -> pd.DataFrame:
     eval_dir = os.path.join(
-        data_directory_path, 'translated_terms',
+        data_directory_path, 'candidate_terms',
         term.lower().replace(' ', '_'), 'evaluation'
     )
 

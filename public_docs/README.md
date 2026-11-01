@@ -8,7 +8,7 @@ The Multilingual Search Term Transmogrifier is a shared research project and pip
 | --- | --- |
 | [Dataset index](../datasets/README.md) | Dataset layers, evidentiary status, canonical files, and regeneration boundaries |
 | [Language metadata](../datasets/metadata_files/README.md) | Language-code, script, family, population, and service-support fields |
-| [Translation corpus](../datasets/translated_terms/digital_humanities/README.md) | Direct-service, prompt-service, evaluation, and search-term data |
+| [Candidate-term corpus](../datasets/candidate_terms/digital_humanities/README.md) | Direct-service, prompt-service, evaluation, and search-term data |
 | [Script guide](../scripts/README.md) | Generation and analytical scripts |
 | [HTML review tools](../html_files/README.md) | Browser interfaces and their input/output files |
 | [Exclusion strategy](exclusion_strategy.md) | Automated signals, manual review, and analysis-specific exclusions |

@@ -67,7 +67,7 @@ Each package README documents its internal order, inputs, outputs, and optional 
 
 ## Search-Term Export
 
-Run `generate_search_terms.py` after candidate review and disagreement analysis. The exporter applies saved exclusions and corrections, deduplicates normalized forms while preserving provenance, and writes the term-level search artifacts under `datasets/translated_terms/{term_slug}/search_terms/`. Review those terms before passing them to the private GitHub retrieval project.
+Run `generate_search_terms.py` after candidate review and disagreement analysis. The exporter applies saved exclusions and corrections, deduplicates normalized forms while preserving provenance, and writes the term-level search artifacts under `datasets/candidate_terms/{term_slug}/search_terms/`. Review those terms before passing them to the private GitHub retrieval project.
 
 ```bash
 python scripts/generate_search_terms.py --term "Digital Humanities"

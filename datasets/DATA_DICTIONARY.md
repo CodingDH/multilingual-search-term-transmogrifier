@@ -11,13 +11,13 @@ directory.
 | `language_code` | Stable project identifier. Always read as a string because `nan` is the valid ISO 639-3 code for Min Nan Chinese. |
 | `language_name` | English display name associated with the project identifier. |
 | `term_source` | Source phrase submitted for translation. |
-| blank translation | No stored usable response. A blank is not evidence that a service lacks support unless the corresponding error or support metadata confirms that interpretation. |
+| blank candidate | No stored usable response. A blank is not evidence that a service lacks support unless the corresponding error or support metadata confirms that interpretation. |
 | boolean fields | Stored as `True`/`False` in generated CSVs and sometimes as lowercase strings after browser review. Parse explicitly rather than relying on truthiness. |
 | pipe-separated fields | Multiple registry or script values in one cell, such as `sources`, `scripts`, and `script_codes`. |
 | semicolon-separated fields | Multiple service, language, or review values in one cell. |
 
 Raw generated outputs are preserved separately from reviewed corrections and
-exclusions. A populated translation is a generated candidate, not a validated
+exclusions. A populated response is a generated candidate, not a validated
 equivalent.
 
 ## Language Metadata
@@ -73,13 +73,15 @@ The reviewed family file adds:
 See [`metadata_files/README.md`](metadata_files/README.md) for upstream sources,
 population tables, service-support manifests, and full field provenance.
 
-## Translation Outputs
+## Candidate Outputs
 
 ### Direct services
 
-Files under `translated_terms/{term_slug}/direct_services/` preserve one named
+Files under `candidate_terms/{term_slug}/direct_services/` preserve one named
 source's output. Google Translate, EasyNMT, and Lingvanex files retain the full
-language inventory; Wikipedia stores productive interlanguage labels.
+language inventory. The initial Wikipedia artifact stores productive
+interlanguage labels; future refreshes append complete dated snapshots so both
+label presence and absence can be compared over time.
 
 | Column or pattern | Meaning |
 | --- | --- |
@@ -88,6 +90,10 @@ language inventory; Wikipedia stores productive interlanguage labels.
 | `wikipedia_translated_term` | Community-edited interlanguage label where available. |
 | `term` | Pipeline-selected term in cumulative historical schemas, not an independent source. |
 | `coding_dh_date` | Collection or write date. |
+| `transmogrifier_id` | Stable identifier for one service-prompt-language observation. Generated from its source, model, timestamp, and output. |
+| `service`, `prompt_variant`, `model_identifier` | Explicit version-selection context. Older rows can be backfilled from filenames and service-specific model columns when loaded. |
+| `generation_temperature`, `generation_top_p`, `generation_max_output_tokens` | Request settings saved on new LLM observations. A blank value means the provider default or a non-LLM source, not zero. |
+| `generation_settings_source` | Provenance for the recorded request settings, currently `pipeline_request`. |
 | `family_name` | Family label available during generation; join reviewed metadata for current analysis. |
 | `exclude_*` | Historical generation flags. Current review decisions live in `evaluation/manual_exclusions.csv`. |
 
@@ -100,7 +106,7 @@ services.
 
 | Column pattern | Meaning |
 | --- | --- |
-| `{service}_translated_term` | Parsed translation candidate used downstream. |
+| `{service}_translated_term` | Parsed candidate term used downstream. The column name records the requested task, not validated translation status. |
 | `{service}_translation_rationale` | Parsed generated explanation. Not a record of internal reasoning or independent validation. |
 | `{service}_translation`, `{service}_content` | Less-normalized or raw response payload. |
 | `{service}_system_prompt`, `{service}_user_prompt` | Prompt text sent for the row. |
@@ -112,11 +118,45 @@ services.
 | `{service}_*_duration`, `{service}_*_count` | Ollama timing and evaluation metrics. |
 | `{service}_extracted_dictionaries` | JSON-like objects parsed from local-model output. |
 
+Candidate-output CSVs are append-preserving historical sources. Loaders default to
+the latest observation for each term, language, service, and prompt condition,
+but support `latest`, `selected`, `as_of`, and `all_history` views. A selected
+view is defined by a separate CSV containing `transmogrifier_id` and an optional
+boolean `selected` column; review choices do not overwrite generated outputs.
+
+A normal generation command fills missing cells and may reuse cached outputs.
+Cache reuse does not create a new row or imply that a service was stable over
+time. An explicit `--refresh-existing` command queries the enabled cells again;
+the returned response receives a new UTC `coding_dh_date` and
+`transmogrifier_id` even when its content matches the preceding observation.
+
 The `judge` condition is dependent: its prompts contain candidates from earlier
 prompts and direct sources. Do not count judge outputs as independent votes.
 
-See the [direct-service](translated_terms/digital_humanities/direct_services/README.md)
-and [prompt-service](translated_terms/digital_humanities/prompt_services/README.md)
+### Candidate-Generation Error Logs
+
+Files under `error_logs/` preserve explicit service failures as dated
+observations.
+
+| Column | Meaning |
+| --- | --- |
+| `error_observation_id` | Deterministic identifier for one dated failure observation. |
+| `error_service` | Service inferred from the error-log filename. |
+| `coding_dh_date` | UTC timestamp at which Coding DH observed the failure. |
+| `error_date` | Legacy calendar-date representation retained for compatibility. |
+| `status_code`, `error_url`, `error_message` | Service or pipeline failure evidence. |
+| `term_source`, `language_code`, `variant` | Requested cell where available. |
+
+Repeated failures are appended rather than deduplicated. Routine generation may
+skip cells with prior deterministic failures; `--retry-errors` explicitly
+revisits them. Transient timeouts and server failures remain retryable. Error
+rows are not added to model-output CSVs, and the project does not maintain a
+stored `latest_error_observation_id`. The latest successful candidate view
+and the historical failure record therefore remain separate unless a later
+analysis joins them explicitly.
+
+See the [direct-service](candidate_terms/digital_humanities/direct_services/README.md)
+and [prompt-service](candidate_terms/digital_humanities/prompt_services/README.md)
 documentation for coverage and interpretation details.
 
 ## Evaluation and Review
@@ -128,7 +168,7 @@ One row per language. Each `has_{signal}` boolean is paired with a
 
 | Column group | Meaning |
 | --- | --- |
-| `has_missing_rationale` | Translation exists without its expected rationale. |
+| `has_missing_rationale` | Candidate term exists without its expected rationale. |
 | `has_mixed_script`, `has_script_disagreement`, `has_any_mixing` | Within-output or cross-output script anomalies. |
 | `has_romanization`, `has_transliteration_rationale` | Romanization or claimed transliteration evidence. |
 | `has_source_term`, `has_language_name_term`, `has_placeholder_term` | Source retention, language-name substitution, or placeholder-like output. |
@@ -167,7 +207,7 @@ Signals identify review candidates; they do not determine linguistic accuracy.
 | `mean_embedding_distance`, `max_embedding_distance` | Supplementary representational distance, not correctness. |
 | `register_*`, `claims_*`, `admits_uncertainty` | Overlapping rationale-text signals. |
 
-See [`evaluation/README.md`](translated_terms/digital_humanities/evaluation/README.md)
+See [`evaluation/README.md`](candidate_terms/digital_humanities/evaluation/README.md)
 for the complete evaluation inventory and normalization assumptions.
 
 ## Search Terms and Retrieval Review
@@ -178,10 +218,12 @@ for the complete evaluation inventory and normalization assumptions.
 | --- | --- |
 | `search_term` | Deduplicated reviewed query string. |
 | `natural_language` | Language-code provenance associated with the query. |
-| `counts` | Contributing translation records before grouping. |
+| `counts` | Contributing candidate records before grouping. |
 | `directionality` | Display/search direction. |
 | `search_term_source` | Services and prompt conditions that supplied the term. |
-| `comparison_status` | Upstream translation-comparison category. |
+| `transmogrifier_ids` | Comma-separated source observations supporting the deduplicated query. |
+| `selection_mode` | Candidate-history view used to construct the query export, normally `latest`. |
+| `comparison_status` | Upstream candidate-comparison category. |
 | `keep_term` | Reviewed inclusion decision. |
 
 ### Private external `search_result_relevance_reviewed.csv`
@@ -201,5 +243,5 @@ This object-level review artifact is stored under the configured external search
 | `review_decision` | `retain`, `retain_track`, or `exclude`. |
 | `reviewer_notes`, `review_status` | Decision rationale and whether the assessment is reviewed; reviewer type is not encoded. |
 
-See [`search_terms/README.md`](translated_terms/digital_humanities/search_terms/README.md)
+See [`search_terms/README.md`](candidate_terms/digital_humanities/search_terms/README.md)
 for overlap-edge fields, allowed review values, and GitHub search limitations.

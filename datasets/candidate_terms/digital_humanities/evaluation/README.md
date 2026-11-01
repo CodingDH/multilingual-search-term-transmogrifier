@@ -1,6 +1,6 @@
 # Evaluation and Review Artifacts
 
-This directory contains generated review tables and analytical outputs derived from the Digital Humanities translation corpus. It intentionally preserves the raw service files elsewhere and adds interpretation in separate columns and files.
+This directory contains generated review tables and analytical outputs derived from the Digital Humanities candidate-term corpus. It intentionally preserves the raw service files elsewhere and adds interpretation in separate columns and files.
 
 The directory mixes several row units. Always identify the file's unit before aggregating it: one row may represent a language, a service-prompt cell, a pair of services, a classifier feature, or a corpus-level summary.
 
@@ -10,9 +10,9 @@ The directory mixes several row units. Always identify the file's unit before ag
 
 | File | Status | Row unit | Purpose |
 | --- | --- | --- | --- |
-| `automated_review_signals.csv` | Generated intermediate | One language | Flags suspicious translation/rationale patterns across service-prompt cells. |
+| `automated_review_signals.csv` | Generated intermediate | One language | Flags suspicious candidate/rationale patterns across service-prompt cells. |
 | `review_explorer_data.csv` | Generated review queue | One language | Wide browser-review table combining source terms, LLM outputs, rationales, cleaned terms, and signals. |
-| `manual_exclusions.csv` | Reviewed artifact | One language-service decision | Canonical saved translation, prompt-specific search, and correction decisions. |
+| `manual_exclusions.csv` | Reviewed artifact | One language-service decision | Canonical saved candidate, prompt-specific search, and correction decisions. |
 | `older_manual_exclusions.csv` | Legacy | One language-service decision | Superseded schema containing the old `expert_persona` condition. |
 | `llama_leakage_audit.csv` | Diagnostic | One flagged row | Focused audit of possible source leakage in Llama files. |
 
@@ -32,7 +32,7 @@ The directory mixes several row units. Always identify the file's unit before ag
 
 | File | Status | Row unit | Purpose |
 | --- | --- | --- | --- |
-| `service_variant_outcomes.csv` | Generated summary | Service x prompt | Possible cells, parsed translations, missing cells, and logged-error rates. |
+| `service_variant_outcomes.csv` | Generated summary | Service x prompt | Possible cells, parsed candidates, missing cells, and logged-error rates. |
 | `service_variant_error_summary.csv` | Generated summary | Service x prompt x error category | Raw error rows, affected languages, and opportunity-normalized rates. |
 | `service_variant_error_residuals.csv` | Generated analysis | Service x prompt x error category | Observed versus independence-expected errors and standardized residuals. |
 
@@ -61,23 +61,23 @@ The classifier performance file should be cited for reported scores rather than 
 
 The definitional topic and lexical-rule files are exploratory. They are retained for transparency and follow-up work but should not be treated as validated semantic labels or linguistic ground truth.
 
-### Translation and rationale embeddings
+### Candidate and rationale embeddings
 
 | File | Status | Row unit | Purpose |
 | --- | --- | --- | --- |
-| `translation_projection_language_metrics.csv` | Generated embedding analysis | One language | Available services and mean/max pairwise translation distance. |
+| `translation_projection_language_metrics.csv` | Generated embedding analysis | One language | Available services and mean/max pairwise candidate distance. |
 | `embedding_prompt_model_variation.csv` | Generated embedding analysis | One language | Independent-prompt variation within models versus model variation within prompts. |
 | `embedding_prompt_model_variation_with_judge.csv` | Generated embedding analysis | One language | Same comparison including judge outputs. |
 | `embedding_service_prompt_centroid_distances.csv` | Generated embedding analysis | Service x prompt | Distance from each service-prompt centroid to the global space. |
-| `translation_full_grid_similarity.csv` | Generated embedding analysis | One language | Independent versus judge-inclusive translation similarity. |
+| `translation_full_grid_similarity.csv` | Generated embedding analysis | One language | Independent versus judge-inclusive candidate similarity. |
 | `rationale_prompt_model_variation_with_judge.csv` | Generated embedding analysis | One language | Prompt/model variation in rationale space including judge. |
 | `rationale_service_prompt_centroid_distances.csv` | Generated embedding analysis | Service x prompt | Rationale centroid distances. |
 | `rationale_full_grid_similarity.csv` | Generated embedding analysis | One language | Independent versus judge-inclusive rationale similarity. |
-| `translation_rationale_pairwise_alignment.csv` | Generated embedding analysis | Language x prompt x service pair | Translation and rationale distance for one pair. |
-| `translation_rationale_language_alignment.csv` | Generated embedding analysis | Language x prompt | Correlation between pairwise translation and rationale distances. |
+| `translation_rationale_pairwise_alignment.csv` | Generated embedding analysis | Language x prompt x service pair | Candidate and rationale distance for one pair. |
+| `translation_rationale_language_alignment.csv` | Generated embedding analysis | Language x prompt | Correlation between pairwise candidate and rationale distances. |
 | `translation_rationale_alignment_summary.csv` | Generated summary | Prompt/comparison | Corpus-level alignment correlations. |
 
-These files support methodological exploration and a planned follow-up embedding study. Embedding distance measures representational proximity under the named model, not linguistic equivalence or translation accuracy. UMAP projections are visual aids; substantive distances are calculated in the original embedding space.
+These files support methodological exploration and a planned follow-up embedding study. Embedding distance measures representational proximity under the named model, not linguistic equivalence or candidate validity. UMAP projections are visual aids; substantive distances are calculated in the original embedding space.
 
 ### Historic reference comparisons
 
@@ -86,7 +86,7 @@ The canonical historic outputs are the dated `historic_2022_*` and `historic_202
 | Filename suffix | Row unit | Purpose |
 | --- | --- | --- |
 | `reference_artifacts.csv` | One source artifact | Documents input file, coverage, and role. |
-| `reference_service_presence.csv` | One historic source/service | Translation coverage. |
+| `reference_service_presence.csv` | One historic source/service | Candidate coverage. |
 | `pairwise_reference_agreement.csv` | One source pair | Exact normalized agreement among overlapping rows. |
 | `reference_count_summary.csv` | Source-count grouping | Convergence by number of available sources. |
 | `all_source_convergence_summary.csv` | Convergence category | Corpus-level convergence counts. |
@@ -113,7 +113,7 @@ These are triage indicators. For example, source-term retention can be an error,
 | --- | --- |
 | `language_code`, `language_name` | Reviewed language row. |
 | `service` | Decision scope: a named service, `analysis_exclusion`, `search_exclusion`, or `term_correction`. |
-| `exclude_translation` | Exclude the translation from analysis when true. |
+| `exclude_translation` | Exclude the candidate from analysis when true. The column retains its established schema name. |
 | `exclude_term_minimal`, `exclude_term_fluent_speaker`, `exclude_term_github_searcher`, `exclude_term_judge` | Exclude the service-condition term from search-term generation. |
 | `original_term`, `corrected_term` | Preserved source value and reviewed replacement. |
 | `notes` | Review rationale. |
@@ -132,7 +132,7 @@ The same language can have multiple rows when decisions apply to different servi
 | `absence_signals`, `construction_signals`, `debate_signals` | Lexical evidence extracted from rationales. |
 | `service_translations` | Serialized service-to-term mapping retained for inspection. |
 
-Normalization is intentionally conservative. It standardizes comparison without automatically merging distinct spellings, transliterations, scripts, inflections, or translation strategies.
+Normalization is intentionally conservative. It standardizes comparison without automatically merging distinct spellings, transliterations, scripts, inflections, or candidate-construction strategies.
 
 ### Disagreement synthesis
 
