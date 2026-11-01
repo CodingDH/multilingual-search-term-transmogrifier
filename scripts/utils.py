@@ -29,7 +29,12 @@ CODING_DH_SEQUENTIAL_SCHEME = "viridis"
 CODING_DH_DIVERGING_SCHEME = "blueorange"
 
 
-def save_chart(chart: alt.Chart, filename: str, scale_factor: float = 2.0) -> None:
+def save_chart(
+	chart: alt.Chart,
+	filename: str,
+	scale_factor: float = 2.0,
+	remove_title: bool = False,
+) -> None:
 	"""
 	Save an Altair chart using vl-convert without changing its display renderer.
 
@@ -42,7 +47,13 @@ def save_chart(chart: alt.Chart, filename: str, scale_factor: float = 2.0) -> No
 	scale_factor : int or float
 		Scale factor for PNG output. A value of 2 writes an image at twice the
 		default resolution.
+	remove_title : bool
+		Remove a top-level chart title before export without modifying the
+		displayed chart.
 	"""
+	if remove_title:
+		chart = chart.copy()
+		chart.title = alt.Undefined
 	extension = os.path.splitext(str(filename))[-1].lower().lstrip(".")
 	os.makedirs(os.path.dirname(str(filename)), exist_ok=True)
 	with alt.data_transformers.enable("default"), alt.data_transformers.disable_max_rows():

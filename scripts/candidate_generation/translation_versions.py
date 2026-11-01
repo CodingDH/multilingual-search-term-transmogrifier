@@ -1,11 +1,8 @@
 """Version and select historical translation observations.
 
-Translation CSVs retain every observation. Callers explicitly select the latest,
-reviewed, as-of, or complete historical view when reading them.
+Translation CSVs retain every observation. Callers explicitly select the latest, reviewed, as-of, or complete historical view when reading them.
 
-``transmogrifier_id`` identifies one dated translation observation, not a
-language entity or a judgment of linguistic validity. Language metadata uses
-``language_code``/``project_language_code`` instead.
+``transmogrifier_id`` identifies one dated translation observation, not a language entity or a judgment of linguistic validity. Language metadata uses ``language_code``/``project_language_code`` instead.
 """
 
 from __future__ import annotations

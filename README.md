@@ -176,3 +176,28 @@ Generative AI systems, specifically Claude and Codex, assisted with the developm
 ## Citing the Repository
 
 Repository-level citation metadata will be added with the first versioned public release. Until then, cite the repository URL together with the commit hash or release tag used for the analysis.
+
+## Ongoing Terminology Migration
+
+Repository terminology is being revised to avoid using *translation* as a blanket description for every generated response. The pipeline requests translations, and some outputs may be established translations, but the stored corpus also contains transliterations, borrowings, paraphrases, disciplinary reinterpretations, source-term repetitions, malformed responses, and unsupported inventions. Unless an output has been independently validated, current documentation therefore favors *candidate term*, *candidate output*, or *transmogrification*.
+
+This migration is intentionally incremental. Renaming every file, column, notebook, and helper at once would make historical analyses difficult to reproduce and could break downstream code. Readers will consequently encounter both legacy and revised terminology while compatibility changes are tested. The following table records the working conventions and proposed implementation names.
+
+| Legacy or expansive usage | Preferred terminology | Repository direction |
+| --- | --- | --- |
+| translated term | candidate term | Use in prose and new schemas unless linguistic validation establishes translation status. |
+| translation output | candidate output or candidate observation | Use for a dated response from a service-model-prompt-language cell. |
+| translation rationale | candidate rationale | Use for the generated explanation accompanying a candidate term. |
+| translation agreement or disagreement | candidate-form agreement or disagreement | Specify whether comparison uses normalized strings, scripts, embeddings, or another measure. |
+| translation error | generation error, unusable response, or automated review signal | Distinguish explicit request failures from suspicious but populated outputs. |
+| translation review | candidate review | Reserve *translation validation* for review supported by relevant linguistic expertise. |
+| `datasets/translated_terms/` | `datasets/candidate_terms/` | Completed; documentation and active paths now use `candidate_terms`. |
+| `*_translated_term` | `*_candidate_term` | Proposed schema migration; legacy columns remain active for compatibility. |
+| `*_translation_rationale` | `*_candidate_rationale` | Proposed schema migration; legacy columns remain active for compatibility. |
+| `generate_translations.py` | `generate_candidates.py` | Proposed script rename after imports, notebooks, and documentation can be migrated together. |
+| `translation_versions.py` | `candidate_versions.py` | Proposed helper rename; `transmogrifier_id` remains the stable observation identifier. |
+| `translation_services.py` | `generation_services.py` | Proposed for the mixed service layer; descriptions of actual translation APIs will retain their established category. |
+| Notebook 02: translation overview | candidate-output overview | Proposed notebook-title change after publication references are stabilized. |
+| Notebook 05: translation projection | candidate-form projection | Proposed notebook-title change; embedding analyses remain valid without presuming linguistic correctness. |
+
+The word *translation* remains appropriate when describing the requested task, dedicated translation services, translation-studies scholarship, independently validated forms, quoted source language, and historical filenames required for reproducibility. Publication titles and archived materials will not be silently rewritten.
