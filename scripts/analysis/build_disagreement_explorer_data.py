@@ -5,13 +5,9 @@ build_disagreement_explorer_data.py
 Merge disagreement analysis, per-language confidence stats, rationale lengths,
 and parsed service translations into one notebook-support CSV.
 
-Before writing, ``enforce_translation_rationale_pairing``
-(``scripts/review/apply_review_filters.py``) is
-applied to each per-variant slice of confidence_scores.csv. This nulls out any
-LLM cell where the translation has no real rationale (absent or placeholder such
-as "No rationale provided") or vice versa, so notebook 06 never receives
-unpaired cells regardless of whether the upstream CSVs were generated before or
-after this enforcement was introduced.
+Candidate terms and rationales are reloaded from their versioned source files;
+``confidence_scores.csv`` remains a narrow analytical table rather than a copy
+of the complete generation payload.
 
 Run after:
   1. scripts/analysis/explore_confidence_within_variant.py
@@ -61,7 +57,7 @@ TERM_SERVICE_COLS = {
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 from scripts.utils import get_data_directory_path, get_language_family
-from scripts.review.apply_review_filters import enforce_translation_rationale_pairing
+from scripts.analysis.explore_confidence_within_variant import load_variant_df
 
 STATUS_ORDER = {
     'substantive_variation': 0,
@@ -148,16 +144,19 @@ def build_explorer_data(
     # ── Terms + rationales for every variant × service combination ──────────
     # Produces columns like claude_term_minimal, claude_rationale_judge, etc.
     matrix_frames = []
+    baseline_source = None
     for variant in VARIANTS:
-        variant_rows = conf_df[conf_df['prompt_variant'] == variant].copy()
-        if variant_rows.empty:
+        variant_rows = load_variant_df(
+            data_directory_path,
+            term.lower().replace(' ', '_'),
+            variant,
+        )
+        if variant_rows is None or variant_rows.empty:
             continue
-        # Null out unpaired LLM translation/rationale cells before they reach the explorer.
-        # confidence_scores.csv may have been written before pairing enforcement was added
-        # to load_variant_df, so we re-apply it here to guarantee clean output.
-        variant_rows = enforce_translation_rationale_pairing(variant_rows)
-        avail_rat = {svc: col for svc, col in RATIONALE_SERVICE_COLS.items() if col in conf_df.columns}
-        avail_term = {svc: col for svc, col in TERM_SERVICE_COLS.items() if col in conf_df.columns}
+        if baseline_source is None:
+            baseline_source = variant_rows
+        avail_rat = {svc: col for svc, col in RATIONALE_SERVICE_COLS.items() if col in variant_rows.columns}
+        avail_term = {svc: col for svc, col in TERM_SERVICE_COLS.items() if col in variant_rows.columns}
         src_cols = list(set(avail_rat.values()) | set(avail_term.values()))
         rename_map = (
             {col: f'{svc}_rationale_{variant}' for svc, col in avail_rat.items()}
@@ -179,12 +178,15 @@ def build_explorer_data(
 
     # ── Baseline terms (non-LLM services, don't vary by prompt variant) ────
     baseline_cols = ['wikipedia_translated_term', 'lingvanex_translated_term', 'enmt_translated_term']
-    available_baseline = [c for c in baseline_cols if c in conf_df.columns]
-    wiki_df = (
-        conf_df[['language_code'] + available_baseline]
-        .drop_duplicates('language_code')
-        .loc[lambda d: d['language_code'].str.strip() != '']
-    )
+    if baseline_source is None:
+        wiki_df = pd.DataFrame(columns=['language_code'])
+    else:
+        available_baseline = [c for c in baseline_cols if c in baseline_source.columns]
+        wiki_df = (
+            baseline_source[['language_code'] + available_baseline]
+            .drop_duplicates('language_code')
+            .loc[lambda d: d['language_code'].astype(str).str.strip() != '']
+        )
 
     # ── Merge ────────────────────────────────────────────────────────────────
     export = (

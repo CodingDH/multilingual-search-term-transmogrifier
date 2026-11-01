@@ -32,7 +32,10 @@ service-prompt-language observation.
 
 ## Column Families
 
-The files are cumulative pipeline records and therefore contain columns for more than the service named in the filename. Column order varies with collection history. Select fields by name.
+Each file is a service-local observation log. It contains common observation
+keys and fields belonging to the service named in the filename. The generation
+pipeline may use a cumulative in-memory frame, but foreign-service and baseline
+columns are not copied into the persisted source file. Select fields by name.
 
 | Column pattern | Meaning |
 | --- | --- |
@@ -53,9 +56,13 @@ The files are cumulative pipeline records and therefore contain columns for more
 | Ollama duration/count fields | Local timing and token-evaluation metadata, generally stored in nanoseconds/counts as returned by Ollama. |
 | `{service}_content` | Raw local-model response text. |
 | `{service}_extracted_dictionaries` | Candidate JSON-like objects parsed from local output. |
-| `wikipedia_translated_term`, `gt_translated_term`, `enmt_translated_term`, `lingvanex_translated_term` | Prompt-invariant context merged into the row. |
-| `family_name` | Family label at generation time; prefer reviewed metadata for aggregate analysis. |
-| `exclude_*` | Historical generation flags, not the canonical manual-review decisions. |
+| `generation_temperature`, `generation_top_p`, `generation_max_output_tokens`, `generation_settings_source` | Request settings and their provenance where recorded. |
+
+Prompt-invariant candidates remain in `../direct_services/`; current family
+metadata remains in the reviewed metadata tables; and manual decisions remain
+in `../evaluation/manual_exclusions.csv`. The judge's supplied evidence is
+preserved in its service-specific user prompt rather than copied as foreign
+candidate columns.
 
 Not every service exposes every metadata field. Blank timing or token fields are expected for providers that do not return them or for incomplete requests.
 

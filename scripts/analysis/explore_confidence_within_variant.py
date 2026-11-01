@@ -22,7 +22,7 @@ Compare with: explore_confidence_across_variants.py (which measures if different
 Adapts the FrequencyConfidenceCalculator approach from Kraus et al. (2025, WOKIE) but preserves the full candidate distribution, so disagreements are logged as research data.
 
 Output files are written to data_directory/candidate_terms/{term}/evaluation/:
-  - `confidence_scores.csv`: all rows with confidence scores
+  - `confidence_scores.csv`: narrow language x prompt confidence metrics
   - `confidence_summary.csv`: aggregate stats per term/variant
 
 Usage:
@@ -80,6 +80,28 @@ PRIMARY_SERVICES = BASELINE_SERVICES
 ALL_VARIANTS = [
     'minimal', 'fluent_speaker', 'github_searcher', 'judge'
 ]
+
+CONFIDENCE_KEY_COLUMNS = [
+    'language_code', 'language_name', 'term_source', 'term',
+    'prompt_variant', 'family_name',
+]
+CONFIDENCE_METRIC_PREFIXES = ('llm_', 'baseline_', 'all_')
+CONFIDENCE_METRIC_SUFFIXES = (
+    'best_candidate', 'confidence', 'total_services', 'agreeing_services',
+    'unique_candidates', 'difference_types',
+)
+
+
+def select_confidence_export_columns(scored_df: pd.DataFrame) -> pd.DataFrame:
+    """Return the narrow, reproducible confidence table written to disk."""
+    columns = [c for c in CONFIDENCE_KEY_COLUMNS if c in scored_df.columns]
+    columns.extend(
+        c for c in scored_df.columns
+        if c.startswith(CONFIDENCE_METRIC_PREFIXES)
+        and c.endswith(CONFIDENCE_METRIC_SUFFIXES)
+        and c not in columns
+    )
+    return scored_df[columns].copy()
 
 
 # ── Core scoring logic ─────────────────────────────────────────────────────────
@@ -404,11 +426,16 @@ def run_confidence_evaluation(
     )
     os.makedirs(_dir, exist_ok=True)
 
-    scored_df.to_csv(os.path.join(_dir, 'confidence_scores.csv'), index=False)
+    confidence_export = select_confidence_export_columns(scored_df)
+    confidence_export.to_csv(os.path.join(_dir, 'confidence_scores.csv'), index=False)
     summary_df.to_csv(os.path.join(_dir, 'confidence_summary.csv'), index=False)
 
     console.print(f"\n✓ Outputs written to: {_dir}", style="bold green")
-    console.print(f"  confidence_scores.csv  : {len(scored_df)} rows", style="green")
+    console.print(
+        f"  confidence_scores.csv  : {len(confidence_export)} rows, "
+        f"{len(confidence_export.columns)} columns",
+        style="green",
+    )
     console.print(f"  confidence_summary.csv : {len(summary_df)} rows", style="green")
 
     _print_summary_table(summary_df)

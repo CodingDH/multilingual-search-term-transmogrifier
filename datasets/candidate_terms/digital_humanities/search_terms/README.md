@@ -11,7 +11,9 @@ The collector and complete exports are intentionally withheld to avoid releasing
 | File | Status | Row unit | Role |
 | --- | --- | --- | --- |
 | `grouped_translated_terms.csv` | Generated intermediate | One normalized query grouped across language/source rows | Output of `scripts/generate_search_terms.py` before final browser review. |
-| `reviewed_grouped_translated_terms.csv` | Reviewed artifact | One retained query and its provenance | Canonical input to GitHub search. |
+| `reviewed_grouped_translated_terms.csv` | Reviewed artifact | One reviewed query-language grouping | Canonical query input to GitHub search. |
+| `reviewed_candidate_term_provenance.csv` | Provenance bridge | One query-to-candidate-observation link | Joins reviewed queries to candidate history without embedding ID lists in query rows. |
+| `reviewed_candidate_term_export_metadata.json` | Export metadata | One reviewed export snapshot | Stores selection mode, export ID, hashes, and provenance coverage counts. |
 | `search_result_relevance_review.csv` | Private generated review queue | One productive query | Stored externally with representative retrieval samples and provisional assessments. |
 | `search_result_relevance_reviewed.csv` | Private reviewed artifact | One productive query | Stored externally as the canonical downstream relevance decisions. |
 | `search_result_term_overlap_edges.csv` | Generated intermediate | One term-to-term overlap edge | Shared GitHub objects and overlap measures. |
@@ -23,19 +25,31 @@ Files under `older_datasets/` are superseded review snapshots and are not read b
 
 | Column | Meaning |
 | --- | --- |
+| `query_id` | Stable identifier for one query-language grouping. |
 | `search_term` | Deduplicated query string. |
 | `natural_language` | Semicolon-separated or serialized language-code provenance associated with the term. A term can map to multiple languages. |
-| `counts` | Number of contributing translation records before grouping. |
+| `counts` | Number of contributing candidate records before grouping. |
 | `directionality` | Display/search direction selected for the grouped term (`ltr` or `rtl`). |
 | `search_term_source` | Services and prompt conditions that supplied the term. |
-| `transmogrifier_ids` | Source candidate observations supporting the grouped query, or an explicitly prefixed legacy reviewed-row identifier. |
-| `selection_mode` | Historical candidate view used for the export. |
-| `selection_as_of` | Inclusive cutoff for an `as_of` export; blank otherwise. |
-| `candidate_provenance_status` | Whether IDs resolve to candidate observations or identify a legacy reviewed-export row that cannot be reconstructed from preserved selected outputs. |
-| `comparison_status` | Upstream translation-comparison status carried into the grouped record. |
+| `comparison_status` | Upstream candidate-comparison status carried into the grouped record. |
 | `keep_term` | Final search-term review decision. Read as a boolean. |
 | `directionality_conflict` | Whether contributing language rows disagreed on directionality; present in the generated queue. |
 | `ltr_languages`, `rtl_languages` | Language provenance used to resolve directionality conflicts; present in the generated queue. |
+
+The reviewed query CSV retains `query_id` and the human-readable query and
+review columns. Candidate provenance is normalized into the bridge rather than
+stored as comma-separated lists.
+
+| Bridge column | Meaning |
+| --- | --- |
+| `query_id` | Stable reviewed-query identifier. |
+| `transmogrifier_id` | Supporting candidate observation, or an explicitly prefixed legacy reviewed-row identifier. |
+| `provenance_status` | `candidate_observation` or `legacy_reviewed_export`. |
+
+The metadata JSON stores `term_export_id`, `selection_mode`, optional
+`selection_as_of`, generation time, row counts, and SHA-256 hashes for both
+tabular artifacts. Run `generate_search_terms.py --enrich-reviewed` after each
+browser export to rebuild and validate this normalized provenance package.
 
 The reviewed file can contain more rows than a newly generated queue when a review reconciles or carries forward terms from earlier reviewed snapshots. Treat the reviewed file as the canonical search input and document any future merge rather than assuming row counts must match.
 
@@ -53,7 +67,7 @@ The following schema documents the private files used by the analysis; those fil
 | `natural_language` | Language rows associated with the query. |
 | `language_mapping_rows` | Number of language-to-term mappings represented. |
 | `source_translation_count` | Number of translation records contributing the term. |
-| `transmogrifier_ids`, `selection_mode` | Translation snapshot provenance carried from the reviewed query file. |
+| `query_ids`, `term_export_id` | Reviewed-query and export-snapshot provenance. Candidate-observation detail remains in the upstream bridge. |
 | `directionality`, `comparison_status` | Upstream metadata retained for interpretation. |
 
 ### Retrieval counts
@@ -90,13 +104,14 @@ The current file contains a sample-based audit produced through AI-assisted clas
 
 ## Temporal Selection
 
-Translation generation is append-preserving. Each source observation has a
-`transmogrifier_id`, and grouped queries carry the IDs that supplied their
-selected forms. Routine exports use the `latest` observation for each
-term-language-service-prompt identity. Historical exports can instead use an
-`as_of` cutoff, all observations, or a separately reviewed set of IDs. The
-private relevance-review CSV remains the binding decision layer for downstream
-GitHub expansion and preserves its own `coding_dh_date` when decisions change.
+Candidate generation is append-preserving. Each source observation has a
+`transmogrifier_id`, and the provenance bridge records which observations
+support each reviewed `query_id`. Export metadata identifies the selected
+historical view and binds the query and bridge files under `term_export_id`.
+Routine exports may use the latest observations; historical exports can use an
+`as_of` cutoff or a separately reviewed selection. The private relevance-review
+CSV remains the binding decision layer for downstream GitHub expansion and
+preserves its own `coding_dh_date` when decisions change.
 
 ## Overlap Edge Columns
 

@@ -26,7 +26,7 @@ python -m scripts.analysis.build_disagreement_patterns --term "Digital Humanitie
 
 The first two confidence stages can run once candidate generation is complete. Run the remaining disagreement stages after candidate review decisions have been saved:
 
-1. `explore_confidence_within_variant.py` writes `confidence_scores.csv` and `confidence_summary.csv`.
+1. `explore_confidence_within_variant.py` writes the narrow metric table `confidence_scores.csv` and `confidence_summary.csv`. The in-memory result remains wide for Notebook 04, while downstream builders reload candidate evidence from the versioned service files.
 2. `explore_confidence_across_variants.py` writes per-service prompt-stability detail and summaries.
 3. `explore_disagreements.py` combines reviewed candidates into `disagreement_analysis.csv`.
 4. `build_disagreement_explorer_data.py` joins disagreement, confidence, rationale-length, and service data for notebook analysis.

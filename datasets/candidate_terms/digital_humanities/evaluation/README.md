@@ -20,7 +20,7 @@ The directory mixes several row units. Always identify the file's unit before ag
 
 | File | Status | Row unit | Purpose |
 | --- | --- | --- | --- |
-| `confidence_scores.csv` | Generated intermediate | Language x prompt condition | Within-condition exact normalized agreement among available LLMs. “Confidence” means convergence frequency, not correctness. |
+| `confidence_scores.csv` | Generated intermediate | Language x prompt condition | Narrow table of scalar within-condition exact normalized agreement metrics and compact difference-type labels. Candidate distributions, service values, detailed comparisons, rationales, prompts, and provider payloads remain reproducible from the versioned service files and are not duplicated here. “Confidence” means convergence frequency, not correctness. |
 | `confidence_summary.csv` | Generated summary | Prompt/service grouping | Aggregate within-condition convergence statistics. |
 | `across_variant_detail.csv` | Generated intermediate | Language x service | Exact-form variation across prompt conditions for one service. |
 | `across_variant_service_summary.csv` | Generated summary | Service | Cross-prompt stability summary. |

@@ -24,6 +24,47 @@ PROMPT_VARIANTS = (
     "judge",
 )
 
+SERVICE_OBSERVATION_COLUMNS = (
+    "language_code",
+    "language_name",
+    "project_language_code",
+    "term_source",
+    "coding_dh_date",
+    "service",
+    "prompt_variant",
+    "model_identifier",
+    "transmogrifier_id",
+    "generation_temperature",
+    "generation_top_p",
+    "generation_max_output_tokens",
+    "generation_settings_source",
+)
+
+
+def select_service_observation_columns(
+    frame: pd.DataFrame,
+    *,
+    service: str,
+) -> pd.DataFrame:
+    """Keep common observation keys and fields owned by one service.
+
+    Generation operates on a cumulative working frame, but each persisted CSV
+    is an observation log for one service. Foreign-service outputs, baseline
+    candidates, mutable language metadata, composite terms, and transient
+    exclusion flags therefore do not belong in that file.
+    """
+    normalized_service = service.strip().lower().replace("-", "_").replace(" ", "_")
+    common = [column for column in SERVICE_OBSERVATION_COLUMNS if column in frame.columns]
+    owned = [
+        column for column in frame.columns
+        if column.startswith(f"{normalized_service}_") and column not in common
+    ]
+    generic_output = [
+        column for column in ("translation", "rationale", "raw_response")
+        if column in frame.columns and column not in common
+    ]
+    return frame[common + owned + generic_output].copy()
+
 
 def infer_service_context(path: str | Path) -> tuple[str, str]:
     """Infer service and prompt variant from an established translation filename."""
@@ -91,15 +132,15 @@ def add_transmogrifier_ids(
     """
     result = frame.copy()
     if service is not None:
-        result["service"] = result.get("service", pd.Series(index=result.index, dtype="object")).fillna(service)
+        result["service"] = service
     if prompt_variant is not None:
-        result["prompt_variant"] = result.get(
-            "prompt_variant", pd.Series(index=result.index, dtype="object")
-        ).fillna(prompt_variant)
+        result["prompt_variant"] = prompt_variant
     if model_identifier is not None:
-        result["model_identifier"] = result.get(
-            "model_identifier", pd.Series(index=result.index, dtype="object")
-        ).fillna(model_identifier)
+        result["model_identifier"] = model_identifier
+    elif service is not None:
+        # Cumulative generation frames may carry another service's context.
+        # Re-infer the model from the named service's own response column.
+        result["model_identifier"] = None
     if "model_identifier" not in result.columns:
         result["model_identifier"] = None
     for current_service in result.get(
@@ -202,6 +243,10 @@ def load_translation_versions(
         service=service or inferred_service,
         prompt_variant=prompt_variant or inferred_variant,
     )
+    frame = select_service_observation_columns(
+        frame,
+        service=service or inferred_service,
+    )
     return select_translation_versions(
         frame,
         mode,
@@ -227,6 +272,10 @@ def save_translation_history(
         prompt_variant=prompt_variant or inferred_variant,
         model_identifier=model_identifier,
     )
+    incoming = select_service_observation_columns(
+        incoming,
+        service=service or inferred_service,
+    )
     if not path.exists():
         path.parent.mkdir(parents=True, exist_ok=True)
         incoming.to_csv(path, index=False, quoting=csv.QUOTE_ALL)
@@ -237,6 +286,10 @@ def save_translation_history(
     new_ids = ~incoming["transmogrifier_id"].isin(existing["transmogrifier_id"])
     incoming = incoming[new_ids].copy()
     if incoming.empty:
+        if list(existing.columns) != disk_columns:
+            temporary_path = path.with_suffix(f"{path.suffix}.tmp")
+            existing.to_csv(temporary_path, index=False, quoting=csv.QUOTE_ALL)
+            temporary_path.replace(path)
         return existing.reset_index(drop=True)
 
     combined_columns = list(existing.columns) + [

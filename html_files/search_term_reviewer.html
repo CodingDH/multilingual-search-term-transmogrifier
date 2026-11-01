@@ -309,8 +309,13 @@ document.getElementById('file-input').addEventListener('change', e => {
   Papa.parse(f, {
     header: true, skipEmptyLines: true,
     complete: ({ data }) => {
+      if (data.some(r => !r.query_id)) {
+        alert('This CSV predates stable query IDs. Regenerate grouped_translated_terms.csv before review.');
+        return;
+      }
       allRows = data.map(r => ({
         ...r,
+        query_id: r.query_id || '',
         counts: Number(r.counts) || 0,
         keep_term: String(r.keep_term).toLowerCase() !== 'false',
         directionality_conflict: String(r.directionality_conflict).toLowerCase() === 'true',
@@ -487,6 +492,7 @@ function resolveConflict(id, action) {
       directionality: 'ltr',
       directionality_conflict: false,
       ltr_languages: '', rtl_languages: '',
+      query_id: `${row.query_id}_ltr`,
       _id: Math.random().toString(36).slice(2),
       _suspicious: isSuspicious({...row, counts: ltrCodes.length}),
     };
@@ -497,6 +503,7 @@ function resolveConflict(id, action) {
       directionality: 'rtl',
       directionality_conflict: false,
       ltr_languages: '', rtl_languages: '',
+      query_id: `${row.query_id}_rtl`,
       _id: Math.random().toString(36).slice(2),
       _suspicious: false,
     };
@@ -596,7 +603,8 @@ document.getElementById('btn-reset').addEventListener('click', () => {
 });
 
 // ── Download ──────────────────────────────────────────────────────────────────
-// Exports the standard grouped_translated_terms.csv column set.
+// Exports the reviewed query table. Candidate-observation links are rebuilt
+// separately by generate_search_terms.py --enrich-reviewed.
 // Internal fields (_id, _suspicious) are stripped.
 // Conflict metadata columns are stripped so the search script sees a clean file.
 document.getElementById('btn-download').addEventListener('click', () => {
@@ -605,6 +613,7 @@ document.getElementById('btn-download').addEventListener('click', () => {
     if (!confirm(`${unresolvedCount} directionality conflict(s) are still unresolved.\nDownload anyway? Unresolved rows will use the majority direction.`)) return;
   }
   const out = allRows.map(r => ({
+    query_id:          r.query_id,
     search_term:        r.search_term,
     natural_language:   r.natural_language,
     counts:             r.counts,

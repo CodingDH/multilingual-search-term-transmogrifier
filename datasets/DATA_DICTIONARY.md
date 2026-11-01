@@ -101,8 +101,10 @@ label presence and absence can be compared over time.
 
 Files under `prompt_services/` follow
 `{service}_{prompt_variant}_translations.csv`. The filename supplies the service
-and condition; columns are cumulative and can contain evidence from earlier
-services.
+and condition. Each file contains common observation keys and only the named
+service's output, prompt, model, usage, and response fields. Cross-service
+comparison is performed by joining these files on source term and language;
+foreign-service evidence is not duplicated inside each source file.
 
 | Column pattern | Meaning |
 | --- | --- |
@@ -216,15 +218,26 @@ for the complete evaluation inventory and normalization assumptions.
 
 | Column | Meaning |
 | --- | --- |
+| `query_id` | Stable identifier for one reviewed query-language grouping. |
 | `search_term` | Deduplicated reviewed query string. |
 | `natural_language` | Language-code provenance associated with the query. |
 | `counts` | Contributing candidate records before grouping. |
 | `directionality` | Display/search direction. |
 | `search_term_source` | Services and prompt conditions that supplied the term. |
-| `transmogrifier_ids` | Comma-separated source observations supporting the deduplicated query. |
-| `selection_mode` | Candidate-history view used to construct the query export, normally `latest`. |
 | `comparison_status` | Upstream candidate-comparison category. |
 | `keep_term` | Reviewed inclusion decision. |
+
+### `reviewed_candidate_term_provenance.csv`
+
+Long-form bridge between `query_id` and its supporting `transmogrifier_id`
+values. `provenance_status` distinguishes preserved candidate observations from
+explicit legacy reviewed-export identifiers.
+
+### `reviewed_candidate_term_export_metadata.json`
+
+Export-level temporal and integrity metadata, including `term_export_id`,
+`selection_mode`, optional `selection_as_of`, artifact hashes, and coverage
+counts. These values are not repeated on every reviewed query row.
 
 ### Private external `search_result_relevance_reviewed.csv`
 

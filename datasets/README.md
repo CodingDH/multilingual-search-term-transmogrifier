@@ -63,7 +63,7 @@ For article reproduction, preserve these layers:
 1. `metadata_files/language_codes_comprehensive.csv` and `language_codes_comprehensive_family_reviewed.csv`.
 2. The direct-service and four current prompt-condition histories under `candidate_terms/digital_humanities/`, selecting the documented `latest`, `as_of`, or reviewed observation view required by the analysis.
 3. `evaluation/manual_exclusions.csv` and the generated review-signal tables.
-4. `search_terms/reviewed_grouped_translated_terms.csv` and the private external retrieval-review decisions.
+4. The reviewed query table, query-to-candidate provenance bridge, export metadata JSON, and private external retrieval-review decisions under `search_terms/`.
 5. Frozen analytical results explicitly identified in the evaluation README.
 
 Large explorer tables, chart summaries, and embedding metrics are derived and can be rebuilt, but they are committed where they support inspection without rerunning paid APIs or expensive models.

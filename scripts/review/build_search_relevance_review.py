@@ -321,28 +321,28 @@ def build_review(
     search_terms_dir = Path(data_dir) / 'candidate_terms' / term_slug / 'search_terms'
     private_review_dir = Path(search_dir) / 'search_terms' / term_slug
     terms_path = search_terms_dir / 'reviewed_grouped_translated_terms.csv'
+    metadata_path = search_terms_dir / 'reviewed_candidate_term_export_metadata.json'
     output_path = private_review_dir / 'search_result_relevance_review.csv'
     overlap_path = search_terms_dir / 'search_result_term_overlap_edges.csv'
     overlap_summary_path = search_terms_dir / 'search_result_overlap_summary.csv'
     reviewed_path = private_review_dir / 'search_result_relevance_reviewed.csv'
 
     terms = pd.read_csv(terms_path, keep_default_na=False)
+    export_metadata = json.loads(metadata_path.read_text(encoding='utf-8'))
     if 'keep_term' in terms.columns:
         terms = terms[terms['keep_term'].astype(str).str.lower().eq('true')].copy()
     terms['search_term_key'] = terms['search_term'].astype(str).str.lower().str.strip()
     term_aggregations = {
         'search_term': ('search_term', 'first'),
+        'query_ids': ('query_id', _join_unique),
         'natural_language': ('natural_language', _join_unique),
         'language_mapping_rows': ('natural_language', 'size'),
         'source_translation_count': ('counts', 'sum'),
         'directionality': ('directionality', _join_unique),
         'comparison_status': ('comparison_status', _join_unique),
     }
-    if 'transmogrifier_ids' in terms.columns:
-        term_aggregations['transmogrifier_ids'] = ('transmogrifier_ids', _join_unique)
-    if 'selection_mode' in terms.columns:
-        term_aggregations['selection_mode'] = ('selection_mode', _join_unique)
     term_summary = terms.groupby('search_term_key', as_index=False).agg(**term_aggregations)
+    term_summary['term_export_id'] = export_metadata['term_export_id']
 
     root = Path(search_dir)
     patterns = {

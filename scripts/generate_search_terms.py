@@ -2,8 +2,10 @@
 """
 generate_search_terms.py
 =========================
-Read the translation pipeline's disagreement_analysis.csv and produce
-grouped_translated_terms.csv for use by searching_for_DH/generate_search_data.py.
+Read the candidate pipeline's disagreement analysis and produce the grouped
+query queue used by the browser reviewer. After review, the same script builds
+the normalized query, provenance-bridge, and export-metadata package consumed
+by searching_for_DH.
 
 Output is written to:
   datasets/candidate_terms/{term_slug}/search_terms/grouped_translated_terms.csv
@@ -46,10 +48,12 @@ Usage
 import argparse
 import ast
 import hashlib
+import json
 import os
 import re
 import sys
 from collections import Counter
+from datetime import datetime, timezone
 
 import pandas as pd
 
@@ -74,6 +78,22 @@ except Exception:
 # produce unreliable/unsearchable translations (Blissymbols, Linear A,
 # Elamite Cuneiform, Meroitic).
 CONSTRUCTED_SCRIPT_LANGS = frozenset({"zbl", "lab", "elx", "xmr"})
+
+
+def _query_id(row: pd.Series) -> str:
+    """Return a stable identifier for one reviewed query-language grouping."""
+    languages = ", ".join(
+        sorted(code.strip() for code in str(row.get("natural_language", "")).split(",") if code.strip())
+    )
+    payload = "\x1f".join(
+        [
+            str(row.get("search_term_source", "")),
+            str(row.get("search_term", "")),
+            languages,
+            str(row.get("directionality", "")),
+        ]
+    )
+    return f"cq_{hashlib.sha256(payload.encode('utf-8')).hexdigest()[:24]}"
 
 # Quality-flag columns that indicate the translated TERM itself is unreliable.
 # The paired *_services column lists which service(s) triggered the flag.
@@ -399,7 +419,6 @@ def build_search_terms(
     search_term_drops = _build_search_term_drops(root, term_slug)
     term_corrections = _load_term_corrections(root, term_slug)
     corroborated_terms = _build_corroborated_terms(root, term_slug)
-    term_version_ids = _build_term_version_ids(root, term_slug)
 
     eval_dir = os.path.join(root, "candidate_terms", term_slug, "evaluation")
     if load_manual_exclusions is not None:
@@ -498,10 +517,6 @@ def build_search_terms(
                     "search_term_source": term,
                     "comparison_status": comparison_status,
                     "keep_term": True,
-                    "transmogrifier_ids": ", ".join(
-                        sorted(term_version_ids.get((lang_code, term_value.lower()), set()))
-                    ),
-                    "selection_mode": "latest",
                 }
             )
 
@@ -536,15 +551,6 @@ def build_search_terms(
     def _join_categories(s):
         return ", ".join(sorted(s.unique()))
 
-    def _join_version_ids(s):
-        values = {
-            value.strip()
-            for cell in s.dropna().astype(str)
-            for value in cell.split(",")
-            if value.strip()
-        }
-        return ", ".join(sorted(values))
-
     def _ltr_langs(group):
         return ", ".join(sorted(group.loc[group["directionality"] == "ltr", "natural_language"].unique()))
 
@@ -561,8 +567,6 @@ def build_search_terms(
             search_term_source=("search_term_source", "first"),
             comparison_status=("comparison_status", _join_categories),
             keep_term=("keep_term", "first"),
-            transmogrifier_ids=("transmogrifier_ids", _join_version_ids),
-            selection_mode=("selection_mode", "first"),
         )
         .reset_index()
         .sort_values("counts", ascending=False)
@@ -593,6 +597,7 @@ def build_search_terms(
 
     deduped["ltr_languages"] = deduped["ltr_languages"].fillna("")
     deduped["rtl_languages"] = deduped["rtl_languages"].fillna("")
+    deduped.insert(0, "query_id", deduped.apply(_query_id, axis=1))
 
     out_dir = os.path.join(root, "candidate_terms", term_slug, "search_terms")
     os.makedirs(out_dir, exist_ok=True)
@@ -640,8 +645,24 @@ def enrich_reviewed_search_term_provenance(
     reviewed = pd.read_csv(path, converters={"natural_language": str})
     version_ids = _build_term_version_ids(root, term_slug, mode="all_history")
 
-    ids: list[str] = []
-    statuses: list[str] = []
+    inline_provenance_columns = {
+        "transmogrifier_ids",
+        "selection_mode",
+        "selection_as_of",
+        "candidate_provenance_status",
+    }
+    reviewed = reviewed.drop(
+        columns=[column for column in inline_provenance_columns if column in reviewed],
+        errors="ignore",
+    )
+    if "query_id" not in reviewed.columns:
+        reviewed.insert(0, "query_id", reviewed.apply(_query_id, axis=1))
+    if reviewed["query_id"].duplicated().any():
+        duplicates = reviewed.loc[reviewed["query_id"].duplicated(False), "query_id"].unique()
+        raise ValueError(f"Reviewed export contains duplicate query IDs: {duplicates[:5]}")
+
+    links: list[dict[str, str]] = []
+    row_statuses: list[str] = []
     for row in reviewed.itertuples(index=False):
         languages = [code.strip() for code in str(row.natural_language).split(",")]
         matched = {
@@ -652,8 +673,15 @@ def enrich_reviewed_search_term_provenance(
             )
         }
         if matched:
-            ids.append(", ".join(sorted(matched)))
-            statuses.append("candidate_observations")
+            links.extend(
+                {
+                    "query_id": row.query_id,
+                    "transmogrifier_id": version_id,
+                    "provenance_status": "candidate_observation",
+                }
+                for version_id in sorted(matched)
+            )
+            row_statuses.append("candidate_observations")
             continue
 
         payload = "\x1f".join(
@@ -665,21 +693,57 @@ def enrich_reviewed_search_term_provenance(
             ]
         )
         legacy_id = hashlib.sha256(payload.encode("utf-8")).hexdigest()[:24]
-        ids.append(f"legacy_reviewed_{legacy_id}")
-        statuses.append("legacy_reviewed_export")
+        links.append(
+            {
+                "query_id": row.query_id,
+                "transmogrifier_id": f"legacy_reviewed_{legacy_id}",
+                "provenance_status": "legacy_reviewed_export",
+            }
+        )
+        row_statuses.append("legacy_reviewed_export")
 
-    reviewed["transmogrifier_ids"] = ids
-    reviewed["selection_mode"] = "selected"
-    reviewed["selection_as_of"] = ""
-    reviewed["candidate_provenance_status"] = statuses
+    bridge = pd.DataFrame(links).drop_duplicates().sort_values(
+        ["query_id", "transmogrifier_id"]
+    )
+    bridge_path = os.path.join(os.path.dirname(path), "reviewed_candidate_term_provenance.csv")
 
-    temporary_path = f"{path}.tmp"
-    reviewed.to_csv(temporary_path, index=False)
-    os.replace(temporary_path, path)
+    reviewed_bytes = reviewed.to_csv(index=False).encode("utf-8")
+    bridge_bytes = bridge.to_csv(index=False).encode("utf-8")
+    reviewed_sha256 = hashlib.sha256(reviewed_bytes).hexdigest()
+    bridge_sha256 = hashlib.sha256(bridge_bytes).hexdigest()
+    export_payload = "\x1f".join(["selected", reviewed_sha256, bridge_sha256])
+    term_export_id = f"te_{hashlib.sha256(export_payload.encode('utf-8')).hexdigest()[:24]}"
+    metadata = {
+        "term_export_id": term_export_id,
+        "selection_mode": "selected",
+        "selection_as_of": None,
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "reviewed_query_rows": int(len(reviewed)),
+        "provenance_link_rows": int(len(bridge)),
+        "candidate_observation_query_rows": row_statuses.count("candidate_observations"),
+        "legacy_reviewed_query_rows": row_statuses.count("legacy_reviewed_export"),
+        "reviewed_queries_sha256": reviewed_sha256,
+        "provenance_bridge_sha256": bridge_sha256,
+    }
+    metadata_path = os.path.join(
+        os.path.dirname(path), "reviewed_candidate_term_export_metadata.json"
+    )
+
+    outputs = {
+        path: reviewed_bytes,
+        bridge_path: bridge_bytes,
+        metadata_path: (json.dumps(metadata, indent=2) + "\n").encode("utf-8"),
+    }
+    for output_path, content in outputs.items():
+        temporary_path = f"{output_path}.tmp"
+        with open(temporary_path, "wb") as handle:
+            handle.write(content)
+        os.replace(temporary_path, output_path)
     print(
         f"Enriched {len(reviewed)} reviewed queries: "
-        f"{statuses.count('candidate_observations')} linked to candidate observations; "
-        f"{statuses.count('legacy_reviewed_export')} assigned explicit legacy IDs."
+        f"{row_statuses.count('candidate_observations')} linked to candidate observations; "
+        f"{row_statuses.count('legacy_reviewed_export')} assigned explicit legacy IDs. "
+        f"Wrote {len(bridge)} provenance links under export {term_export_id}."
     )
     return reviewed
 

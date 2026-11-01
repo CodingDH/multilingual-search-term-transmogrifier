@@ -11,6 +11,7 @@ This package generates multilingual candidate terms and rationales from direct t
 | `data_processing.py` | Parse and normalize service responses |
 | `log_errors.py` | Append service error observations without erasing earlier failures |
 | `translation_versions.py` | Assign `transmogrifier_id` values and select historical views |
+| `normalize_service_observation_files.py` | Preview or migrate legacy wide prompt-service CSVs to service-local schemas |
 
 ```bash
 python -m scripts.candidate_generation.generate_translations
@@ -27,6 +28,23 @@ scripts append observations and return a latest-only view to existing callers.
 This domain-specific loader belongs in `translation_versions.py`, rather than
 the general `scripts/utils.py`, because its identity and selection rules apply
 only to candidate observations.
+
+Each prompt-service CSV is service-local. It contains common observation keys,
+generic generation settings, and fields prefixed by the service named in the
+filename. The cumulative in-memory generation frame is never persisted whole:
+foreign-service candidates, baseline terms, mutable family metadata, composite
+term selections, and temporary `exclude_*` flags remain in their authoritative
+files. This prevents later services in one run from duplicating all earlier
+responses. Legacy files can be audited without modification and then migrated
+atomically:
+
+```bash
+python -m scripts.candidate_generation.normalize_service_observation_files \
+  --data-directory datasets --term digital_humanities
+
+python -m scripts.candidate_generation.normalize_service_observation_files \
+  --data-directory datasets --term digital_humanities --apply
+```
 
 ```python
 from scripts.candidate_generation.translation_versions import load_translation_versions
