@@ -52,6 +52,7 @@ import json
 import os
 import re
 import sys
+import unicodedata
 from collections import Counter
 from datetime import datetime, timezone
 
@@ -80,20 +81,20 @@ except Exception:
 CONSTRUCTED_SCRIPT_LANGS = frozenset({"zbl", "lab", "elx", "xmr"})
 
 
-def _query_id(row: pd.Series) -> str:
-    """Return a stable identifier for one reviewed query-language grouping."""
-    languages = ", ".join(
-        sorted(code.strip() for code in str(row.get("natural_language", "")).split(",") if code.strip())
-    )
+def _search_term_identity(value: object) -> str:
+    """Normalize a value only for stable identity comparison."""
+    return " ".join(unicodedata.normalize("NFKC", str(value)).casefold().split())
+
+
+def _search_term_id(row: pd.Series) -> str:
+    """Identify one source concept and reviewed GitHub search string."""
     payload = "\x1f".join(
         [
-            str(row.get("search_term_source", "")),
-            str(row.get("search_term", "")),
-            languages,
-            str(row.get("directionality", "")),
+            _search_term_identity(row.get("search_term_source", "")),
+            _search_term_identity(row.get("search_term", "")),
         ]
     )
-    return f"cq_{hashlib.sha256(payload.encode('utf-8')).hexdigest()[:24]}"
+    return f"st_{hashlib.sha256(payload.encode('utf-8')).hexdigest()[:24]}"
 
 # Quality-flag columns that indicate the translated TERM itself is unreliable.
 # The paired *_services column lists which service(s) triggered the flag.
@@ -330,9 +331,21 @@ def _build_term_version_ids(
                 curated, _ = curate_translation(curated)
                 if curated is None:
                     continue
-            key = (language_code, curated.lower())
+            key = (language_code, _provenance_term_key(curated))
             version_ids.setdefault(key, set()).add(str(version_id))
     return version_ids
+
+
+def _provenance_term_key(value: object) -> str:
+    """Normalize only enough to reconnect reviewed terms to observations.
+
+    Unicode case folding represents Turkish capital dotted I as ``i`` followed
+    by a combining dot. The reviewed export stores the visually equivalent
+    lowercase ``i``. This comparison key removes that case-fold artifact
+    without changing either the stored candidate or the GitHub search query.
+    """
+    text = unicodedata.normalize("NFKC", str(value)).strip().casefold()
+    return " ".join(text.replace("i\u0307", "i").split())
 
 
 def _build_search_term_drops(data_dir: str, term_slug: str) -> set[tuple[str, str]]:
@@ -597,7 +610,7 @@ def build_search_terms(
 
     deduped["ltr_languages"] = deduped["ltr_languages"].fillna("")
     deduped["rtl_languages"] = deduped["rtl_languages"].fillna("")
-    deduped.insert(0, "query_id", deduped.apply(_query_id, axis=1))
+    deduped.insert(0, "search_term_id", deduped.apply(_search_term_id, axis=1))
 
     out_dir = os.path.join(root, "candidate_terms", term_slug, "search_terms")
     os.makedirs(out_dir, exist_ok=True)
@@ -655,55 +668,47 @@ def enrich_reviewed_search_term_provenance(
         columns=[column for column in inline_provenance_columns if column in reviewed],
         errors="ignore",
     )
-    if "query_id" not in reviewed.columns:
-        reviewed.insert(0, "query_id", reviewed.apply(_query_id, axis=1))
-    if reviewed["query_id"].duplicated().any():
-        duplicates = reviewed.loc[reviewed["query_id"].duplicated(False), "query_id"].unique()
-        raise ValueError(f"Reviewed export contains duplicate query IDs: {duplicates[:5]}")
+    reviewed = reviewed.drop(columns=["query_id"], errors="ignore")
+    if "search_term_id" in reviewed.columns:
+        reviewed["search_term_id"] = reviewed.apply(_search_term_id, axis=1)
+    else:
+        reviewed.insert(0, "search_term_id", reviewed.apply(_search_term_id, axis=1))
 
     links: list[dict[str, str]] = []
-    row_statuses: list[str] = []
+    unmatched: list[tuple[str, str, str]] = []
     for row in reviewed.itertuples(index=False):
         languages = [code.strip() for code in str(row.natural_language).split(",")]
         matched = {
             version_id
             for code in languages
             for version_id in version_ids.get(
-                (code, str(row.search_term).strip().lower()), set()
+                (code, _provenance_term_key(row.search_term)), set()
             )
         }
         if matched:
             links.extend(
                 {
-                    "query_id": row.query_id,
+                    "search_term_id": row.search_term_id,
                     "transmogrifier_id": version_id,
-                    "provenance_status": "candidate_observation",
                 }
                 for version_id in sorted(matched)
             )
-            row_statuses.append("candidate_observations")
             continue
 
-        payload = "\x1f".join(
-            [
-                str(row.search_term_source),
-                str(row.search_term),
-                str(row.natural_language),
-                str(row.directionality),
-            ]
+        unmatched.append((row.search_term_id, str(row.search_term), str(row.natural_language)))
+
+    if unmatched:
+        examples = "; ".join(
+            f"{search_term_id}: {term!r} [{languages}]"
+            for search_term_id, term, languages in unmatched[:5]
         )
-        legacy_id = hashlib.sha256(payload.encode("utf-8")).hexdigest()[:24]
-        links.append(
-            {
-                "query_id": row.query_id,
-                "transmogrifier_id": f"legacy_reviewed_{legacy_id}",
-                "provenance_status": "legacy_reviewed_export",
-            }
+        raise ValueError(
+            f"Could not resolve {len(unmatched)} reviewed queries to candidate observations. "
+            f"Examples: {examples}"
         )
-        row_statuses.append("legacy_reviewed_export")
 
     bridge = pd.DataFrame(links).drop_duplicates().sort_values(
-        ["query_id", "transmogrifier_id"]
+        ["search_term_id", "transmogrifier_id"]
     )
     bridge_path = os.path.join(os.path.dirname(path), "reviewed_candidate_term_provenance.csv")
 
@@ -711,17 +716,13 @@ def enrich_reviewed_search_term_provenance(
     bridge_bytes = bridge.to_csv(index=False).encode("utf-8")
     reviewed_sha256 = hashlib.sha256(reviewed_bytes).hexdigest()
     bridge_sha256 = hashlib.sha256(bridge_bytes).hexdigest()
-    export_payload = "\x1f".join(["selected", reviewed_sha256, bridge_sha256])
-    term_export_id = f"te_{hashlib.sha256(export_payload.encode('utf-8')).hexdigest()[:24]}"
     metadata = {
-        "term_export_id": term_export_id,
         "selection_mode": "selected",
         "selection_as_of": None,
         "generated_at": datetime.now(timezone.utc).isoformat(),
-        "reviewed_query_rows": int(len(reviewed)),
+        "reviewed_search_term_rows": int(len(reviewed)),
         "provenance_link_rows": int(len(bridge)),
-        "candidate_observation_query_rows": row_statuses.count("candidate_observations"),
-        "legacy_reviewed_query_rows": row_statuses.count("legacy_reviewed_export"),
+        "linked_search_term_rows": int(bridge["search_term_id"].nunique()),
         "reviewed_queries_sha256": reviewed_sha256,
         "provenance_bridge_sha256": bridge_sha256,
     }
@@ -740,10 +741,9 @@ def enrich_reviewed_search_term_provenance(
             handle.write(content)
         os.replace(temporary_path, output_path)
     print(
-        f"Enriched {len(reviewed)} reviewed queries: "
-        f"{row_statuses.count('candidate_observations')} linked to candidate observations; "
-        f"{row_statuses.count('legacy_reviewed_export')} assigned explicit legacy IDs. "
-        f"Wrote {len(bridge)} provenance links under export {term_export_id}."
+        f"Enriched {len(reviewed)} reviewed rows: "
+        f"all {bridge['search_term_id'].nunique()} unique search terms linked to "
+        f"candidate observations. Wrote {len(bridge)} provenance links."
     )
     return reviewed
 

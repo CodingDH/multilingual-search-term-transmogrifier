@@ -328,13 +328,13 @@ def build_review(
     reviewed_path = private_review_dir / 'search_result_relevance_reviewed.csv'
 
     terms = pd.read_csv(terms_path, keep_default_na=False)
-    export_metadata = json.loads(metadata_path.read_text(encoding='utf-8'))
+    json.loads(metadata_path.read_text(encoding='utf-8'))
     if 'keep_term' in terms.columns:
         terms = terms[terms['keep_term'].astype(str).str.lower().eq('true')].copy()
     terms['search_term_key'] = terms['search_term'].astype(str).str.lower().str.strip()
     term_aggregations = {
         'search_term': ('search_term', 'first'),
-        'query_ids': ('query_id', _join_unique),
+        'search_term_ids': ('search_term_id', _join_unique),
         'natural_language': ('natural_language', _join_unique),
         'language_mapping_rows': ('natural_language', 'size'),
         'source_translation_count': ('counts', 'sum'),
@@ -342,7 +342,6 @@ def build_review(
         'comparison_status': ('comparison_status', _join_unique),
     }
     term_summary = terms.groupby('search_term_key', as_index=False).agg(**term_aggregations)
-    term_summary['term_export_id'] = export_metadata['term_export_id']
 
     root = Path(search_dir)
     patterns = {

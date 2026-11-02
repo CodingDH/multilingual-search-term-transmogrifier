@@ -1,12 +1,10 @@
 {
-  "term_export_id": "te_1d453e47f3e69607d4942f3d",
   "selection_mode": "selected",
   "selection_as_of": null,
-  "generated_at": "2026-11-01T23:35:20.036054+00:00",
-  "reviewed_query_rows": 4183,
-  "provenance_link_rows": 13594,
-  "candidate_observation_query_rows": 4158,
-  "legacy_reviewed_query_rows": 25,
-  "reviewed_queries_sha256": "2a96e9e9f0d25014d3634321d3a540acdce9d85d31c7e9a70ef95c0a5b8c9ee8",
-  "provenance_bridge_sha256": "58c571add6328e8db32513e2b5dec35dfeb080fe952833f86238c78ac55bb94e"
+  "generated_at": "2026-11-02T00:09:18.886889+00:00",
+  "reviewed_search_term_rows": 4183,
+  "provenance_link_rows": 13644,
+  "linked_search_term_rows": 4181,
+  "reviewed_queries_sha256": "a866ab78c2e86ab458b667f7723e6c1d27f2d418abbd9424f6674e2988a16fb1",
+  "provenance_bridge_sha256": "34738b13f4ff3044de00f0be3147c18220a5a430a7ea612f72766b2d3e09cb3b"
 }

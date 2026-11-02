@@ -218,7 +218,7 @@ for the complete evaluation inventory and normalization assumptions.
 
 | Column | Meaning |
 | --- | --- |
-| `query_id` | Stable identifier for one reviewed query-language grouping. |
+| `search_term_id` | Stable identifier for one source concept and normalized GitHub search string. Language provenance and directionality do not alter this identifier. |
 | `search_term` | Deduplicated reviewed query string. |
 | `natural_language` | Language-code provenance associated with the query. |
 | `counts` | Contributing candidate records before grouping. |
@@ -229,15 +229,16 @@ for the complete evaluation inventory and normalization assumptions.
 
 ### `reviewed_candidate_term_provenance.csv`
 
-Long-form bridge between `query_id` and its supporting `transmogrifier_id`
-values. `provenance_status` distinguishes preserved candidate observations from
-explicit legacy reviewed-export identifiers.
+Long-form bridge between `search_term_id` and its supporting `transmogrifier_id`
+values. Every bridge row resolves to a preserved candidate observation; export
+generation stops rather than inventing fallback identifiers when a reviewed
+query cannot be matched.
 
 ### `reviewed_candidate_term_export_metadata.json`
 
-Export-level temporal and integrity metadata, including `term_export_id`,
-`selection_mode`, optional `selection_as_of`, artifact hashes, and coverage
-counts. These values are not repeated on every reviewed query row.
+Export-level temporal and integrity metadata, including `selection_mode`,
+optional `selection_as_of`, artifact hashes, and coverage counts. These values
+are not repeated on every reviewed search-term row.
 
 ### Private external `search_result_relevance_reviewed.csv`
 
