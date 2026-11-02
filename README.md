@@ -177,7 +177,15 @@ Generative AI systems, specifically Claude and Codex, assisted with the developm
 
 Repository-level citation metadata will be added with the first versioned public release. Until then, cite the repository URL together with the commit hash or release tag used for the analysis.
 
-## Ongoing Terminology Migration
+## Future Updates
+
+### Historical Bridge for Candidate Observations To Search-Term Review
+
+The current `search_term_id`–`transmogrifier_id` bridge records the candidate observations supporting the reviewed *Digital Humanities* search-term export used for the present GitHub collection. A future historical-snapshot workflow will make this selection explicit when candidate generation is repeated. The planned intermediate review will allow a reviewer to choose a dated candidate snapshot, inspect which candidate observations support each grouped search string, and export the selected links without attaching later observations retroactively to an earlier review. This step will likely use a dedicated HTML interface between candidate generation and final search-term review.
+
+That historical bridge reviewer is not required to reproduce or continue the current collection. Development is therefore deferred while the initial, first-pass, and final-pass GitHub collection stages are completed and evaluated.
+
+### Ongoing Terminology Migration
 
 Repository terminology is being revised to avoid using *translation* as a blanket description for every generated response. The pipeline requests translations, and some outputs may be established translations, but the stored corpus also contains transliterations, borrowings, paraphrases, disciplinary reinterpretations, source-term repetitions, malformed responses, and unsupported inventions. Unless an output has been independently validated, current documentation therefore favors *candidate term*, *candidate output*, or *transmogrification*.
 
