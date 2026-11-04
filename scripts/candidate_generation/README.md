@@ -71,7 +71,7 @@ today.
 
 Use `--refresh-existing` only when the purpose is to observe the enabled
 services again. The pipeline re-queries every enabled cell and appends each
-successful response with a new UTC `coding_dh_date`, even when the visible term
+successful response with a new UTC `coding_dh_generated_at_utc`, even when the visible term
 and rationale are unchanged:
 
 ```bash
@@ -94,6 +94,13 @@ python -m scripts.candidate_generation.generate_translations \
 Refreshes can incur substantial API cost. Error logs are historical observation
 tables as well: a repeated failure receives a new timestamp and identifier
 rather than replacing the earlier record.
+
+`coding_dh_generated_at_utc` records when Coding DH observed the service
+response or failure. Provider fields such as `openai_created` and
+`ollama_created_at` remain separate source-reported timestamps. Legacy files
+with `coding_dh_date` are normalized to the specific generation field when
+loaded and are rewritten to the current schema only when the pipeline next
+updates that file.
 
 Errors remain physically separate from successful model-output CSVs.
 `error_observation_id` names one dated failure event; no stored

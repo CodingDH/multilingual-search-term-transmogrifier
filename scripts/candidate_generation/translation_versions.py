@@ -16,6 +16,8 @@ from typing import Literal
 import pandas as pd
 
 VersionMode = Literal["latest", "selected", "as_of", "all_history"]
+CANDIDATE_GENERATED_AT_COLUMN = "coding_dh_generated_at_utc"
+LEGACY_CANDIDATE_DATE_COLUMN = "coding_dh_date"
 PROMPT_VARIANTS = (
     "fluent_speaker",
     "github_searcher",
@@ -29,7 +31,7 @@ SERVICE_OBSERVATION_COLUMNS = (
     "language_name",
     "project_language_code",
     "term_source",
-    "coding_dh_date",
+    CANDIDATE_GENERATED_AT_COLUMN,
     "service",
     "prompt_variant",
     "model_identifier",
@@ -39,6 +41,27 @@ SERVICE_OBSERVATION_COLUMNS = (
     "generation_max_output_tokens",
     "generation_settings_source",
 )
+
+
+def normalize_candidate_timestamps(frame: pd.DataFrame) -> pd.DataFrame:
+    """Expose the specific generation timestamp while reading legacy files."""
+    result = frame.copy()
+    if CANDIDATE_GENERATED_AT_COLUMN not in result.columns:
+        if LEGACY_CANDIDATE_DATE_COLUMN in result.columns:
+            result[CANDIDATE_GENERATED_AT_COLUMN] = result[
+                LEGACY_CANDIDATE_DATE_COLUMN
+            ]
+        else:
+            result[CANDIDATE_GENERATED_AT_COLUMN] = None
+    elif LEGACY_CANDIDATE_DATE_COLUMN in result.columns:
+        missing = (
+            result[CANDIDATE_GENERATED_AT_COLUMN].isna()
+            | result[CANDIDATE_GENERATED_AT_COLUMN].astype(str).str.strip().eq("")
+        )
+        result.loc[missing, CANDIDATE_GENERATED_AT_COLUMN] = result.loc[
+            missing, LEGACY_CANDIDATE_DATE_COLUMN
+        ]
+    return result
 
 
 def select_service_observation_columns(
@@ -110,7 +133,7 @@ def _version_payload(row: pd.Series) -> dict[str, str]:
         "service",
         "prompt_variant",
         "model_identifier",
-        "coding_dh_date",
+        CANDIDATE_GENERATED_AT_COLUMN,
         *output_columns,
     ]
     return {column: _text(row.get(column)) for column in columns}
@@ -130,7 +153,7 @@ def add_transmogrifier_ids(
     Consequently, the same visible output observed at two times receives two
     IDs, while replaying the exact same stored observation produces the same ID.
     """
-    result = frame.copy()
+    result = normalize_candidate_timestamps(frame)
     if service is not None:
         result["service"] = service
     if prompt_variant is not None:
@@ -199,11 +222,16 @@ def select_translation_versions(
         return result[
             result["transmogrifier_id"].isin(selected["transmogrifier_id"])
         ].reset_index(drop=True)
-    if "coding_dh_date" not in result.columns:
-        raise ValueError("latest and as_of modes require coding_dh_date")
+    if CANDIDATE_GENERATED_AT_COLUMN not in result.columns:
+        raise ValueError(
+            f"latest and as_of modes require {CANDIDATE_GENERATED_AT_COLUMN}"
+        )
 
     result["_version_time"] = pd.to_datetime(
-        result["coding_dh_date"], format="mixed", errors="coerce", utc=True
+        result[CANDIDATE_GENERATED_AT_COLUMN],
+        format="mixed",
+        errors="coerce",
+        utc=True,
     )
     if mode == "as_of":
         if as_of is None:
@@ -237,6 +265,7 @@ def load_translation_versions(
     """Load one translation CSV and return the requested version view."""
     path = Path(path)
     frame = pd.read_csv(path, on_bad_lines="warn", converters={"language_code": str})
+    frame = normalize_candidate_timestamps(frame)
     inferred_service, inferred_variant = infer_service_context(path)
     frame = add_transmogrifier_ids(
         frame,

@@ -264,9 +264,19 @@ def load_variant_df(
         base = merged
 
     # Keep most recent row per language (in case of duplicates from outer merges)
-    if 'coding_dh_date' in base.columns:
-        base['coding_dh_date'] = pd.to_datetime(base['coding_dh_date'], errors='coerce')
-        base = base.sort_values('coding_dh_date', ascending=False)
+    timestamp_column = next(
+        (
+            column for column in (
+                'coding_dh_generated_at_utc', 'coding_dh_date'
+            ) if column in base.columns
+        ),
+        None,
+    )
+    if timestamp_column:
+        base[timestamp_column] = pd.to_datetime(
+            base[timestamp_column], errors='coerce'
+        )
+        base = base.sort_values(timestamp_column, ascending=False)
     base = base.drop_duplicates(subset=['language_code', 'term_source'], keep='first')
     base['prompt_variant'] = variant
     base = enforce_translation_rationale_pairing(base)

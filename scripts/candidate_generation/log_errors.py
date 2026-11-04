@@ -38,7 +38,7 @@ def log_error_to_file(
 	error_service = Path(error_file_path).stem.removesuffix("_translation_errors")
 	payload = {
 		"error_service": error_service,
-		"coding_dh_date": observed_at,
+		"coding_dh_generated_at_utc": observed_at,
 		"error_url": error_url,
 		"status_code": status_code,
 		"error_message": error_message,
@@ -50,7 +50,7 @@ def log_error_to_file(
 	error_df = pd.DataFrame([{
 		"error_observation_id": error_observation_id,
 		"error_service": error_service,
-		"coding_dh_date": observed_at,
+		"coding_dh_generated_at_utc": observed_at,
 		"error_date": observed_at[:10],
 		"error_url": error_url,
 		"status_code": status_code,

@@ -20,7 +20,7 @@ The current notebooks deduplicate and aggregate these records explicitly when re
 | --- | --- |
 | `error_observation_id` | Deterministic identifier for one dated failure event. Present on newly written rows. |
 | `error_service` | Service inferred from the error-log filename. Present on newly written rows. |
-| `coding_dh_date` | UTC timestamp at which Coding DH observed the failure. Present on newly written rows. |
+| `coding_dh_generated_at_utc` | UTC timestamp at which Coding DH observed the failure. Present on newly written rows; legacy rows may use `coding_dh_date`. |
 | `error_date` | Legacy calendar-date field retained for compatibility. |
 | `error_url` | Endpoint or internal operation associated with the failure. For local models this may name an Ollama operation rather than a web URL. |
 | `status_code` | Pipeline status used for retry behavior. It can be an HTTP status or a project-assigned equivalent. |

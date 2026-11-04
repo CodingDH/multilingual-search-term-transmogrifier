@@ -34,6 +34,12 @@ under `../metadata_files/`. Some services return no candidate for a row; the
 row is retained with a blank service field so coverage failures remain
 measurable.
 
+New candidate observations store their project timestamp as
+`coding_dh_generated_at_utc`. This field records when Coding DH received the
+candidate, not when a provider created a model or when a linguistic form first
+entered use. The historical `coding_dh_date` column remains a supported legacy
+alias and is normalized by the candidate-version loader.
+
 The original Wikipedia artifact is sparse because it contains only language rows for which the initial interlanguage-link lookup produced a label. Future Wikipedia refreshes append complete dated language snapshots, including blank candidates where no label is present. This makes additions, edits, and removals observable without rewriting the original sparse observations.
 
 Routine analysis uses the latest observation for each term-language-service-

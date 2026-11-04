@@ -89,7 +89,7 @@ label presence and absence can be compared over time.
 | `{service}_translated_term` | Parsed candidate from the named source. |
 | `wikipedia_translated_term` | Community-edited interlanguage label where available. |
 | `term` | Pipeline-selected term in cumulative historical schemas, not an independent source. |
-| `coding_dh_date` | Collection or write date. |
+| `coding_dh_generated_at_utc` | UTC time Coding DH observed the candidate response. Legacy files may store the same event as `coding_dh_date`. |
 | `transmogrifier_id` | Stable identifier for one service-prompt-language observation. Generated from its source, model, timestamp, and output. |
 | `service`, `prompt_variant`, `model_identifier` | Explicit version-selection context. Older rows can be backfilled from filenames and service-specific model columns when loaded. |
 | `generation_temperature`, `generation_top_p`, `generation_max_output_tokens` | Request settings saved on new LLM observations. A blank value means the provider default or a non-LLM source, not zero. |
@@ -129,7 +129,7 @@ boolean `selected` column; review choices do not overwrite generated outputs.
 A normal generation command fills missing cells and may reuse cached outputs.
 Cache reuse does not create a new row or imply that a service was stable over
 time. An explicit `--refresh-existing` command queries the enabled cells again;
-the returned response receives a new UTC `coding_dh_date` and
+the returned response receives a new UTC `coding_dh_generated_at_utc` and
 `transmogrifier_id` even when its content matches the preceding observation.
 
 The `judge` condition is dependent: its prompts contain candidates from earlier
@@ -144,7 +144,7 @@ observations.
 | --- | --- |
 | `error_observation_id` | Deterministic identifier for one dated failure observation. |
 | `error_service` | Service inferred from the error-log filename. |
-| `coding_dh_date` | UTC timestamp at which Coding DH observed the failure. |
+| `coding_dh_generated_at_utc` | UTC timestamp at which Coding DH observed the failure. Legacy rows may use `coding_dh_date`. |
 | `error_date` | Legacy calendar-date representation retained for compatibility. |
 | `status_code`, `error_url`, `error_message` | Service or pipeline failure evidence. |
 | `term_source`, `language_code`, `variant` | Requested cell where available. |
@@ -219,6 +219,7 @@ for the complete evaluation inventory and normalization assumptions.
 | Column | Meaning |
 | --- | --- |
 | `search_term_id` | Stable identifier for one source concept and normalized GitHub search string. Language provenance and directionality do not alter this identifier. |
+| `coding_dh_derived_at_utc` | Time this grouped query snapshot was materialized from candidate observations. |
 | `search_term` | Deduplicated reviewed query string. |
 | `natural_language` | Language-code provenance associated with the query. |
 | `counts` | Contributing candidate records before grouping. |
@@ -226,6 +227,7 @@ for the complete evaluation inventory and normalization assumptions.
 | `search_term_source` | Services and prompt conditions that supplied the term. |
 | `comparison_status` | Upstream candidate-comparison category. |
 | `keep_term` | Reviewed inclusion decision. |
+| `coding_dh_reviewed_at_utc` | Time the reviewer changed the row or confirmed it through the finalized export. |
 
 ### `reviewed_candidate_term_provenance.csv`
 
@@ -238,7 +240,8 @@ query cannot be matched.
 
 Export-level temporal and integrity metadata, including `selection_mode`,
 optional `selection_as_of`, artifact hashes, and coverage counts. These values
-are not repeated on every reviewed search-term row.
+are not repeated on every reviewed search-term row. New exports record
+`coding_dh_derived_at_utc`; legacy metadata may use `generated_at`.
 
 ### Private external `search_result_relevance_reviewed.csv`
 
@@ -256,6 +259,7 @@ This object-level review artifact is stored under the configured external search
 | `retrieval_assessment` | Relevance of sampled GitHub results. |
 | `review_decision` | `retain`, `retain_track`, or `exclude`. |
 | `reviewer_notes`, `review_status` | Decision rationale and whether the assessment is reviewed; reviewer type is not encoded. |
+| `coding_dh_reviewed_at_utc` | Time the retrieval-review decision was confirmed or changed; blank for unreviewed queue rows. |
 
 See [`search_terms/README.md`](candidate_terms/digital_humanities/search_terms/README.md)
 for overlap-edge fields, allowed review values, and GitHub search limitations.

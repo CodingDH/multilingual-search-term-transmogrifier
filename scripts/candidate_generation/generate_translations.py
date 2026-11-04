@@ -17,6 +17,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..",
 from scripts.utils import get_data_directory_path, read_csv_file
 from scripts.candidate_generation.log_errors import prepare_error_log, log_error_to_file
 from scripts.candidate_generation.translation_versions import (
+	CANDIDATE_GENERATED_AT_COLUMN,
 	load_translation_versions,
 	save_translation_history,
 	select_translation_versions,
@@ -182,7 +183,7 @@ def read_existing_translations_for_service(
 	translation_column: str,
 	subfolder: str = "historic_translations_data",
 	file_suffix: str = "_translated_terms.csv",
-	timestamp_column: str = "coding_dh_date",
+	timestamp_column: str = CANDIDATE_GENERATED_AT_COLUMN,
 	version_mode: str = "latest",
 ) -> pd.DataFrame:
 	"""
@@ -257,7 +258,7 @@ def load_existing_translations_by_term_sources(
 	translate_file_name: str,
 	term_sources: List[str],
 	translation_columns: List[str],
-	timestamp_column: str = "coding_dh_date",
+	timestamp_column: str = CANDIDATE_GENERATED_AT_COLUMN,
 	use_cached_translations: bool = True,
 	subfolder: str = "direct_services",
 	version_mode: str = "latest",
@@ -275,7 +276,7 @@ def load_existing_translations_by_term_sources(
 	translation_columns : List[str]
 		List of translation columns to include in the final DataFrame.
 	timestamp_column : str, optional
-		Name of the timestamp column to use for deduplication (default is 'coding_dh_date').
+		Name of the timestamp column used to select the latest candidate observation.
 	use_cached_translations : bool, optional
 		Whether to use cached translations (default is True).
 	subfolder : str, optional
@@ -395,9 +396,9 @@ def process_individual_terms(
 		_filled = existing_translations[_tcol].notna().sum() if _tcol else '?'
 		console.print(f"Loaded {len(existing_translations)} existing rows ({_filled} with translations)", style="bold green")
 		merge_cols = ['language_code', 'term_source']
-		# Exclude coding_dh_date here — it lives on existing_translations for the final concat,
+		# Exclude the generation timestamp here; it belongs to persisted observations,
 		# not on the working final_df. Including it causes _x/_y suffix collisions when
-		# final_df already has a coding_dh_date column from earlier service merges.
+		# not to the cumulative cross-service working frame.
 		cols_to_merge = list(set(merge_cols + translation_columns) & set(existing_translations.columns))
 		# _merge_translations drops any overlapping non-key columns from the incoming df,
 		# preventing _x/_y suffixes on columns that final_df already carries.
@@ -440,7 +441,7 @@ def process_individual_terms(
 					translated_row = row_df.iloc[0]
 
 				# Stamp the translation date before saving
-				translated_row['coding_dh_date'] = utc_observed_at()
+				translated_row[CANDIDATE_GENERATED_AT_COLUMN] = utc_observed_at()
 				for setting, value in generation_settings_for_service(service_name).items():
 					translated_row[setting] = value
 
@@ -453,7 +454,12 @@ def process_individual_terms(
 				# exclude_* from mark_errored_terms, merge artifacts.
 				_cols_to_drop = (
 					[c for c in save_df.columns if c.startswith('exclude_')] +
-					[c for c in save_df.columns if c in ('coding_dh_date_x', 'coding_dh_date_y')]
+					[c for c in save_df.columns if c in (
+						f'{CANDIDATE_GENERATED_AT_COLUMN}_x',
+						f'{CANDIDATE_GENERATED_AT_COLUMN}_y',
+						'coding_dh_date_x',
+						'coding_dh_date_y',
+					)]
 				)
 				save_df = save_df.drop(columns=_cols_to_drop, errors='ignore')
 				save_translation_history(
@@ -636,7 +642,7 @@ def process_grouped_terms(
 
 		# Explode into one row per term
 		exploded_grouped_terms = grouped_terms.explode(['term_source', translation_column])
-		exploded_grouped_terms['coding_dh_date'] = utc_observed_at()
+		exploded_grouped_terms[CANDIDATE_GENERATED_AT_COLUMN] = utc_observed_at()
 		for term_source in exploded_grouped_terms.term_source.unique():
 			single_df = exploded_grouped_terms[
 				exploded_grouped_terms.term_source == term_source
@@ -856,7 +862,7 @@ def generate_initial_terms(target_terms: list, data_directory_path: str, process
 					translations_df['wikipedia_translated_term'] = translations_df[
 						'language_code'
 					].map(translations)
-					translations_df['coding_dh_date'] = utc_observed_at()
+					translations_df[CANDIDATE_GENERATED_AT_COLUMN] = utc_observed_at()
 					save_translation_history(
 						translation_file_path,
 						translations_df,
@@ -1389,7 +1395,7 @@ if __name__ == '__main__':
 	)
 	if _args.refresh_existing:
 		console.print(
-			"Existing observations will remain in history; successful repeated outputs receive a new coding_dh_date.",
+			f"Existing observations remain in history; successful repeated outputs receive a new {CANDIDATE_GENERATED_AT_COLUMN}.",
 			style="yellow",
 		)
 

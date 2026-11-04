@@ -38,6 +38,13 @@ The HTML files do not write directly back into the repository. Each reviewer dow
    - Open `search_relevance_reviewer.html`
    - Load the private external `search_terms/digital_humanities/search_result_relevance_review.csv`
    - Download and save beside it as `search_terms/digital_humanities/search_result_relevance_reviewed.csv`
+   - From `searching_for_DH/data_generation_scripts`, run `python build_search_workflow_tables.py --import-reviewed` to append new review observations to DuckDB
+
+The relevance reviewer remains file based because it is a static local HTML
+page. The CSV is a deliberate interchange format rather than the sole
+analytical store. Use `python build_search_workflow_tables.py
+--export-review-input` in `searching_for_DH/data_generation_scripts` when a
+fresh browser input needs to be exported from DuckDB.
 
 ## File Reference
 

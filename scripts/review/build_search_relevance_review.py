@@ -14,7 +14,6 @@ import glob
 import json
 import os
 import sys
-from datetime import date
 from collections import Counter
 from itertools import combinations
 from pathlib import Path
@@ -560,8 +559,11 @@ def build_review(
         prior = pd.read_csv(reviewed_path, keep_default_na=False)
         if 'search_term_key' in prior.columns:
             available_review_columns = [column for column in REVIEW_COLUMNS if column in prior.columns]
-            if 'coding_dh_date' in prior.columns:
-                available_review_columns.append('coding_dh_date')
+            if 'coding_dh_reviewed_at_utc' in prior.columns:
+                available_review_columns.append('coding_dh_reviewed_at_utc')
+            elif 'coding_dh_date' in prior.columns:
+                prior['coding_dh_reviewed_at_utc'] = prior['coding_dh_date']
+                available_review_columns.append('coding_dh_reviewed_at_utc')
             decisions = prior[['search_term_key', *available_review_columns]].drop_duplicates('search_term_key')
             review = review.merge(
                 decisions, on='search_term_key', how='left', suffixes=('', '_prior')
@@ -603,14 +605,15 @@ def build_review(
 
     search_terms_dir.mkdir(parents=True, exist_ok=True)
     private_review_dir.mkdir(parents=True, exist_ok=True)
-    if 'coding_dh_date' not in review.columns:
-        review['coding_dh_date'] = date.today().isoformat()
-    else:
-        review['coding_dh_date'] = review['coding_dh_date'].replace('', pd.NA).fillna(
-            date.today().isoformat()
-        )
+    if 'coding_dh_reviewed_at_utc' not in review.columns:
+        review['coding_dh_reviewed_at_utc'] = ''
+    review.loc[
+        ~review['review_status'].eq('reviewed'), 'coding_dh_reviewed_at_utc'
+    ] = ''
     review_columns = review.columns.tolist()
-    review_columns.insert(1, review_columns.pop(review_columns.index('coding_dh_date')))
+    review_columns.insert(
+        1, review_columns.pop(review_columns.index('coding_dh_reviewed_at_utc'))
+    )
     review = review[review_columns]
     review.to_csv(output_path, index=False)
     print(f'Saved {len(review):,} productive search terms -> {output_path}')

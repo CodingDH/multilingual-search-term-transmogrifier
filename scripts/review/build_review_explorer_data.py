@@ -129,8 +129,18 @@ def build_review_data(
         if variant == 'minimal' and baseline_df is None:
             avail_baseline = [c for c in BASELINE_COLS if c in vdf.columns]
             baseline_df = vdf[['language_code'] + avail_baseline].copy()
-            if 'coding_dh_date' in vdf.columns:
-                dates = pd.to_datetime(vdf['coding_dh_date'], errors='coerce').dt.date.astype(str)
+            timestamp_column = next(
+                (
+                    column for column in (
+                        'coding_dh_generated_at_utc', 'coding_dh_date'
+                    ) if column in vdf.columns
+                ),
+                None,
+            )
+            if timestamp_column:
+                dates = pd.to_datetime(
+                    vdf[timestamp_column], errors='coerce'
+                ).dt.date.astype(str)
                 baseline_df['translation_date'] = dates.values
 
     if not matrix_frames:

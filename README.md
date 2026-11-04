@@ -42,11 +42,18 @@ Term-specific data live under `datasets/candidate_terms/{term_slug}/`. A complet
 
 ### Recording Transmogrifications Over Time
 
-In the future, we might rerun existing experiments to capture changes in generated terminology or model behavior over time. Therefore, candidate-term files are append-preserving historical sources. Each row contains a dated observation with a unique `transmogrifier_id` derived from its source term, language code, service, prompt condition, model identifier, observation timestamp, and named service output. Two identical visible responses observed at different times therefore remain separate evidence.
+In the future, we might rerun existing experiments to capture changes in generated terminology or model behavior over time. Therefore, candidate-term files are append-preserving historical sources. Each row records `coding_dh_generated_at_utc` and has a unique `transmogrifier_id` derived from its source term, language code, service, prompt condition, model identifier, observation timestamp, and named service output. Two identical visible responses observed at different times therefore remain separate evidence.
 
 To ensure that we can identify the latest observation for a given source term, language, service, and prompt condition, we provide a helper function
 `scripts.candidate_generation.translation_versions.load_translation_versions` with `mode="latest"`; `selected`, `as_of`, and `all_history` support reviewed or longitudinal analysis. The identifier applies to generated candidate
 observations, not to the language registry. Language metadata continues to use `language_code` and `project_language_code` as stable entity keys.
+
+Review timestamps are separate from generation timestamps. Search-term and
+retrieval-review interfaces write `coding_dh_reviewed_at_utc` only when a
+reviewer confirms or changes a decision. A later revision creates another
+review observation downstream rather than mutating the candidate's generation
+time. Search utilization is not stored as a property of a term; each GitHub
+search execution records when a particular reviewed term was used.
 
 ## Research Outputs
 

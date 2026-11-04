@@ -316,8 +316,10 @@ document.getElementById('file-input').addEventListener('change', e => {
       allRows = data.map(r => ({
         ...r,
         search_term_id: r.search_term_id || '',
+        coding_dh_derived_at_utc: r.coding_dh_derived_at_utc || '',
         counts: Number(r.counts) || 0,
         keep_term: String(r.keep_term).toLowerCase() !== 'false',
+        coding_dh_reviewed_at_utc: r.coding_dh_reviewed_at_utc || '',
         directionality_conflict: String(r.directionality_conflict).toLowerCase() === 'true',
         ltr_languages: r.ltr_languages || '',
         rtl_languages: r.rtl_languages || '',
@@ -456,6 +458,7 @@ function renderTable() {
       const row = rowById(cb.dataset.id);
       if (!row) return;
       row.keep_term = cb.checked;
+      row.coding_dh_reviewed_at_utc = new Date().toISOString();
       cb.closest('tr').classList.toggle('excluded', !cb.checked);
       updateHeaderStats();
     });
@@ -474,13 +477,16 @@ function resolveConflict(id, action) {
   const idx = allRows.findIndex(r => r._id === id);
   if (idx === -1) return;
   const row = allRows[idx];
+  const reviewedAt = new Date().toISOString();
 
   if (action === 'l') {
     row.directionality = 'ltr';
     row.directionality_conflict = false;
+    row.coding_dh_reviewed_at_utc = reviewedAt;
   } else if (action === 'r') {
     row.directionality = 'rtl';
     row.directionality_conflict = false;
+    row.coding_dh_reviewed_at_utc = reviewedAt;
   } else if (action === 's') {
     // Replace the original row with two rows: one ltr, one rtl
     const ltrCodes = (row.ltr_languages || '').split(',').map(s => s.trim()).filter(Boolean);
@@ -493,6 +499,7 @@ function resolveConflict(id, action) {
       directionality_conflict: false,
       ltr_languages: '', rtl_languages: '',
       search_term_id: row.search_term_id,
+      coding_dh_reviewed_at_utc: reviewedAt,
       _id: Math.random().toString(36).slice(2),
       _suspicious: isSuspicious({...row, counts: ltrCodes.length}),
     };
@@ -504,6 +511,7 @@ function resolveConflict(id, action) {
       directionality_conflict: false,
       ltr_languages: '', rtl_languages: '',
       search_term_id: row.search_term_id,
+      coding_dh_reviewed_at_utc: reviewedAt,
       _id: Math.random().toString(36).slice(2),
       _suspicious: false,
     };
@@ -589,16 +597,19 @@ document.getElementById('per-page-select').addEventListener('change', e => {
 
 // ── Bulk actions ──────────────────────────────────────────────────────────────
 document.getElementById('btn-exclude-flagged').addEventListener('click', () => {
-  allRows.forEach(r => { if (r._suspicious) r.keep_term = false; });
+  const reviewedAt = new Date().toISOString();
+  allRows.forEach(r => { if (r._suspicious) { r.keep_term = false; r.coding_dh_reviewed_at_utc = reviewedAt; } });
   applyFilters(); updateHeaderStats();
 });
 document.getElementById('btn-exclude-short').addEventListener('click', () => {
-  allRows.forEach(r => { if (r._shortTerm) r.keep_term = false; });
+  const reviewedAt = new Date().toISOString();
+  allRows.forEach(r => { if (r._shortTerm) { r.keep_term = false; r.coding_dh_reviewed_at_utc = reviewedAt; } });
   applyFilters(); updateHeaderStats();
 });
 document.getElementById('btn-reset').addEventListener('click', () => {
   if (!confirm('Reset ALL terms to keep_term = true?')) return;
-  allRows.forEach(r => { r.keep_term = true; });
+  const reviewedAt = new Date().toISOString();
+  allRows.forEach(r => { r.keep_term = true; r.coding_dh_reviewed_at_utc = reviewedAt; });
   applyFilters(); updateHeaderStats();
 });
 
@@ -612,8 +623,11 @@ document.getElementById('btn-download').addEventListener('click', () => {
   if (unresolvedCount > 0) {
     if (!confirm(`${unresolvedCount} directionality conflict(s) are still unresolved.\nDownload anyway? Unresolved rows will use the majority direction.`)) return;
   }
+  const exportReviewedAt = new Date().toISOString();
   const out = allRows.map(r => ({
     search_term_id:    r.search_term_id,
+    coding_dh_derived_at_utc: r.coding_dh_derived_at_utc,
+    coding_dh_reviewed_at_utc: r.coding_dh_reviewed_at_utc || exportReviewedAt,
     search_term:        r.search_term,
     natural_language:   r.natural_language,
     counts:             r.counts,

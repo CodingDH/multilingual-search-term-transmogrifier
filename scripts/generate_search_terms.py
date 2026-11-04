@@ -611,6 +611,7 @@ def build_search_terms(
     deduped["ltr_languages"] = deduped["ltr_languages"].fillna("")
     deduped["rtl_languages"] = deduped["rtl_languages"].fillna("")
     deduped.insert(0, "search_term_id", deduped.apply(_search_term_id, axis=1))
+    deduped.insert(1, "coding_dh_derived_at_utc", datetime.now(timezone.utc).isoformat())
 
     out_dir = os.path.join(root, "candidate_terms", term_slug, "search_terms")
     os.makedirs(out_dir, exist_ok=True)
@@ -719,7 +720,7 @@ def enrich_reviewed_search_term_provenance(
     metadata = {
         "selection_mode": "selected",
         "selection_as_of": None,
-        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "coding_dh_derived_at_utc": datetime.now(timezone.utc).isoformat(),
         "reviewed_search_term_rows": int(len(reviewed)),
         "provenance_link_rows": int(len(bridge)),
         "linked_search_term_rows": int(bridge["search_term_id"].nunique()),
