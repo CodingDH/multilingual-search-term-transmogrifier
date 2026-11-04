@@ -29,6 +29,20 @@ language_metadata
 
 Candidate generation can require credentials, paid APIs, local Ollama models, and network access. The committed datasets support review and analysis without regenerating candidates. The separate GitHub collector is intentionally private because distributing bulk collection infrastructure and complete raw exports could facilitate additional surveillance.
 
+## Temporal Fields
+
+Pipeline timestamps name the project event they record:
+
+| Field | Event |
+| --- | --- |
+| `coding_dh_generated_at_utc` | Coding DH received a candidate response or generation failure. |
+| `coding_dh_derived_at_utc` | A grouped search-term or provenance export was materialized. |
+| `coding_dh_reviewed_at_utc` | A reviewer confirmed or changed a search-term or retrieval decision. |
+| `coding_dh_used_at_utc` | A reviewed term was submitted in a downstream search execution; implemented in the retrieval project rather than this repository. |
+
+Candidate-generation readers accept the legacy `coding_dh_date` column and normalize it to `coding_dh_generated_at_utc`. New writers use the specific field and language metadata retains `coding_dh_date_added` and `coding_dh_date_last_seen` because those names already describe distinct
+source-attestation events.
+
 ## Recommended Run Order
 
 The full workflow has required stages, review pauses, and optional analytical rebuilds:
@@ -73,4 +87,4 @@ Run `generate_search_terms.py` after candidate review and disagreement analysis.
 python scripts/generate_search_terms.py --term "Digital Humanities"
 ```
 
-Rebuild the export whenever `manual_exclusions.csv`, disagreement analysis, or term corrections change.
+Rebuild the export whenever `manual_exclusions.csv`, disagreement analysis, or term corrections change. Grouped rows record `coding_dh_derived_at_utc`; the browser-reviewed export also records `coding_dh_reviewed_at_utc`.

@@ -24,6 +24,12 @@ The numeric prefixes give the recommended reading order, but the notebooks do no
 
 Notebooks 01–06 and 09 contain the principal analyses used in the forthcoming article. Notebook 05 also retains embedding experiments intended primarily for comparative follow-up work. Notebooks 07 and 08 preserve exploratory analyses that are useful for further research but are not required to reproduce the article's central claims.
 
+## Temporal Compatibility
+
+Candidate observations now use `coding_dh_generated_at_utc`, while historical candidate files may still contain `coding_dh_date`. Shared candidate loaders normalize the legacy field before selecting `latest`, `selected`, `as_of`, or `all_history` views. The notebooks do not use the generic candidate date directly, so no notebook-specific fallback is required.
+
+Notebook 01 uses `coding_dh_date_added` and `coding_dh_date_last_seen` for language-registry attestation. Those fields are intentionally unchanged. Search-term artifacts may additionally contain `coding_dh_derived_at_utc` and `coding_dh_reviewed_at_utc`; these fields preserve provenance but do not alter the article's existing aggregate calculations.
+
 ## Running the Notebooks
 
 Install the repository dependencies from `requirements.txt` and use a Python kernel associated with that environment. The notebooks resolve the project root without relying on an absolute local path, so they can be opened from the repository or from the `notebooks/` directory.

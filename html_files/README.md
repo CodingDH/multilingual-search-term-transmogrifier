@@ -40,11 +40,7 @@ The HTML files do not write directly back into the repository. Each reviewer dow
    - Download and save beside it as `search_terms/digital_humanities/search_result_relevance_reviewed.csv`
    - From `searching_for_DH/data_generation_scripts`, run `python build_search_workflow_tables.py --import-reviewed` to append new review observations to DuckDB
 
-The relevance reviewer remains file based because it is a static local HTML
-page. The CSV is a deliberate interchange format rather than the sole
-analytical store. Use `python build_search_workflow_tables.py
---export-review-input` in `searching_for_DH/data_generation_scripts` when a
-fresh browser input needs to be exported from DuckDB.
+The relevance reviewer remains file based because it is a static local HTML page. The CSV is a deliberate interchange format rather than the sole analytical store. Use `python build_search_workflow_tables.py --export-review-input` in `searching_for_DH/data_generation_scripts` when a fresh browser input needs to be exported from DuckDB.
 
 ## File Reference
 
@@ -184,13 +180,7 @@ The reviewer keeps three decisions separate:
   from candidate analysis;
 - a downstream status: retain, retain while tracking relevance, or exclude.
 
-Downstream search status is derived from retrieval assessment by default. A
-reviewer may override it without changing the retrieval or candidate fields.
-Candidate review is exception-based rather than an attempt to classify every
-term as a credible or non-credible definition of DH. The export preserves
-candidate exceptions in the legacy `translation_review` field, analysis exclusions in
-`exclude_from_translation_analysis`, any search override in
-`decision_override`, and its effective result in `review_decision`.
+Downstream search status is derived from retrieval assessment by default. A reviewer may override it without changing the retrieval or candidate fields. Candidate review is exception-based rather than an attempt to classify every term as a credible or non-credible definition of DH. The export preserves candidate exceptions in the legacy `translation_review` field, analysis exclusions in `exclude_from_translation_analysis`, any search override in `decision_override`, and its effective result in `review_decision`.
 
 Save the download as:
 
@@ -203,5 +193,4 @@ Rebuilding the queue preserves decisions from that reviewed file by normalized s
 ## Notes
 
 - These tools rely on browser-side JavaScript and `localStorage`. If a page seems to remember stale decisions, clear the page's local storage or reload the saved CSV explicitly.
-- Use the current generated CSVs rather than files in `older_datasets` unless you are intentionally auditing historical behavior.
 - Keep downloaded filenames exact where possible. Several scripts look for the reviewed filenames listed above.

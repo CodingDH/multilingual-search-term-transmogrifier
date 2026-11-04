@@ -32,11 +32,7 @@ The current notebooks deduplicate and aggregate these records explicitly when re
 
 Column order differs slightly among services because the logs were written by service-specific wrappers. Analysis should select columns by name rather than position.
 
-Repeated failures are appended rather than collapsed. The repository does not
-store a `latest_error_observation_id`: each row is historical failure evidence,
-not a permanent status for the service-language-prompt cell. Any future study
-of recovery would compare these timestamps with the separately stored success
-history.
+Repeated failures are appended rather than collapsed. The repository does not store a `latest_error_observation_id`: each row is historical failure evidence, not a permanent status for the service-language-prompt cell. Any future study of recovery would compare these timestamps with the separately stored success history.
 
 ## Status Semantics
 

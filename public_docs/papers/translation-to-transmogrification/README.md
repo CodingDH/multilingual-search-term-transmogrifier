@@ -57,6 +57,6 @@ Article-specific visual materials are stored with this guide:
   [manifest](figures/publication/README.md) records captions, alt text, source
   notebooks, and production notes.
 
-Shared pipeline diagrams that may support more than one publication remain in
-the repository-level [`figures/`](../../../figures/) directory.
+Shared pipeline diagrams that may support more than one publication are stored
+in the repository-level [`diagrams/`](../../../diagrams/) directory.
 

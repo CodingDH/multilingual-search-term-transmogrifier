@@ -1,8 +1,6 @@
 # Data Dictionary
 
-This dictionary identifies the canonical CSVs used across the pipeline. More
-detailed provenance and file inventories remain in the README for each data
-directory.
+This dictionary identifies the canonical CSVs used across the pipeline. More detailed provenance and file inventories remain in the README for each data directory.
 
 ## Shared Conventions
 
@@ -16,9 +14,7 @@ directory.
 | pipe-separated fields | Multiple registry or script values in one cell, such as `sources`, `scripts`, and `script_codes`. |
 | semicolon-separated fields | Multiple service, language, or review values in one cell. |
 
-Raw generated outputs are preserved separately from reviewed corrections and
-exclusions. A populated response is a generated candidate, not a validated
-equivalent.
+Raw generated outputs are preserved separately from reviewed corrections and exclusions. A populated response is a generated candidate, not a validated equivalent.
 
 ## Language Metadata
 
@@ -70,18 +66,13 @@ The reviewed family file adds:
 | `family_name_analysis` | Final controlled label used for aggregate analysis. |
 | `family_name_analysis_source` | Provenance for the analysis-level label. |
 
-See [`metadata_files/README.md`](metadata_files/README.md) for upstream sources,
-population tables, service-support manifests, and full field provenance.
+See [`metadata_files/README.md`](metadata_files/README.md) for upstream sources, population tables, service-support manifests, and full field provenance.
 
 ## Candidate Outputs
 
 ### Direct services
 
-Files under `candidate_terms/{term_slug}/direct_services/` preserve one named
-source's output. Google Translate, EasyNMT, and Lingvanex files retain the full
-language inventory. The initial Wikipedia artifact stores productive
-interlanguage labels; future refreshes append complete dated snapshots so both
-label presence and absence can be compared over time.
+Files under `candidate_terms/{term_slug}/direct_services/` preserve one named source's output. Google Translate, EasyNMT, and Lingvanex files retain the full language inventory. The initial Wikipedia artifact stores productive interlanguage labels; future refreshes append complete dated snapshots so both label presence and absence can be compared over time.
 
 | Column or pattern | Meaning |
 | --- | --- |
@@ -99,12 +90,7 @@ label presence and absence can be compared over time.
 
 ### Prompt services
 
-Files under `prompt_services/` follow
-`{service}_{prompt_variant}_translations.csv`. The filename supplies the service
-and condition. Each file contains common observation keys and only the named
-service's output, prompt, model, usage, and response fields. Cross-service
-comparison is performed by joining these files on source term and language;
-foreign-service evidence is not duplicated inside each source file.
+Files under `prompt_services/` follow `{service}_{prompt_variant}_translations.csv`. The filename supplies the service and condition. Each file contains common observation keys and only the named service's output, prompt, model, usage, and response fields. Cross-service comparison is performed by joining these files on source term and language; foreign-service evidence is not duplicated inside each source file.
 
 | Column pattern | Meaning |
 | --- | --- |
@@ -120,25 +106,15 @@ foreign-service evidence is not duplicated inside each source file.
 | `{service}_*_duration`, `{service}_*_count` | Ollama timing and evaluation metrics. |
 | `{service}_extracted_dictionaries` | JSON-like objects parsed from local-model output. |
 
-Candidate-output CSVs are append-preserving historical sources. Loaders default to
-the latest observation for each term, language, service, and prompt condition,
-but support `latest`, `selected`, `as_of`, and `all_history` views. A selected
-view is defined by a separate CSV containing `transmogrifier_id` and an optional
-boolean `selected` column; review choices do not overwrite generated outputs.
+Candidate-output CSVs are append-preserving historical sources. Loaders default to the latest observation for each term, language, service, and prompt condition, but support `latest`, `selected`, `as_of`, and `all_history` views. A selected view is defined by a separate CSV containing `transmogrifier_id` and an optional boolean `selected` column; review choices do not overwrite generated outputs.
 
-A normal generation command fills missing cells and may reuse cached outputs.
-Cache reuse does not create a new row or imply that a service was stable over
-time. An explicit `--refresh-existing` command queries the enabled cells again;
-the returned response receives a new UTC `coding_dh_generated_at_utc` and
-`transmogrifier_id` even when its content matches the preceding observation.
+A normal generation command fills missing cells and may reuse cached outputs. Cache reuse does not create a new row or imply that a service was stable over time. An explicit `--refresh-existing` command queries the enabled cells again; the returned response receives a new UTC `coding_dh_generated_at_utc` and `transmogrifier_id` even when its content matches the preceding observation.
 
-The `judge` condition is dependent: its prompts contain candidates from earlier
-prompts and direct sources. Do not count judge outputs as independent votes.
+The `judge` condition is dependent: its prompts contain candidates from earlier prompts and direct sources. Do not count judge outputs as independent votes.
 
 ### Candidate-Generation Error Logs
 
-Files under `error_logs/` preserve explicit service failures as dated
-observations.
+Files under `error_logs/` preserve explicit service failures as dated observations.
 
 | Column | Meaning |
 | --- | --- |
@@ -149,24 +125,15 @@ observations.
 | `status_code`, `error_url`, `error_message` | Service or pipeline failure evidence. |
 | `term_source`, `language_code`, `variant` | Requested cell where available. |
 
-Repeated failures are appended rather than deduplicated. Routine generation may
-skip cells with prior deterministic failures; `--retry-errors` explicitly
-revisits them. Transient timeouts and server failures remain retryable. Error
-rows are not added to model-output CSVs, and the project does not maintain a
-stored `latest_error_observation_id`. The latest successful candidate view
-and the historical failure record therefore remain separate unless a later
-analysis joins them explicitly.
+Repeated failures are appended rather than deduplicated. Routine generation may skip cells with prior deterministic failures; `--retry-errors` explicitly revisits them. Transient timeouts and server failures remain retryable. Error rows are not added to model-output CSVs, and the project does not maintain a stored `latest_error_observation_id`. The latest successful candidate view and the historical failure record therefore remain separate unless a later analysis joins them explicitly.
 
-See the [direct-service](candidate_terms/digital_humanities/direct_services/README.md)
-and [prompt-service](candidate_terms/digital_humanities/prompt_services/README.md)
-documentation for coverage and interpretation details.
+See the [direct-service](candidate_terms/digital_humanities/direct_services/README.md) and [prompt-service](candidate_terms/digital_humanities/prompt_services/README.md) documentation for coverage and interpretation details.
 
 ## Evaluation and Review
 
 ### `automated_review_signals.csv`
 
-One row per language. Each `has_{signal}` boolean is paired with a
-`{signal}_services` field identifying affected service-prompt outputs.
+One row per language. Each `has_{signal}` boolean is paired with a `{signal}_services` field identifying affected service-prompt outputs.
 
 | Column group | Meaning |
 | --- | --- |
@@ -231,17 +198,11 @@ for the complete evaluation inventory and normalization assumptions.
 
 ### `reviewed_candidate_term_provenance.csv`
 
-Long-form bridge between `search_term_id` and its supporting `transmogrifier_id`
-values. Every bridge row resolves to a preserved candidate observation; export
-generation stops rather than inventing fallback identifiers when a reviewed
-query cannot be matched.
+Long-form bridge between `search_term_id` and its supporting `transmogrifier_id` values. Every bridge row resolves to a preserved candidate observation; export generation stops rather than inventing fallback identifiers when a reviewed query cannot be matched.
 
 ### `reviewed_candidate_term_export_metadata.json`
 
-Export-level temporal and integrity metadata, including `selection_mode`,
-optional `selection_as_of`, artifact hashes, and coverage counts. These values
-are not repeated on every reviewed search-term row. New exports record
-`coding_dh_derived_at_utc`; legacy metadata may use `generated_at`.
+Export-level temporal and integrity metadata, including `selection_mode`, optional `selection_as_of`, artifact hashes, and coverage counts. These values are not repeated on every reviewed search-term row. New exports record `coding_dh_derived_at_utc`; legacy metadata may use `generated_at`.
 
 ### Private external `search_result_relevance_reviewed.csv`
 
@@ -261,5 +222,4 @@ This object-level review artifact is stored under the configured external search
 | `reviewer_notes`, `review_status` | Decision rationale and whether the assessment is reviewed; reviewer type is not encoded. |
 | `coding_dh_reviewed_at_utc` | Time the retrieval-review decision was confirmed or changed; blank for unreviewed queue rows. |
 
-See [`search_terms/README.md`](candidate_terms/digital_humanities/search_terms/README.md)
-for overlap-edge fields, allowed review values, and GitHub search limitations.
+See [`search_terms/README.md`](candidate_terms/digital_humanities/search_terms/README.md) for overlap-edge fields, allowed review values, and GitHub search limitations.

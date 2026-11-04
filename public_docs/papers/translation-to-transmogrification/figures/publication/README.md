@@ -10,9 +10,8 @@ Most PNGs omit an embedded title and subtitle because that information appears
 in the caption. Matching SVG files are retained when a composite or pipeline
 diagram has an editable vector source. Notebook-generated source figures,
 exploratory charts, and titleless intermediates are available in the adjacent
-[`../analysis/`](../analysis/) directory. Shared diagrams used across the
-project remain in the repository-level [`figures/`](../../../../../figures/)
-directory.
+[`../analysis/`](../analysis/) directory. Reusable pipeline diagrams are stored
+in the repository-level [`diagrams/`](../../../../../diagrams/) directory.
 
 ## Figure Inventory
 

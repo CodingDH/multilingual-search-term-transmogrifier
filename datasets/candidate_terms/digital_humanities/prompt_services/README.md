@@ -20,22 +20,13 @@ Current prompt conditions:
 
 Files follow `{service}_{variant}_translations.csv`. Each current file normally contains 881 language rows. The filename preserves the requested translation task, but the stored rows are treated as candidate outputs. The judge is not an independent generation trial; it receives evidence generated earlier in the pipeline.
 
-Future reruns append observations rather than replacing prior rows, so file
-length is no longer a stable coverage measure. Use the version loader's default
-`latest` view for the current 881-language grid, or request `selected`, `as_of`,
-or `all_history` explicitly. `transmogrifier_id` identifies one historical
-service-prompt-language observation.
+Future reruns append observations rather than replacing prior rows, so file length is no longer a stable coverage measure. Use the version loader's default `latest` view for the current 881-language grid, or request `selected`, `as_of`, or `all_history` explicitly. `transmogrifier_id` identifies one historical service-prompt-language observation.
 
 ## Legacy Files
 
-`{service}_expert_persona_translations.csv` belongs to a superseded prompt scheme. These files are retained for provenance but are excluded from the current four-condition analysis. Do not combine them with `fluent_speaker` without an explicit historical comparison.
-
 ## Column Families
 
-Each file is a service-local observation log. It contains common observation
-keys and fields belonging to the service named in the filename. The generation
-pipeline may use a cumulative in-memory frame, but foreign-service and baseline
-columns are not copied into the persisted source file. Select fields by name.
+Each file is a service-local observation log. It contains common observation keys and fields belonging to the service named in the filename. The generation pipeline may use a cumulative in-memory frame, but foreign-service and baseline columns are not copied into the persisted source file. Select fields by name.
 
 | Column pattern | Meaning |
 | --- | --- |
@@ -58,24 +49,17 @@ columns are not copied into the persisted source file. Select fields by name.
 | `{service}_extracted_dictionaries` | Candidate JSON-like objects parsed from local output. |
 | `generation_temperature`, `generation_top_p`, `generation_max_output_tokens`, `generation_settings_source` | Request settings and their provenance where recorded. |
 
-Prompt-invariant candidates remain in `../direct_services/`; current family
-metadata remains in the reviewed metadata tables; and manual decisions remain
-in `../evaluation/manual_exclusions.csv`. The judge's supplied evidence is
-preserved in its service-specific user prompt rather than copied as foreign
-candidate columns.
+Prompt-invariant candidates remain in `../direct_services/`; current family metadata remains in the reviewed metadata tables; and manual decisions remain in `../evaluation/manual_exclusions.csv`. The judge's supplied evidence is preserved in its service-specific user prompt rather than copied as foreign candidate columns.
 
 Not every service exposes every metadata field. Blank timing or token fields are expected for providers that do not return them or for incomplete requests.
 
-Load these files through
-`scripts.candidate_generation.translation_versions.load_translation_versions`.
-Its `latest`, `selected`, `as_of`, and `all_history` modes prevent preserved
-historical rows from being mistaken for simultaneous service outputs.
+Load these files through `scripts.candidate_generation.translation_versions.load_translation_versions`. Its `latest`, `selected`, `as_of`, and `all_history` modes prevent preserved historical rows from being mistaken for simultaneous service outputs.
 
 ## Candidate/Rationale Pairing
 
 Raw files preserve what the service returned. Downstream loading uses `enforce_translation_rationale_pairing()` so candidate-only and rationale-only cells can be excluded consistently from analyses requiring both. The function retains its established technical name. The raw values remain here for audit. Notebook 02 reports pairing failures separately.
 
-## Interpretation
+## Cautions
 
 - A nonblank parsed term is evidence that the response passed the parser, not evidence of linguistic validity.
 - Prompts, models, and provider-level deployment can all shape outputs.

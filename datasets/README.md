@@ -1,7 +1,6 @@
 # Dataset Guide
 
-See [`DATA_DICTIONARY.md`](DATA_DICTIONARY.md) for the canonical column-level
-schemas used across metadata, candidate-generation, evaluation, and search-term files.
+See [`DATA_DICTIONARY.md`](DATA_DICTIONARY.md) for the canonical column-level schemas used across metadata, candidate-generation, evaluation, and search-term files.
 
 This directory contains the source metadata, generated candidate terms, review artifacts, and derived analysis tables used by the Multilingual Search Term Transmogrifier. The files do not all have the same evidentiary status. Some are upstream source snapshots, some are generated model outputs, some record human or assistant review decisions, and others can be regenerated from those files.
 
@@ -45,12 +44,7 @@ The following labels are used throughout the documentation:
 
 `language_code` is the project row identifier. It is deliberately broader than a single ISO standard and may preserve Wikimedia identifiers or historical source identifiers. Join language-level files to `metadata_files/language_codes_comprehensive_family_reviewed.csv` when reviewed family labels are required.
 
-`transmogrifier_id` has a narrower role: it identifies one dated candidate
-observation for a source term, language, service, prompt, and model context. It
-does not replace `language_code`. Candidate-output files can therefore contain
-several IDs for the same language when a service is intentionally observed at
-different times. Routine code must use the candidate version loader's
-`latest` view rather than assuming one physical row per language-service cell.
+`transmogrifier_id` has a narrower role: it identifies one dated candidate observation for a source term, language, service, prompt, and model context. It does not replace `language_code`. Candidate-output files can therefore contain several IDs for the same language when a service is intentionally observed at different times. Routine code must use the candidate version loader's `latest` view rather than assuming one physical row per language-service cell.
 
 Read language-code columns as strings. In particular, `nan` is the valid ISO 639-3 code for Min Nan Chinese and must not be interpreted as a missing value. The project loaders use explicit string converters for this reason.
 

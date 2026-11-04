@@ -25,8 +25,6 @@ All services were asked to return two JSON fields:
 
 Prompts and returned model metadata were also stored with individual response rows. The pipeline ran the three independent conditions before the judge condition so that judge prompts could incorporate their candidates.
 
-The corpus also preserves files labeled `expert_persona` from an earlier development stage. That superseded condition was not one of the four experimental prompt conditions reported in the article.
-
 ## Template Variables
 
 The templates below use three placeholders:

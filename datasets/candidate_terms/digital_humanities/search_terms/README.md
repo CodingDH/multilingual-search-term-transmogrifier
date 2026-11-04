@@ -19,8 +19,6 @@ The collector and complete exports are intentionally withheld to avoid releasing
 | `search_result_term_overlap_edges.csv` | Generated intermediate | One term-to-term overlap edge | Shared GitHub objects and overlap measures. |
 | `search_result_overlap_summary.csv` | Generated summary | One corpus-level row | Global retrieval multiplicity totals. |
 
-Files under `older_datasets/` are superseded review snapshots and are not read by the current workflow.
-
 ## Grouped Search-Term Columns
 
 | Column | Meaning |
@@ -36,20 +34,14 @@ Files under `older_datasets/` are superseded review snapshots and are not read b
 | `directionality_conflict` | Whether contributing language rows disagreed on directionality; present in the generated queue. |
 | `ltr_languages`, `rtl_languages` | Language provenance used to resolve directionality conflicts; present in the generated queue. |
 
-The reviewed query CSV retains `search_term_id` and the human-readable query and
-review columns. Candidate provenance is normalized into the bridge rather than
-stored as comma-separated lists.
+The reviewed query CSV retains `search_term_id` and the human-readable query and review columns. Candidate provenance is normalized into the bridge rather than stored as comma-separated lists.
 
 | Bridge column | Meaning |
 | --- | --- |
 | `search_term_id` | Stable reviewed search-string identifier. |
 | `transmogrifier_id` | Supporting candidate observation. |
 
-The metadata JSON stores `selection_mode`, optional `selection_as_of`,
-generation time, row counts, and SHA-256 hashes for both
-tabular artifacts, including the number of reviewed queries linked to source
-observations. Run `generate_search_terms.py --enrich-reviewed` after each
-browser export to rebuild and validate this normalized provenance package.
+The metadata JSON stores `selection_mode`, optional `selection_as_of`, generation time, row counts, and SHA-256 hashes for both tabular artifacts, including the number of reviewed queries linked to source observations. Run `generate_search_terms.py --enrich-reviewed` after each browser export to rebuild and validate this normalized provenance package.
 
 The reviewed file can contain more rows than a newly generated queue when a review reconciles or carries forward terms from earlier reviewed snapshots. Treat the reviewed file as the canonical search input and document any future merge rather than assuming row counts must match.
 
@@ -100,18 +92,11 @@ The following schema documents the private files used by the analysis; those fil
 | `reviewer_notes` | Free-text evidence and rationale. |
 | `review_status` | Whether the assessment is `reviewed` or `unreviewed`; reviewer type is not encoded. |
 
-The current file contains a sample-based audit produced through AI-assisted classification and subsequent human confirmation. It is not a manual reading of every retrieved GitHub object. `retain_track` means the term remains in downstream counts while its relevance remains analytically visible.
+The current file contains a sample-based audit produced through AI-assisted classification and subsequent human confirmation. `retain_track` means the term remains in downstream counts while its relevance remains analytically visible.
 
 ## Temporal Selection
 
-Candidate generation is append-preserving. Each source observation has a
-`transmogrifier_id`, and the provenance bridge records which observations
-support each reviewed `search_term_id`. Export metadata identifies the selected
-historical view and verifies the reviewed and bridge artifacts with hashes.
-Routine exports may use the latest observations; historical exports can use an
-`as_of` cutoff or a separately reviewed selection. The private relevance-review
-CSV remains the binding decision layer for downstream GitHub expansion and
-preserves its own `coding_dh_date` when decisions change.
+Candidate generation is append-preserving. Each source observation has a `transmogrifier_id`, and the provenance bridge records which observations support each reviewed `search_term_id`. Export metadata identifies the selected historical view and verifies the reviewed and bridge artifacts with hashes. Routine exports may use the latest observations; historical exports can use an `as_of` cutoff or a separately reviewed selection. The private relevance-review CSV remains the binding decision layer for downstream GitHub expansion and preserves its own `coding_dh_date` when decisions change.
 
 ## Overlap Edge Columns
 

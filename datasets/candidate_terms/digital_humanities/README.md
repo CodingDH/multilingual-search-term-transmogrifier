@@ -22,14 +22,9 @@ Use the following files when tracing the current pipeline:
 5. Search-term review: `search_terms/reviewed_grouped_translated_terms.csv`.
 6. Retrieval review: private external `search_terms/digital_humanities/search_result_relevance_reviewed.csv`.
 
-The `expert_persona` prompt files and `evaluation/older_manual_exclusions.csv` are legacy artifacts. They are preserved for provenance but are not part of the current four-condition analysis.
-
 ## Historical Observations
 
-Candidate-output files can contain several dated observations for the same source
-term, language, service, and prompt condition. `transmogrifier_id` identifies
-one such observation; it is not a language identifier or an assertion that the
-candidate is correct. Routine reconstruction of the current corpus uses:
+Candidate-output files can contain several dated observations for the same source term, language, service, and prompt condition. `transmogrifier_id` identifies one such observation; it is not a language identifier or an assertion that the candidate is correct. Routine reconstruction of the current corpus uses:
 
 ```python
 from scripts.candidate_generation.translation_versions import load_translation_versions
@@ -38,10 +33,7 @@ current = load_translation_versions(path, mode="latest")
 history = load_translation_versions(path, mode="all_history")
 ```
 
-The other supported modes are `as_of`, for the latest observations available
-at a historical cutoff, and `selected`, for IDs named in a separate review
-artifact. Direct `pandas.read_csv` calls return all preserved rows and should
-not be used when a one-row-per-cell current view is required.
+The other supported modes are `as_of`, for the latest observations available at a historical cutoff, and `selected`, for IDs named in a separate review artifact. Direct `pandas.read_csv` calls return all preserved rows and should not be used when a one-row-per-cell current view is required.
 
 ## Missing Outputs
 

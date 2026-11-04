@@ -99,7 +99,7 @@ multilingual-search-term-transmogrifier/
 │           └── search_terms/
 ├── historic_materials/ # Dated precursor datasets for the initial case study
 ├── html_files/         # Browser-based review interfaces
-├── figures/            # Shared and publication-specific figures
+├── diagrams/           # Shared pipeline and analytical diagrams
 └── public_docs/        # Project methods and publication documentation
 ```
 

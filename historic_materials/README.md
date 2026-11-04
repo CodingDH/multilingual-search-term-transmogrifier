@@ -1,46 +1,31 @@
 # Historic Translation Materials
 
-This folder preserves early translation artifacts that predate the current
-`datasets/candidate_terms/digital_humanities/` pipeline. I keep them here as
-historical evidence for how the project's translation workflow changed over
-time, not as active source files for the current translation run.
+This folder preserves early translation artifacts that predate the current `datasets/candidate_terms/digital_humanities/` pipeline. I keep them here as historical evidence for how the project's translation workflow changed over time, not as active source files for the current translation run.
 
 ## Files
 
 ### `en.Digital humanities.json`
 
-Historic snapshot of the *Digital Humanities* interlanguage terms assembled for
-the Convergences project. The file contains twenty language-to-term mappings
-and supplied Wikipedia-derived reference terms to the early translation
-scripts. It is preserved for provenance but is not an active input to the
-current committed pipeline. The current generator can still read a file with
-this name from the separately configured external metadata directory.
+Historic snapshot of the *Digital Humanities* interlanguage terms assembled for the Convergences project. The file contains twenty language-to-term mappings and supplied Wikipedia-derived reference terms to the early translation scripts. It is preserved for provenance but is not an active input to the current committed pipeline. The current generator can still read a file with this name from the separately configured external metadata directory.
 
 ### `translated_dh_terms.csv`
 
 Artifact date: December 13, 2022.
 
-This is the earliest flattened translation artifact. It contains seven
-`term_source` values, each repeated across the early language list. For the
-`Digital Humanities` rows:
+This is the earliest flattened translation artifact. It contains seven `term_source` values, each repeated across the early language list. For the `Digital Humanities` rows:
 
 - `language` and `language_name` identify the target language.
 - `term` stores a pre-existing or Wikipedia-derived Digital Humanities term
   where one was available.
 - `translated_term` stores the historic Google Translate output.
 
-Notebook 02 uses this file for the first historic convergence check: whether
-the pre-existing/Wikipedia-derived term and the historic Google Translate output
-exactly agreed after conservative normalization.
+Notebook 02 uses this file for the first historic convergence check: whether the pre-existing/Wikipedia-derived term and the historic Google Translate output exactly agreed after conservative normalization.
 
 ### `initial_translated_terms.csv`
 
-Artifact date: November 17-18, 2024. The generating script dates to September
-22, 2024; that script date should not be read as the date of the saved outputs.
+Artifact date: November 17-18, 2024. The generating script dates to September 22, 2024; that script date should not be read as the date of the saved outputs.
 
-This is the later initial prompt-reference artifact for `Digital Humanities`.
-Unlike `translated_dh_terms.csv`, it stores multiple service outputs side by
-side in the same row:
+This is the later initial prompt-reference artifact for `Digital Humanities`. Unlike `translated_dh_terms.csv`, it stores multiple service outputs side by side in the same row:
 
 - `gt_translated_term`
 - `enmt_translated_term`
@@ -48,29 +33,17 @@ side in the same row:
 - `ollama_translated_term`
 - `term` / `wikipedia_translated_term` context fields
 
-Notebook 02 uses this file for the second historic convergence check: whether
-Wikipedia, Google Translate, EasyNMT, and OpenAI converged when they were available.
-The current generated notebook tables report Wikipedia/OpenAI `30/34`,
-Wikipedia/GT `20/34`, Wikipedia/EasyNMT `8/22`, GT/OpenAI `50/112`,
-EasyNMT/OpenAI `14/52`, GT/EasyNMT `12/58`, and all four sources exactly agree
-in `8/22` overlapping rows.
+Notebook 02 uses this file for the second historic convergence check: whether Wikipedia, Google Translate, EasyNMT, and OpenAI converged when they were available. The current generated notebook tables report Wikipedia/OpenAI `30/34`, Wikipedia/GT `20/34`, Wikipedia/EasyNMT `8/22`, GT/OpenAI `50/112`, EasyNMT/OpenAI `14/52`, GT/EasyNMT `12/58`, and all four sources exactly agree in `8/22` overlapping rows.
 
 ### `generate_translations_2022.py`
 
-Archived script associated with the December 2022 translation workflow and
-`translated_dh_terms.csv`. It reads the Convergences JSON and records the
-earliest translation-service comparison preserved in this repository.
+Archived script associated with the December 2022 translation workflow and `translated_dh_terms.csv`. It reads the Convergences JSON and records the earliest translation-service comparison preserved in this repository.
 
 ### `generate_translations_2024.py`
 
-Archived script associated with the September 2024 prompt design and the
-November 2024 `initial_translated_terms.csv` output. It documents the expanded
-comparison among Wikipedia, Google Translate, EasyNMT, OpenAI, and an early
-local-model workflow.
+Archived script associated with the September 2024 prompt design and the November 2024 `initial_translated_terms.csv` output. It documents the expanded comparison among Wikipedia, Google Translate, EasyNMT, OpenAI, and an early local-model workflow.
 
-Both scripts are retained for provenance and should not be treated as active
-translation-generation entry points. The current implementation is documented
-under `scripts/candidate_generation/`.
+Both scripts are retained for provenance and should not be treated as active translation-generation entry points. The current implementation is documented under `scripts/candidate_generation/`.
 
 ## Rebuilding Notebook Tables
 
@@ -86,7 +59,4 @@ That script writes separate outputs for the two artifacts into
 - `historic_2022_*.csv`
 - `historic_2024_*.csv`
 
-Keeping the outputs separate matters because the two source files answer
-different questions. The 2022 file compares a pre-existing/Wikipedia-derived
-term with a historic Google Translate output. The 2024 file compares GT,
-EasyNMT, and OpenAI prompt-reference outputs.
+Keeping the outputs separate matters because the two source files answer different questions. The 2022 file compares a pre-existing/Wikipedia-derived term with a historic Google Translate output. The 2024 file compares GT, EasyNMT, and OpenAI prompt-reference outputs.

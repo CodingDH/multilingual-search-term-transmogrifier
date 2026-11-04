@@ -13,7 +13,6 @@ The directory mixes several row units. Always identify the file's unit before ag
 | `automated_review_signals.csv` | Generated intermediate | One language | Flags suspicious candidate/rationale patterns across service-prompt cells. |
 | `review_explorer_data.csv` | Generated review queue | One language | Wide browser-review table combining source terms, LLM outputs, rationales, cleaned terms, and signals. |
 | `manual_exclusions.csv` | Reviewed artifact | One language-service decision | Canonical saved candidate, prompt-specific search, and correction decisions. |
-| `older_manual_exclusions.csv` | Legacy | One language-service decision | Superseded schema containing the old `expert_persona` condition. |
 | `llama_leakage_audit.csv` | Diagnostic | One flagged row | Focused audit of possible source leakage in Llama files. |
 
 ### Exact-form agreement and disagreement

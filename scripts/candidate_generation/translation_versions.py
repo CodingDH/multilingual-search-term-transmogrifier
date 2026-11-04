@@ -21,7 +21,6 @@ LEGACY_CANDIDATE_DATE_COLUMN = "coding_dh_date"
 PROMPT_VARIANTS = (
     "fluent_speaker",
     "github_searcher",
-    "expert_persona",
     "minimal",
     "judge",
 )

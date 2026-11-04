@@ -33,11 +33,7 @@ Wikipedia is treated as community-edited terminology evidence, not as a machine 
 
 Google Translate, EasyNMT, and Lingvanex files retain all 881 target rows so unsupported or failed cases remain visible as blanks. The initial Wikipedia observation stores only productive interlanguage-label rows, while future refreshes append complete dated snapshots with blanks for absent labels. Coverage comparisons must therefore count nonblank output fields in an explicit version view rather than compare file lengths.
 
-Reruns, including Wikipedia refreshes, append observations rather than replacing prior rows. Use the default
-`latest` version view to recreate the current language grid; use `as_of`,
-`selected`, or `all_history` for historical comparison and audit.
-These views are provided by
-`scripts.candidate_generation.translation_versions.load_translation_versions`.
+Reruns, including Wikipedia refreshes, append observations rather than replacing prior rows. Use the default `latest` version view to recreate the current language grid; use `as_of`, `selected`, or `all_history` for historical comparison and audit. These views are provided by `scripts.candidate_generation.translation_versions.load_translation_versions`.
 
 ## Provenance
 
