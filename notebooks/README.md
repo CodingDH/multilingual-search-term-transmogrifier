@@ -16,11 +16,11 @@ For the article-specific subset, figures, and reported claims, see the [*Transla
 | [`06_rationale_classification.ipynb`](06_rationale_classification.ipynb) | Analyzes rationale availability, length, lexical density, service and prompt classification, distinctive vocabulary, collocations, and candidate-rationale alignment. | Paired English-language rationales and cached classifier artifacts |
 | [`07_definitional_patterns.ipynb`](07_definitional_patterns.ipynb) | Preserves exploratory topic models and overlapping rules for studying how rationales define and authorize *Digital Humanities*. | Rationale corpus and Notebook 06 analytical artifacts |
 | [`08_disagreement_patterns.ipynb`](08_disagreement_patterns.ipynb) | Synthesizes rationale claims, disagreement evidence, and cases selected for close reading. | Disagreement analysis and rationale-derived signals |
-| [`09_search_results.ipynb`](09_search_results.ipynb) | Evaluates reviewed search terms, GitHub retrieval, overlap, relevance, vocabulary-source ablation, and counterfactual visibility. | Reviewed search vocabulary and committed GitHub search-result tables |
+| [`09_search_results.ipynb`](09_search_results.ipynb) | Evaluates reviewed search terms, GitHub retrieval, overlap, relevance, vocabulary-source ablation, and counterfactual visibility. | Reviewed search vocabulary and the private DuckDB-derived Notebook 09 export produced by `searching_for_DH` |
 
 ## Analytical Dependencies
 
-The numeric prefixes give the recommended reading order, but the notebooks do not form a single script that must always be executed end to end. Notebooks 01 through 04 establish the reviewed metadata and candidate evidence used by Notebooks 05 through 08. Notebook 09 depends on the reviewed search vocabulary and search-result artifacts produced outside the notebooks.
+The numeric prefixes give the recommended reading order, but the notebooks do not form a single script that must always be executed end to end. Notebooks 01 through 04 establish the reviewed metadata and candidate evidence used by Notebooks 05 through 08. Notebook 09 depends on the reviewed search vocabulary and a privacy-preserving snapshot generated from the private search database with `searching_for_DH/data_generation_scripts/search_pipeline/export_transmogrifier_search_analysis.py`.
 
 Notebooks 01–06 and 09 contain the principal analyses used in the forthcoming article. Notebook 05 also retains embedding experiments intended primarily for comparative follow-up work. Notebooks 07 and 08 preserve exploratory analyses that are useful for further research but are not required to reproduce the article's central claims.
 

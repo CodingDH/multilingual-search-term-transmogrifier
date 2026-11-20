@@ -156,11 +156,20 @@ Store the path to this repository's `datasets/` directory under the repository-s
 python -c "import apikey; apikey.save('MULTILINGUAL_SEARCH_TERM_TRANSMOGRIFIER_DATA_DIRECTORY', '/absolute/path/to/datasets')"
 ```
 
-Notebook 09 also reads the GitHub retrieval datasets produced by `searching_for_DH`. Store that external directory separately:
+Notebook 09 reads a private, privacy-preserving analysis export produced from the `searching_for_DH` DuckDB database. Store the shared Coding DH data directory separately:
 
 ```bash
 python -c "import apikey; apikey.save('SEARCHING_FOR_DH_DATA_DIRECTORY', '/absolute/path/to/search/datasets')"
 ```
+
+Generate or refresh the Notebook 09 export from the search project before running the notebook:
+
+```bash
+cd /path/to/searching_for_DH/data_generation_scripts
+python3 search_pipeline/export_transmogrifier_search_analysis.py
+```
+
+The export is written to `analysis_exports/digital_humanities/notebook_09/` beneath that data directory. It contains opaque object identifiers, search-term provenance, and the latest reviewed term decisions, but no GitHub names, URLs, titles, descriptions, or content.
 
 Local generation requires Ollama and the model versions documented in [scripts/candidate_generation/README.md](scripts/candidate_generation/README.md).
 
